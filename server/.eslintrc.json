@@ -1,0 +1,26 @@
+{
+    "extends": "airbnb-base",
+    "env": {
+        "browser": true,
+        "node": true,
+        "jquery": true
+      },
+      "globals": {
+        "callApi": true,
+        "clickFlag": true,
+        "convertText": true,
+        "debounce": true,
+        "throttle": true,
+        "mobileDetect": true,
+        "scrollDetect": true,
+        "movielist": true,
+        "tvshowlist": true,
+        "ytchannellist": true,
+        "gamelist": true
+    
+      },
+      "rules": {
+        "no-plusplus": ["error", {"allowForLoopAfterthoughts": true}]
+      }
+    }
+    
