@@ -1,12 +1,14 @@
 // Modules
 const express = require('express');
 const path = require('path');
+const compression = require('compression');
 
 const app = express();
 
 // Local modules
 
 // Middleware
+app.use(compression());
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // -----------------Routes--------------------
