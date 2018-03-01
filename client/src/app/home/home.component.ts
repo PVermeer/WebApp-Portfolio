@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import { SidenavService } from '../_services/sidenav.service';
-import { SidenavContent } from '../_models/sidenav';
+import { SidenavContent, MatToggle } from '../_models/sidenav';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
 
+  // Sidenav options
+  private sidenavToggle: MatToggle = 'open';
+
+  // Filler content
   public fillerContent = Array(20).fill(0).map(() =>
     `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
@@ -17,13 +21,14 @@ export class HomeComponent implements OnInit {
      voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`);
 
+  // Sidenav content
   private sidenavContent: SidenavContent[] = [{
-      title: 'Home',
-      items: [
-        { label: 'Something', path: '18' },
-        { label: 'Something else', path: '2' },
-      ],
-    }];
+    title: 'Home',
+    items: [
+      { label: 'Something', path: '18' },
+      { label: 'Something else', path: '2' },
+    ],
+  }];
 
   constructor(
     private sidenavService: SidenavService,
@@ -31,6 +36,10 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.sidenavService.passSidenavContent(this.sidenavContent);
+  }
+
+  ngAfterViewInit() {
+    this.sidenavService.passSidenavToggle(this.sidenavToggle);
   }
 
 }

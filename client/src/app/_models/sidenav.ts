@@ -5,3 +5,6 @@ export interface SidenavContent {
       path: string;
   }[];
 }
+
+// Material toggle options
+export type MatToggle = 'open' | 'close' | 'toggle' | 'home';

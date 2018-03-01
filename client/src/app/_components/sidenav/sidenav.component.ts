@@ -1,5 +1,6 @@
-import { Component, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, OnDestroy, ViewChild } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { MatSidenav } from '@angular/material';
 
 import { SidenavContent } from '../../_models/sidenav';
 import { SidenavService } from '../../_services/sidenav.service';
@@ -9,9 +10,16 @@ import { ScrollIntoViewService } from '../../_services/scroll-into-view.service'
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.css'],
-  providers: [MediaMatcher, SidenavService, ScrollIntoViewService],
+  providers: [
+    MediaMatcher,
+    SidenavService,
+    ScrollIntoViewService
+  ],
 })
 export class SidenavComponent implements OnDestroy {
+
+  // Get elements for toggle options
+  @ViewChild('sidenav') sidenav: MatSidenav;
 
   // Page navigation
   public pageNav: SidenavContent[] = [{
@@ -43,6 +51,9 @@ export class SidenavComponent implements OnDestroy {
 
     // Change sidenav contents based on route
     this.sideNavContentChange(sidenavService);
+
+    // Toggle materials based on route
+    this.toggleSidenav(sidenavService);
   }
 
   ngOnDestroy(): void {
@@ -56,6 +67,25 @@ export class SidenavComponent implements OnDestroy {
     sidenavService.sidenavContent$.subscribe(sidenavPassedContent => {
       this.sidenavContent = sidenavPassedContent;
       this.changeDetectorRef.detectChanges();
+    });
+  }
+
+  private toggleSidenav(sidenavService: SidenavService) {
+    sidenavService.sidenavToggle$.subscribe(sidenavToggle => {
+      setTimeout(() => {
+        if (sidenavToggle === 'open') {
+          this.sidenav.open();
+          return;
+        }
+        if (sidenavToggle === 'close') {
+          this.sidenav.close();
+          return;
+        }
+        if (sidenavToggle === 'toggle') {
+          this.sidenav.toggle();
+          return;
+        }
+      }, 0);
     });
   }
 

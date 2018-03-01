@@ -1,6 +1,6 @@
 <div class="toolbar-container" [class.is-mobile]="mobileQuery.matches">
   <mat-toolbar color="primary" class="toolbar">
-    <button mat-icon-button (click)="snav.toggle()">
+    <button mat-icon-button (click)="sidenav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
     <h1 class="app-name">{{title}}</h1>
@@ -14,7 +14,7 @@
   </mat-toolbar>
 
   <mat-sidenav-container [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-    <mat-sidenav #snav class="mat-elevation-z1" [mode]="mobileQuery.matches ? 'over' : 'side'"
+    <mat-sidenav #sidenav class="mat-elevation-z1" [mode]="mobileQuery.matches ? 'over' : 'side'"
       [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
       <mat-accordion displayMode="flat" multi="true">
         <!-- Home nav -->
