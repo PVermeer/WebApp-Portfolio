@@ -1,5 +1,6 @@
 import { Component, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { SidenavContent } from '../../_models/sidenav';
 
 @Component({
   selector: 'app-sidenav',
@@ -9,7 +10,16 @@ import { MediaMatcher } from '@angular/cdk/layout';
 })
 export class SidenavComponent implements OnDestroy {
 
+  // Toolbar
   title = 'app';
+  pageNav: SidenavContent[] = [
+    {
+      title: 'Navigation',
+      items: [
+        { label: 'Home', path: 'home' },
+      ],
+    },
+  ];
 
   mobileQuery: MediaQueryList;
 

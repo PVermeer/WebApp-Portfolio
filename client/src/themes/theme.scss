@@ -4,6 +4,7 @@
 @import 'styles.css';
 
 // Import custom component theme files
+@import '../app/_components/sidenav/_sidenav-theme';
 
 // Include mat-core (only once)
 @include mat-core();
@@ -24,6 +25,7 @@ $secondary-theme:   mat-light-theme($secondary-theme-primary, $secondary-theme-a
 
 // Include custom component theme files
 @mixin custom-theme($theme) {
+  @include sidenav($theme)
 }
 
 // Default theme (no class applied)

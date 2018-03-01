@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 
-import { MatButtonModule, MatToolbarModule, MatSidenavModule, MatIconModule, MatListModule } from '@angular/material';
+import {
+  MatButtonModule, MatToolbarModule, MatSidenavModule, MatIconModule, MatListModule, MatExpansionModule,
+  MatTabsModule,
+} from '@angular/material';
 
 // Add here for auto import and adding to NgModule
 const matModules = [
@@ -9,6 +12,8 @@ const matModules = [
   MatSidenavModule,
   MatIconModule,
   MatListModule,
+  MatExpansionModule,
+  MatTabsModule,
 ];
 
 @NgModule({

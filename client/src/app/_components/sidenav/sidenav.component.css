@@ -1,3 +1,5 @@
+/* Toolbar */
+
 .toolbar-container {
   display: flex;
   flex-direction: column;
@@ -17,8 +19,43 @@
   margin-left: 8px;
 }
 
-.sidenav-container {
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+[mat-tab-link] {
+  opacity: initial;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  min-width: initial;
+}
+
+/* Sidenav */
+
+mat-sidenav-container {
   flex: 1;
+}
+
+mat-sidenav {
+  padding: 20px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+mat-panel-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+[mat-list-item] {
+  height: 30px !important;
+  font-size: 15px;
+  opacity: 0.7;
+  font-weight: 600;
 }
 
 .is-mobile .sidenav-container {
