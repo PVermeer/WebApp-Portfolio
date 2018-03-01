@@ -10,7 +10,7 @@ import { SidenavContent } from '../_models/sidenav';
 })
 export class HomeComponent implements OnInit {
 
-  public fillerContent = Array(50).fill(0).map(() =>
+  public fillerContent = Array(20).fill(0).map(() =>
     `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
      laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
@@ -20,8 +20,8 @@ export class HomeComponent implements OnInit {
   private sidenavContent: SidenavContent[] = [{
       title: 'Home',
       items: [
-        { label: 'Something', path: '' },
-        { label: 'Something else', path: '' },
+        { label: 'Something', path: '18' },
+        { label: 'Something else', path: '2' },
       ],
     }];
 

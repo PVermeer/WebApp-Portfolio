@@ -40,7 +40,7 @@
           </mat-expansion-panel-header>
           <mat-nav-list role="list">
             <a mat-list-item role="listitem" *ngFor="let item of content.items" role="listitem"
-              [routerLink]="item.path" routerLinkActive="active-link">
+              (click)="scrollTo(item.path)">
               {{item.label}}
             </a>
           </mat-nav-list>

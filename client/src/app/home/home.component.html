@@ -1,1 +1,4 @@
-<p *ngFor="let content of fillerContent">{{content}}</p>
+<div *ngFor="let content of fillerContent; let i = index">
+  <h2 [id]="i">Header {{i}}</h2>
+  <p>{{content}}</p>
+</div>
