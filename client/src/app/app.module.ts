@@ -6,11 +6,13 @@ import { AppComponent } from './app.component';
 import { MaterialModule } from './_modules/material.module';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
+import { SidenavComponent } from './_components/sidenav/sidenav.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
+    SidenavComponent,
   ],
   imports: [
     BrowserModule,
