@@ -26,7 +26,21 @@
           </mat-expansion-panel-header>
           <mat-nav-list>
             <a mat-list-item *ngFor="let item of pageNav[0].items" role="listitem" [routerLink]="item.path"
-            routerLinkActive="active-link">
+              routerLinkActive="active-link">
+              {{item.label}}
+            </a>
+          </mat-nav-list>
+        </mat-expansion-panel>
+        <!-- Routed nav -->
+        <mat-expansion-panel *ngFor="let content of sidenavContent">
+          <mat-expansion-panel-header collapsedHeight="35px" expandedHeight="35px">
+            <mat-panel-title>
+              {{content.title}}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-nav-list role="list">
+            <a mat-list-item role="listitem" *ngFor="let item of content.items" role="listitem"
+              [routerLink]="item.path" routerLinkActive="active-link">
               {{item.label}}
             </a>
           </mat-nav-list>
