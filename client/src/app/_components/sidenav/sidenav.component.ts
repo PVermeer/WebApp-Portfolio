@@ -12,8 +12,7 @@ import { ScrollIntoViewService } from '../../_services/scroll-into-view.service'
   styleUrls: ['./sidenav.component.css'],
   providers: [
     MediaMatcher,
-    SidenavService,
-    ScrollIntoViewService
+    ScrollIntoViewService,
   ],
 })
 export class SidenavComponent implements OnDestroy {
@@ -39,6 +38,12 @@ export class SidenavComponent implements OnDestroy {
 
   // Smooth scroll
   public scrollTo(element) { this.scrollIntoView.scrollIntoView(element); }
+
+  // Toggle theme for entire app
+  private toggleTheme(event) {
+    const { checked } = event;
+    this.sidenavService.passThemeToggle(checked);
+  }
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,

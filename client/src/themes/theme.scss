@@ -21,7 +21,7 @@ $secondary-theme-primary: mat-palette($mat-blue);
 $secondary-theme-accent:  mat-palette($mat-amber, A200, A100, A400);
 $secondary-theme-warn:    mat-palette($mat-deep-orange);
 
-$secondary-theme:   mat-light-theme($secondary-theme-primary, $secondary-theme-accent, $secondary-theme-warn);
+$secondary-theme:   mat-dark-theme($secondary-theme-primary, $secondary-theme-accent, $secondary-theme-warn);
 
 // Include custom component theme files
 @mixin custom-theme($theme) {

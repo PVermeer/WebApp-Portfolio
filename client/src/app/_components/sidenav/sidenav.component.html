@@ -46,6 +46,15 @@
           </mat-nav-list>
         </mat-expansion-panel>
       </mat-accordion>
+      <!-- Bottom cards -->
+      <mat-card>
+        <mat-list>
+          <mat-list-item>
+            <mat-slide-toggle color="accent" (change)="toggleTheme($event)">Dark theme</mat-slide-toggle>
+          </mat-list-item>
+        </mat-list>
+      </mat-card>
+
     </mat-sidenav>
 
     <mat-sidenav-content>
