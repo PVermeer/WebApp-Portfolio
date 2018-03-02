@@ -5,6 +5,7 @@ import { MatSidenav, MatExpansionPanel } from '@angular/material';
 import { SidenavContent } from '../../_models/sidenav';
 import { SidenavService } from '../../_services/sidenav.service';
 import { ScrollIntoViewService } from '../../_services/scroll-into-view.service';
+import { routerTransition } from '../../_animations/router.animation';
 
 @Component({
   selector: 'app-sidenav',
@@ -14,6 +15,7 @@ import { ScrollIntoViewService } from '../../_services/scroll-into-view.service'
     MediaMatcher,
     ScrollIntoViewService,
   ],
+  animations: [routerTransition()]
 })
 export class SidenavComponent implements OnDestroy {
 
@@ -45,6 +47,9 @@ export class SidenavComponent implements OnDestroy {
     const { checked } = event;
     this.sidenavService.passThemeToggle(checked);
   }
+
+  // Router animation
+  public getState(outlet) { return outlet.activatedRouteData.state; }
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,

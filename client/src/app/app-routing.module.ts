@@ -7,8 +7,8 @@ import { AboutComponent } from './about/about.component';
 // Client routes from selector <router-outlet></router-outlet>
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' }, // Default route
-  { path: 'home', component: HomeComponent },
-  { path: 'about', component: AboutComponent },
+  { path: 'home', component: HomeComponent, data: { state: 'home'} },
+  { path: 'about', component: AboutComponent, data: { state: 'about'} },
 ];
 // use with <a routerLink="/ROUTE">someLink</a>
 
