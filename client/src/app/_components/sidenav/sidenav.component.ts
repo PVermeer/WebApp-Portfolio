@@ -1,6 +1,6 @@
-import { Component, ChangeDetectorRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ChangeDetectorRef, OnDestroy, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav, MatExpansionPanel } from '@angular/material';
 
 import { SidenavContent } from '../../_models/sidenav';
 import { SidenavService } from '../../_services/sidenav.service';
@@ -20,8 +20,11 @@ export class SidenavComponent implements OnDestroy {
 
   // Get elements for toggle options
   @ViewChild('sidenav') sidenav: MatSidenav;
+  @ViewChild('expHomeNav') expHomeNav: MatExpansionPanel;
+  @ViewChildren('expRouteNav') expRoutedNav: QueryList<MatExpansionPanel>;
 
-  // Page navigation
+  // App sidenav config
+  public title = 'app';
   public pageNav: SidenavContent[] = [{
     title: 'Navigation',
     items: [
@@ -30,7 +33,6 @@ export class SidenavComponent implements OnDestroy {
   }];
 
   // Variables
-  public title = 'app';
   public mobileQuery: MediaQueryList;
   public sidenavContent: SidenavContent[];
   private _mobileQueryListener: () => void;
@@ -54,6 +56,7 @@ export class SidenavComponent implements OnDestroy {
 
     // Toggle materials based on route
     this.toggleSidenav(sidenavService);
+    this.toggleExpansions(sidenavService);
   }
 
   ngOnDestroy(): void {
@@ -83,6 +86,27 @@ export class SidenavComponent implements OnDestroy {
         }
         if (sidenavToggle === 'toggle') {
           this.sidenav.toggle();
+          return;
+        }
+      }, 0);
+    });
+  }
+
+  private toggleExpansions(sidenavService: SidenavService) {
+    sidenavService.expansionToggle$.subscribe(expansionToggle => {
+      setTimeout(() => {
+        this.expHomeNav.close();
+        if (expansionToggle === 'open') {
+          this.expRoutedNav.forEach((child) => { child.open(); return; });
+        }
+        if (expansionToggle === 'close') {
+          this.expRoutedNav.forEach((child) => { child.close(); return; });
+        }
+        if (expansionToggle === 'toggle') {
+          this.expRoutedNav.forEach((child) => { child.toggle(); return; });
+        }
+        if (expansionToggle === 'home') {
+          this.expHomeNav.open();
           return;
         }
       }, 0);

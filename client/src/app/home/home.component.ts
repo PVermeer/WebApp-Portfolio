@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import { SidenavService } from '../_services/sidenav.service';
-import { SidenavContent, MatToggle } from '../_models/sidenav';
+import { SidenavContent, MatToggle, MatToggleExp } from '../_models/sidenav';
 
 @Component({
   selector: 'app-home',
@@ -10,8 +10,9 @@ import { SidenavContent, MatToggle } from '../_models/sidenav';
 })
 export class HomeComponent implements OnInit, AfterViewInit {
 
-  // Sidenav options
+  // Sidenav config
   private sidenavToggle: MatToggle = 'open';
+  private expansionToggle: MatToggleExp = 'home';
 
   // Filler content
   public fillerContent = Array(20).fill(0).map(() =>
@@ -35,7 +36,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
+    // Sidenav config
     this.sidenavService.passSidenavContent(this.sidenavContent);
+    this.sidenavService.passExpansionToggle(this.expansionToggle);
   }
 
   ngAfterViewInit() {

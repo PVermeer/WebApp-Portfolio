@@ -18,7 +18,7 @@
       [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
       <mat-accordion displayMode="flat" multi="true">
         <!-- Home nav -->
-        <mat-expansion-panel>
+        <mat-expansion-panel #expHomeNav >
           <mat-expansion-panel-header collapsedHeight="35px" expandedHeight="35px">
             <mat-panel-title>
               {{pageNav[0].title}}
@@ -32,7 +32,7 @@
           </mat-nav-list>
         </mat-expansion-panel>
         <!-- Routed nav -->
-        <mat-expansion-panel *ngFor="let content of sidenavContent">
+        <mat-expansion-panel #expRouteNav *ngFor="let content of sidenavContent">
           <mat-expansion-panel-header collapsedHeight="35px" expandedHeight="35px">
             <mat-panel-title>
               {{content.title}}
