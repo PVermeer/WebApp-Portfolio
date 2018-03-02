@@ -28,6 +28,7 @@ export class SidenavComponent implements OnDestroy {
     title: 'Navigation',
     items: [
       { label: 'Home', path: 'home' },
+      { label: 'About', path: 'about' },
     ],
   }];
 

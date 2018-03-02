@@ -7,12 +7,14 @@ import { MaterialModule } from './_modules/material.module';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { SidenavComponent } from './_components/sidenav/sidenav.component';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     SidenavComponent,
+    AboutComponent,
   ],
   imports: [
     BrowserModule,
