@@ -1,4 +1,8 @@
-<div *ngFor="let content of fillerContent; let i = index">
-  <h2 [id]="i">Header {{i}}</h2>
-  <p>{{content}}</p>
-</div>
+<section>
+  <div class="container">
+    <div *ngFor="let content of fillerContent; let i = index">
+      <h3 [id]="i">Header {{i}}</h3>
+      <p>{{content}}</p>
+    </div>
+  </div>
+</section>

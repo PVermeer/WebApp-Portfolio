@@ -1,7 +1,8 @@
 @import '~@angular/material/theming';
 
 // Import general stylesheets
-@import 'styles.css';
+@import 'text.css';
+@import 'layout.css';
 
 // Import custom component theme files
 @import '../app/_components/sidenav/_sidenav-theme';
