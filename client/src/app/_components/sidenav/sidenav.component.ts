@@ -4,7 +4,6 @@ import { MatSidenav, MatExpansionPanel } from '@angular/material';
 
 import { SidenavContent } from '../../_models/sidenav';
 import { SidenavService } from '../../_services/sidenav.service';
-import { ScrollIntoViewService } from '../../_services/scroll-into-view.service';
 import { routerTransition } from '../../_animations/router.animation';
 
 @Component({
@@ -13,7 +12,6 @@ import { routerTransition } from '../../_animations/router.animation';
   styleUrls: ['./sidenav.component.css'],
   providers: [
     MediaMatcher,
-    ScrollIntoViewService,
   ],
   animations: [routerTransition()]
 })
@@ -40,7 +38,7 @@ export class SidenavComponent implements OnDestroy {
   private _mobileQueryListener: () => void;
 
   // Smooth scroll
-  public scrollTo(element) { this.scrollIntoView.scrollIntoView(element); }
+  public scrollTo(element) { this.sidenavService.scrollIntoView(element); }
 
   // Toggle theme for entire app
   private toggleTheme(event) { this.sidenavService.passThemeToggle(event.checked); }
@@ -52,7 +50,6 @@ export class SidenavComponent implements OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
     private sidenavService: SidenavService,
-    private scrollIntoView: ScrollIntoViewService,
   ) {
     // Sidenav mobile support
     this.mobileQuery = media.matchMedia('(max-width: 600px)');

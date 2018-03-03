@@ -30,4 +30,10 @@ export class SidenavService {
     this.themeToggleSource.next(themeToggle);
   }
 
+  // Methods
+  public scrollIntoView(element) {
+    const scrollToElement = document.getElementById(element);
+    scrollToElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+  }
+
 }
