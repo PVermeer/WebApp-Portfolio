@@ -43,10 +43,7 @@ export class SidenavComponent implements OnDestroy {
   public scrollTo(element) { this.scrollIntoView.scrollIntoView(element); }
 
   // Toggle theme for entire app
-  private toggleTheme(event) {
-    const { checked } = event;
-    this.sidenavService.passThemeToggle(checked);
-  }
+  private toggleTheme(event) { this.sidenavService.passThemeToggle(event.checked); }
 
   // Router animation
   public getState(outlet) { return outlet.activatedRouteData.state; }
@@ -88,16 +85,13 @@ export class SidenavComponent implements OnDestroy {
     sidenavService.sidenavToggle$.subscribe(sidenavToggle => {
       setTimeout(() => {
         if (sidenavToggle === 'open') {
-          this.sidenav.open();
-          return;
+          return this.sidenav.open();
         }
         if (sidenavToggle === 'close') {
-          this.sidenav.close();
-          return;
+          return this.sidenav.close();
         }
         if (sidenavToggle === 'toggle') {
-          this.sidenav.toggle();
-          return;
+          return this.sidenav.toggle();
         }
       }, 0);
     });

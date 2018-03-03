@@ -17,16 +17,16 @@ export class SidenavService {
   public expansionToggle$ = this.expansionToggleSource.asObservable();
   public themeToggle$ = this.themeToggleSource.asObservable();
 
-  passSidenavContent(sidenavContent: SidenavContent[]) {
+  public passSidenavContent(sidenavContent: SidenavContent[]) {
     this.sidenavContentSource.next(sidenavContent);
   }
-  passSidenavToggle(sidenavToggle: MatToggle) {
+  public passSidenavToggle(sidenavToggle: MatToggle) {
     this.sidenavToggleSource.next(sidenavToggle);
   }
-  passExpansionToggle(expansionToggle: MatToggleExp) {
+  public passExpansionToggle(expansionToggle: MatToggleExp) {
     this.expansionToggleSource.next(expansionToggle);
   }
-  passThemeToggle(themeToggle: boolean) {
+  public passThemeToggle(themeToggle: boolean) {
     this.themeToggleSource.next(themeToggle);
   }
 
