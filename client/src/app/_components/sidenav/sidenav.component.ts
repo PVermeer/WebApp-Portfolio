@@ -1,6 +1,8 @@
 import { Component, ChangeDetectorRef, OnDestroy, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MatSidenav, MatExpansionPanel } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromEvent';
 
 import { SidenavContent } from '../../_models/sidenav';
 import { SidenavService } from '../../_services/sidenav.service';
@@ -62,6 +64,9 @@ export class SidenavComponent implements OnDestroy {
     // Toggle materials based on route
     this.toggleSidenav(sidenavService);
     this.toggleExpansions(sidenavService);
+
+    // Sends out scroll events on sidenav content
+    this.scrollEvents();
   }
 
   ngOnDestroy(): void {
@@ -113,6 +118,13 @@ export class SidenavComponent implements OnDestroy {
         }
       }, 0);
     });
+  }
+
+  private scrollEvents() {
+    setTimeout(() => {
+      Observable.fromEvent(document.getElementById('sidenav-content'), 'scroll').subscribe(event =>
+        this.sidenavService.passScrollEvent(event));
+    }, 100);
   }
 
 }

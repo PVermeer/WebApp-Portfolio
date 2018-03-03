@@ -2,11 +2,13 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import { SidenavService } from '../_services/sidenav.service';
 import { SidenavContent, MatToggle, MatToggleExp } from '../_models/sidenav';
+import { CssAnimateInviewService } from '../_services/css-animate-inview.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  providers: [CssAnimateInviewService],
 })
 export class HomeComponent implements OnInit, AfterViewInit {
 
@@ -15,7 +17,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private expansionToggle: MatToggleExp = 'home';
 
   // Filler content
-  public fillerContent = Array(20).fill(0).map(() =>
+  public fillerContent = Array(10).fill(0).map(() =>
     `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
      laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
@@ -26,13 +28,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private sidenavContent: SidenavContent[] = [{
     title: 'Home',
     items: [
-      { label: 'Something', path: '18' },
-      { label: 'Something else', path: '2' },
+      { label: 'Something', path: '9' },
+      { label: 'Something else', path: '1' },
     ],
   }];
 
   constructor(
     private sidenavService: SidenavService,
+    private cssAnimateInviewService: CssAnimateInviewService,
   ) { }
 
   ngOnInit() {
@@ -42,7 +45,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    // Sidenav config
     this.sidenavService.passSidenavToggle(this.sidenavToggle);
+
+    // Subscribe to scroll events and add class when in view
+    this.sidenavService.scrollEvent$.subscribe(scrollEvent => {
+      this.cssAnimateInviewService.elementInView();
+    });
+    // Run the service once AfterViewInit
+    this.cssAnimateInviewService.elementInView();
   }
 
 }
