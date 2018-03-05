@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, data: { state: 'home'} },
   { path: 'about', component: AboutComponent, data: { state: 'about'} },
   { path: 'login', component: LoginComponent, data: { state: 'login'} },
+  { path: '**', redirectTo: 'home', pathMatch: 'full' }, // All other routes
 ];
 // use with <a routerLink="/ROUTE">someLink</a>
 
