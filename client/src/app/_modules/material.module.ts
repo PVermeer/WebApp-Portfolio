@@ -2,9 +2,8 @@ import { NgModule } from '@angular/core';
 
 import {
   MatButtonModule, MatToolbarModule, MatSidenavModule, MatIconModule, MatListModule, MatExpansionModule,
-  MatTabsModule,
-  MatCardModule,
-  MatSlideToggleModule,
+  MatTabsModule, MatCardModule, MatSlideToggleModule, MatProgressBarModule, MatFormFieldModule, MatDialogModule,
+  MatInputModule,
 } from '@angular/material';
 
 // Add here for auto import and adding to NgModule
@@ -18,6 +17,10 @@ const matModules = [
   MatTabsModule,
   MatCardModule,
   MatSlideToggleModule,
+  MatProgressBarModule,
+  MatFormFieldModule,
+  MatDialogModule,
+  MatInputModule
 ];
 
 @NgModule({

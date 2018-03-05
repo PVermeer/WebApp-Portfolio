@@ -1,0 +1,52 @@
+<mat-card>
+  <mat-progress-bar mode="indeterminate" *ngIf="progressBar"></mat-progress-bar>
+    <mat-card-header>
+      <h3>Contactformulier</h3>
+    </mat-card-header>
+    <mat-card-content>
+  
+      <form [formGroup]="contactForm" (ngSubmit)="postForm(contactForm.value)">
+  
+        <mat-form-field>
+          <input matInput type="text" formControlName="name" placeholder="Naam...">
+          <mat-error *ngIf="!contactForm.controls['name'].valid && contactForm.controls['name'].touched">
+            {{ nameAlert }}
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <input matInput formControlName="email" placeholder="Email">
+          <mat-error *ngIf="!contactForm.controls['email'].valid && contactForm.controls['email'].touched">
+            {{ emailAlert }}
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <input matInput type="text" formControlName="subject" placeholder="Onderwerp...">
+          <mat-error *ngIf="!contactForm.controls['subject'].valid && contactForm.controls['subject'].touched">
+            {{ subjectAlert }}
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <textarea matInput type="text" formControlName="message" placeholder="Bericht..."
+            matTextareaAutosize matAutosizeMinRows="5"></textarea>
+          <mat-error *ngIf="!contactForm.controls['message'].valid && contactForm.controls['message'].touched">
+            {{ messageAlert }}
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field id="lname">
+          <input matInput type="text" formControlName="lname" placeholder="Last name...">
+          <mat-error *ngIf="!contactForm.controls['lname'].valid && contactForm.controls['lname'].touched">
+            {{ lnameAlert }}
+          </mat-error>
+        </mat-form-field>
+        <br>
+        <div id="center-container">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!contactForm.valid">Verzenden</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  

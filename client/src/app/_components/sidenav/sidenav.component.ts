@@ -31,6 +31,7 @@ export class SidenavComponent implements OnDestroy {
     items: [
       { label: 'Home', path: 'home' },
       { label: 'About', path: 'about' },
+      { label: 'Contact', path: 'contact' },
     ],
   }];
 
