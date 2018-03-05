@@ -1,0 +1,103 @@
+<section>
+  <div class="container">
+    <mat-card>
+      <mat-progress-bar mode="indeterminate" *ngIf="progressBar"></mat-progress-bar>
+      <mat-card-header>
+        <h3>{{title}}</h3>
+      </mat-card-header>
+      <mat-card-content>
+
+        <mat-tab-group>
+          <mat-tab label="Login">
+            <br>
+            <form id="login-form" [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)">
+              <mat-form-field>
+                <input matInput type="text" formControlName="nameEmail" [placeholder]="userNameEmail">
+                <mat-error *ngIf="!loginForm.controls['nameEmail'].valid && loginForm.controls['nameEmail'].touched">
+                  {{ nameAlert }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field>
+                <input type="password" matInput formControlName="password" [placeholder]="password">
+                <mat-error *ngIf="!loginForm.controls['password'].valid && loginForm.controls['password'].touched">
+                  {{ emailAlert }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field id="lname">
+                <input matInput type="text" formControlName="lname" placeholder="Last name...">
+                <mat-error *ngIf="!loginForm.controls['lname'].valid && loginForm.controls['lname'].touched">
+                  {{ lnameAlert }}
+                </mat-error>
+              </mat-form-field>
+              <br>
+              <div id="center-container">
+                <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">Login</button>
+              </div>
+            </form>
+          </mat-tab>
+
+          <mat-tab label="Register">
+            <br>
+            <form id="login-form" [formGroup]="registerForm" (ngSubmit)="register(registerForm.value)">
+              <mat-form-field>
+                <input matInput type="text" formControlName="firstName" [placeholder]="firstName">
+                <mat-error *ngIf="!registerForm.controls['firstName'].valid && registerForm.controls['firstName'].touched">
+                  {{ nameAlert }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field>
+                <input matInput type="text" formControlName="lastName" [placeholder]="lastName">
+                <mat-error *ngIf="!registerForm.controls['lastName'].valid && registerForm.controls['lastName'].touched">
+                  {{ nameAlert }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field>
+                <input matInput type="text" formControlName="userName" [placeholder]="userName">
+                <mat-error *ngIf="!registerForm.controls['userName'].valid && registerForm.controls['userName'].touched">
+                  {{ nameAlert }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field>
+                <input matInput type="text" formControlName="email" [placeholder]="email">
+                <mat-error *ngIf="!registerForm.controls['email'].valid && registerForm.controls['email'].touched">
+                  {{ emailAlert }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field>
+                <input type="password" matInput formControlName="password" [placeholder]="password">
+                <mat-error *ngIf="!registerForm.controls['password'].valid && registerForm.controls['password'].touched">
+                  {{ passwordAlert }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field>
+                <input type="password" matInput formControlName="passwordConfirm" [placeholder]="passwordConfirm">
+                <mat-error *ngIf="!registerForm.controls['passwordConfirm'].valid && registerForm.controls['passwordConfirm'].touched">
+                  {{ passwordConfirmAlert }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field id="lname">
+                <input matInput type="text" formControlName="lname" placeholder="Last name...">
+                <mat-error *ngIf="!registerForm.controls['lname'].valid && registerForm.controls['lname'].touched">
+                  {{ lnameAlert }}
+                </mat-error>
+              </mat-form-field>
+              <br>
+              <div id="center-container">
+                <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.valid">Register</button>
+              </div>
+            </form>
+          </mat-tab>
+
+        </mat-tab-group>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</section>

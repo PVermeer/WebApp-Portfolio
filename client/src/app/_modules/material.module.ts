@@ -5,6 +5,10 @@ import {
   MatTabsModule,
   MatCardModule,
   MatSlideToggleModule,
+  MatFormField,
+  MatProgressBarModule,
+  MatFormFieldModule,
+  MatInputModule,
 } from '@angular/material';
 
 // Add here for auto import and adding to NgModule
@@ -18,6 +22,9 @@ const matModules = [
   MatTabsModule,
   MatCardModule,
   MatSlideToggleModule,
+  MatFormFieldModule,
+  MatProgressBarModule,
+  MatInputModule,
 ];
 
 @NgModule({
