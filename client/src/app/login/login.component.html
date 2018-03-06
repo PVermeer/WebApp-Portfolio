@@ -58,7 +58,7 @@
               <mat-form-field>
                 <input matInput type="text" formControlName="userName" [placeholder]="userName">
                 <mat-error *ngIf="!registerForm.controls['userName'].valid && registerForm.controls['userName'].touched">
-                  {{ nameAlert }}
+                  {{ usernameAlert }}
                 </mat-error>
               </mat-form-field>
 
