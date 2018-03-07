@@ -11,27 +11,52 @@ export class LoginComponent {
 
   public title = 'Login';
 
-  // Placeholders
-  public firstName = 'First name';
-  public lastName = 'Last name';
-  public userName = 'User name';
-  public email = 'email';
-  public userNameEmail = 'Username or email';
-  public password = 'Password';
-  public passwordConfirm = 'Confirm password';
+  // NgFor login input fields
+  public loginFormInputfields = [
+    {
+      placeholder: 'Username or email',
+      formControlName: 'nameEmail',
+      alert: 'Required',
+    }, {
+      placeholder: 'Password',
+      formControlName: 'password',
+      alert: 'Minimal 8 characters',
+    },
+  ];
+
+  // NgFor login input fields
+  public registerFormInputfields = [
+    {
+      placeholder: 'First name',
+      formControlName: 'firstName',
+      alert: 'Required',
+    }, {
+      placeholder: 'Last name',
+      formControlName: 'lastName',
+      alert: 'Required',
+    }, {
+      placeholder: 'Username',
+      formControlName: 'userName',
+      alert: '3 - 15 Characters and no special characters',
+    }, {
+      placeholder: 'Email',
+      formControlName: 'email',
+      alert: 'Not a valid email address',
+    }, {
+      placeholder: 'Password',
+      formControlName: 'password',
+      alert: 'Minimal 8 characters',
+    }, {
+      placeholder: 'Confirm password',
+      formControlName: 'passwordConfirm',
+      alert: 'Passwords do not match',
+    },
+  ];
 
   // Variables
   public loginForm: FormGroup;
   public registerForm: FormGroup;
   public progressBar = false;
-
-  // Alerts
-  public nameAlert = 'Required';
-  public emailAlert = 'Not a valid email address';
-  public usernameAlert = '3 - 15 Characters and no special characters';
-  public passwordAlert = 'Minimal 8 characters';
-  public passwordConfirmAlert = 'Passwords do not match';
-  public lnameAlert = '';
 
   // Events
   public login(loginForm) {
