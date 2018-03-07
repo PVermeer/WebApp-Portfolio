@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 
-import { MatToggle, MatToggleExp, SidenavContent } from '../_models/sidenav';
+import { MatToggle, MatToggleExp, SidenavContent } from '../_models/sidenav.model';
 import { SidenavService } from '../_services/sidenav.service';
 
 @Component({
