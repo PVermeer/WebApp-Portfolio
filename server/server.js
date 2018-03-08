@@ -1,17 +1,19 @@
-// Modules
 const express = require('express');
 const path = require('path');
 const compression = require('compression');
+const bodyParser = require('body-parser');
 
+require('./database/connection');
 const users = require('./users/users');
 
 const app = express();
 
-// Local modules
-
 // Middleware
 app.use(compression());
 app.use(express.static(path.join(__dirname, '../client/dist')));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 
 // -----------------Routes--------------------
 

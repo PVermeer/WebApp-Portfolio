@@ -1,15 +1,11 @@
 const express = require('express');
+const expressJwt = require('express-jwt');
+
+const config = require('../config.json');
+const controller = require('./users.controller');
 
 const app = express();
 const router = express.Router();
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const expressJwt = require('express-jwt');
-const config = require('../config.json');
-
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 
 // use JWT auth to secure the api,
 // the token can be passed in the authorization header or querystring
@@ -26,7 +22,13 @@ app.use(expressJwt({
 }).unless({ path: ['/users/authenticate', '/users/register'] }));
 
 // routes
-router.use('/users', require('./users.controller'));
+router.post('/authenticate', controller.authenticate);
+router.post('/register', controller.register);
+router.get('/', controller.getAll);
+router.get('/:userName', controller.getUserName);
+router.get('/current', controller.getCurrent);
+router.put('/:_id', controller.update);
+router.delete('/:_id', controller._delete); // eslint-disable-line no-underscore-dangle
 
 module.exports = router;
 

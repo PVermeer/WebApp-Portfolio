@@ -1,40 +1,37 @@
-const config = require('../config.json');
 const _ = require('lodash');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Q = require('q');
 const mongo = require('mongoskin');
+// const mongoose = require('mongoose');
 
-const db = mongo.db(config.connectionString, {
-  native_parser: true,
-});
-
-db.bind('users');
-
+const db = '';
 const service = {};
 const deferred = Q.defer();
 
-function authenticate(username, password) {
-  db.users.findOne({ username }, (err, user) => {
-    if (err) { deferred.reject(`${err.name}: ${err.message}`); }
-    // authentication successful
-    if (user && bcrypt.compareSync(password, user.hash)) {
-      deferred.resolve({
-        _id: user._id,
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        token: jwt.sign({
-          sub: user._id,
-        }, config.secret),
-      });
-    } else {
-      // authentication failed
-      deferred.resolve();
-    }
-  });
-  return deferred.promise;
-}
+const User = require('../database/models/user');
+
+// function authenticate(username, password) {
+//   db.users.findOne({ username }, (err, user) => {
+//     if (err) { deferred.reject(`${err.name}: ${err.message}`); }
+//     // authentication successful
+//     if (user && bcrypt.compareSync(password, user.hash)) {
+//       deferred.resolve({
+//         _id: user._id,
+//         username: user.username,
+//         firstName: user.firstName,
+//         lastName: user.lastName,
+//         token: jwt.sign({
+//           sub: user._id,
+//         }, config.secret),
+//       });
+//     } else {
+//       // authentication failed
+//       deferred.resolve();
+//     }
+//   });
+//   return deferred.promise;
+// }
 
 function getAll() {
   db.users.find().toArray((err, users) => {
@@ -60,29 +57,35 @@ function getById(_id) {
   return deferred.promise;
 }
 
-function create(userParam) {
-  function createUser() {
-    // set user object to userParam without the cleartext password
-    const user = _.omit(userParam, 'password');
-    // add hashed password to user object
-    user.hash = bcrypt.hashSync(userParam.password, 10);
-    db.users.insert(user, (err) => {
-      if (err) deferred.reject(`${err.name}: ${err.message}`);
-      deferred.resolve();
+function getByUsername(input) {
+  return new Promise((resolve, reject) => {
+    const userName = input.trim().toLowerCase();
+    User.findOne({ userNameIndex: userName }, (error, user) => {
+      if (error) { reject(error); }
+      if (!user) { resolve(null); }
+      if (user) { resolve(user.userNameIndex); }
     });
-  }
-
-  // validation
-  db.users.findOne({ username: userParam.username }, (err, user) => {
-    if (err) deferred.reject(`${err.name}: ${err.message}`);
-    // username already exists
-    if (user) {
-      deferred.reject(`Username "${userParam.username}" is already taken`);
-    } else {
-      createUser();
-    }
   });
-  return deferred.promise;
+}
+
+function create(userParam) {
+  return new Promise((resolve, reject) => {
+    function createUser() {
+      const user = userParam;
+      user.hash = bcrypt.hashSync(userParam.password, 10);
+      User(user).save((error) => {
+        if (error) reject(error);
+        resolve();
+      });
+    }
+    createUser();
+    // validation
+    // User.findOne({ username: userParam.username }, (error, user) => {
+    //   if (error) reject(error);
+    //   if (user) reject(error);
+    //   else createUser();
+    // });
+  });
 }
 
 function update(_id, userParam) {
@@ -135,9 +138,10 @@ function _delete(_id) {
 }
 /* eslint-enable no-underscore-dangle */
 
-service.authenticate = authenticate;
+// service.authenticate = authenticate;
 service.getAll = getAll;
 service.getById = getById;
+service.getByUsername = getByUsername;
 service.create = create;
 service.update = update;
 service.delete = _delete;

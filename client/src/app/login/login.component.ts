@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { usernameValidator, passwordValidator, matchValidator } from '../_models/validators';
+import { FormGroup, Validators, FormBuilder, ValidatorFn, AbstractControl, FormControl, ValidationErrors } from '@angular/forms';
+import { usernameValidator, passwordValidator, matchValidator, userNameAsyncValidator } from '../_models/validators';
+import { Router } from '@angular/router';
+import { UserService } from '../_services/user.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  providers: [UserService],
 })
 export class LoginComponent {
 
@@ -63,50 +66,77 @@ export class LoginComponent {
     console.log(loginForm);
   }
 
-  public register(loginForm) {
-    console.log(loginForm);
+  public register(registerForm) {
+    this.progressBar = true;
+    const userNameIndex = registerForm.userName;
+    registerForm.userNameIndex = userNameIndex;
+    this.userService.create(registerForm)
+      .subscribe(data => {
+        console.log('Registration successful');
+        this.progressBar = false;
+        // this.router.navigate(['/login']);
+      },
+        error => {
+          console.log(error);
+          this.progressBar = false;
+        });
   }
+
+  checkForm() {
+    console.log(this.registerForm.controls['userName']);
+  }
+
 
   constructor(
     private formBuilder: FormBuilder,
+    private router: Router,
+    private userService: UserService,
   ) {
     // Form validation
     this.loginForm = this.validateLogin();
     this.registerForm = this.validateRegister();
   }
 
-  // ---------------------------------------------------------------------------
+  // -----------------Constructor methods------------------------
 
-  // Constructor methods
+  // Standard validations
   private validateLogin() {
     return this.formBuilder.group({
-      nameEmail: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
-      password: [null, Validators.compose([Validators.required, Validators.minLength(8)])],
-      lname: [null, Validators.compose([Validators.maxLength(0)])],
+      nameEmail: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      password: [null, [Validators.required, Validators.minLength(8)]],
+      lname: [null, [Validators.maxLength(0)]],
     });
   }
 
   private validateRegister() {
     return this.formBuilder.group({
-      firstName: [null, Validators.compose([Validators.required, Validators.minLength(2), Validators.maxLength(50)])],
+      firstName: [null, [
+        Validators.required, Validators.minLength(2),
+        Validators.maxLength(50)
+      ]],
 
-      lastName: [null, Validators.compose([Validators.required, Validators.minLength(2), Validators.maxLength(50)])],
+      lastName: [null, [
+        Validators.required, Validators.minLength(2),
+        Validators.maxLength(50)
+      ]],
 
-      userName: [null, Validators.compose([
-        Validators.required, usernameValidator({ noSpecialCharacters: true, minLength: 3, maxLength: 15 })
-      ])],
+      userName: [null, [
+        Validators.required,
+        usernameValidator({ noSpecialCharacters: true, minLength: 3, maxLength: 15 }),
+      ], [userNameAsyncValidator({ debounceTime: 500, service: this.userService })]
+      ],
 
-      email: [null, Validators.compose([Validators.required, Validators.email])],
+      email: [null, [Validators.required, Validators.email]],
 
-      lname: [null, Validators.compose([Validators.maxLength(0)])],
+      lname: [null, [Validators.maxLength(0)]],
 
-      password: [null, Validators.compose([
+      password: [null, [
         Validators.required, passwordValidator({ minLength: 8, maxLength: 20 })
-      ])],
+      ]],
 
-      passwordConfirm: [null, Validators.compose([
+      passwordConfirm: [null, [
         Validators.required, matchValidator('password')
-      ])],
+      ]],
     });
   }
 

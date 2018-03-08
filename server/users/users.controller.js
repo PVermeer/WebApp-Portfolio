@@ -1,9 +1,9 @@
-const express = require('express');
+// const express = require('express');
 
-const router = express.Router();
+// const router = express.Router();
 const userService = require('./users.service');
 
-function authenticate(req, res) {
+exports.authenticate = (req, res) => {
   userService.authenticate(req.body.username, req.body.password)
     .then((user) => {
       if (user) {
@@ -15,49 +15,49 @@ function authenticate(req, res) {
       }
     })
     .catch((err) => { res.status(400).send(err); });
-}
+};
 
-function register(req, res) {
+exports.register = (req, res) => {
   userService.create(req.body)
-    .then(() => { res.json('success'); })
-    .catch((err) => { res.status(400).send(err); });
-}
+    .then(() => {
+      res.json('success');
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+};
 
-function getAll(req, res) {
+exports.getAll = (req, res) => {
   userService.getAll()
     .then((users) => { res.send(users); })
     .catch((err) => { res.status(400).send(err); });
-}
+};
 
-function getCurrent(req, res) {
+exports.getUserName = (req, res) => {
+  userService.getByUsername(req.params.userName)
+    .then((user) => { res.json(user); })
+    .catch((err) => { res.status(400).send(err); });
+};
+
+exports.getCurrent = (req, res) => {
   userService.getById(req.user.sub)
     .then((user) => {
       if (user) { res.send(user); } else { res.sendStatus(404); }
     })
     .catch((err) => { res.status(400).send(err); });
-}
+};
 
-function update(req, res) {
+exports.update = (req, res) => {
   userService.update(req.params._id, req.body)
     .then(() => { res.json('success'); })
     .catch((err) => { res.status(400).send(err); });
-}
+};
 
 // Remove later after testing
 /* eslint-disable no-underscore-dangle */
-function _delete(req, res) {
+exports._delete = (req, res) => {
   userService.delete(req.params._id)
     .then(() => { res.json('success'); })
     .catch((err) => { res.status(400).send(err); });
-}
+};
 /* eslint-enable no-underscore-dangle */
-
-// routes
-router.post('/authenticate', authenticate);
-router.post('/register', register);
-router.get('/', getAll);
-router.get('/current', getCurrent);
-router.put('/:_id', update);
-router.delete('/:_id', _delete);
-
-module.exports = router;
