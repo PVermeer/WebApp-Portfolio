@@ -19,11 +19,15 @@ export class LoginComponent {
     {
       placeholder: 'Username or email',
       formControlName: 'nameEmail',
-      alert: 'Required',
+      type: 'text',
+      alert: '3 - 50 Characters',
+      asyncAlert: '',
     }, {
       placeholder: 'Password',
       formControlName: 'password',
-      alert: 'Minimal 8 characters',
+      type: 'password',
+      alert: '8 -50 Characters',
+      asyncAlert: '',
     },
   ];
 
@@ -32,27 +36,39 @@ export class LoginComponent {
     {
       placeholder: 'First name',
       formControlName: 'firstName',
-      alert: 'Required',
+      type: 'text',
+      alert: '1 - 50 Characters',
+      asyncAlert: '',
     }, {
       placeholder: 'Last name',
       formControlName: 'lastName',
-      alert: 'Required',
+      type: 'text',
+      alert: '1 - 50 Characters',
+      asyncAlert: '',
     }, {
       placeholder: 'Username',
       formControlName: 'userName',
-      alert: '3 - 15 Characters and no special characters',
+      type: 'text',
+      alert: '3 - 50 Characters and no special characters',
+      asyncAlert: 'Username is already taken :(',
     }, {
       placeholder: 'Email',
       formControlName: 'email',
+      type: 'text',
       alert: 'Not a valid email address',
+      asyncAlert: '',
     }, {
       placeholder: 'Password',
       formControlName: 'password',
-      alert: 'Minimal 8 characters',
+      type: 'password',
+      alert: '8 -50 Characters',
+      asyncAlert: '',
     }, {
       placeholder: 'Confirm password',
       formControlName: 'passwordConfirm',
+      type: 'password',
       alert: 'Passwords do not match',
+      asyncAlert: '',
     },
   ];
 
@@ -60,6 +76,7 @@ export class LoginComponent {
   public loginForm: FormGroup;
   public registerForm: FormGroup;
   public progressBar = false;
+  public userNameExists = false;
 
   // Events
   public login(loginForm) {
@@ -82,10 +99,6 @@ export class LoginComponent {
         });
   }
 
-  checkForm() {
-    console.log(this.registerForm.controls['userName']);
-  }
-
 
   constructor(
     private formBuilder: FormBuilder,
@@ -95,6 +108,11 @@ export class LoginComponent {
     // Form validation
     this.loginForm = this.validateLogin();
     this.registerForm = this.validateRegister();
+    // this.userNameCheck();
+  }
+
+  click() {
+    console.log(this.registerForm.controls.userName);
   }
 
   // -----------------Constructor methods------------------------
@@ -103,39 +121,49 @@ export class LoginComponent {
   private validateLogin() {
     return this.formBuilder.group({
       nameEmail: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      password: [null, [Validators.required, Validators.minLength(8)]],
-      lname: [null, [Validators.maxLength(0)]],
+      password: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(50)]],
+      lname: [null, [Validators.maxLength(50)]],
     });
   }
 
   private validateRegister() {
     return this.formBuilder.group({
       firstName: [null, [
-        Validators.required, Validators.minLength(2),
+        Validators.required, Validators.minLength(1),
         Validators.maxLength(50)
       ]],
 
       lastName: [null, [
-        Validators.required, Validators.minLength(2),
-        Validators.maxLength(50)
+        Validators.required,
+        Validators.minLength(1),
+        Validators.maxLength(50),
       ]],
 
       userName: [null, [
         Validators.required,
-        usernameValidator({ noSpecialCharacters: true, minLength: 3, maxLength: 15 }),
-      ], [userNameAsyncValidator({ debounceTime: 500, service: this.userService })]
+        usernameValidator({ noSpecialCharacters: true, minLength: 3, maxLength: 50 }),
+      ], [
+          userNameAsyncValidator({ debounceTime: 500, service: this.userService }),
+        ]
       ],
 
-      email: [null, [Validators.required, Validators.email]],
+      email: [null, [
+        Validators.required,
+        Validators.email]],
 
-      lname: [null, [Validators.maxLength(0)]],
+      lname: [null, [
+        Validators.maxLength(50),
+      ]],
 
       password: [null, [
-        Validators.required, passwordValidator({ minLength: 8, maxLength: 20 })
+        Validators.required,
+        passwordValidator({ minLength: 8, maxLength: 50 }),
       ]],
 
       passwordConfirm: [null, [
-        Validators.required, matchValidator('password')
+        Validators.required,
+        passwordValidator({ minLength: 8, maxLength: 50 }),
+        matchValidator('password'),
       ]],
     });
   }

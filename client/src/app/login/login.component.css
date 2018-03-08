@@ -22,11 +22,11 @@ mat-form-field {
   flex: 1;
 }
 
-#lname {
+.lname {
   display: none;
 }
 
-#center-container {
+.center-container {
   display: flex;
   flex-direction: column;
   align-items: center;

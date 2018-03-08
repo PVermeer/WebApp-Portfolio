@@ -10,23 +10,26 @@
         <mat-tab-group>
           <mat-tab label="Login">
             <br>
-            <form id="login-form" [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)">
+            <form [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)">
 
               <mat-form-field *ngFor="let field of loginFormInputfields">
-                <input matInput type="text" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
+                <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
                 <mat-error *ngIf="!loginForm.controls[field.formControlName].valid && (loginForm.controls[field.formControlName].touched || loginForm.controls[field.formControlName].dirty)">
                   {{ field.alert }}
                 </mat-error>
+                <mat-error *ngIf="(loginForm.controls[field.formControlName].errors | json | slice:5:6) === '0' && (loginForm.controls[field.formControlName].touched || loginForm.controls[field.formControlName].dirty)">
+                  {{ field.asyncAlert }}
+                </mat-error>
               </mat-form-field>
 
-              <mat-form-field id="lname">
+              <mat-form-field class="lname">
                 <input matInput type="text" formControlName="lname" placeholder="Last name...">
                 <mat-error *ngIf="!loginForm.controls['lname'].valid && loginForm.controls['lname'].touched">
                 </mat-error>
               </mat-form-field>
 
               <br>
-              <div id="center-container">
+              <div class="center-container">
                 <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">Login</button>
               </div>
 
@@ -35,24 +38,27 @@
 
           <mat-tab label="Register">
             <br>
-            <form id="login-form" [formGroup]="registerForm" (ngSubmit)="register(registerForm.value)">
+            <form [formGroup]="registerForm" (ngSubmit)="register(registerForm.value)">
 
               <mat-form-field *ngFor="let field of registerFormInputfields">
-                <input matInput type="text" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
-                <mat-error *ngIf="!registerForm.controls[field.formControlName].valid && (registerForm.controls[field.formControlName].touched || registerForm.controls[field.formControlName].dirty)">
+                <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
+                <mat-error *ngIf="(registerForm.controls[field.formControlName].errors | json | slice:5:6) !== '0' && !registerForm.controls[field.formControlName].valid && (registerForm.controls[field.formControlName].touched || registerForm.controls[field.formControlName].dirty)">
                   {{ field.alert }}
+                </mat-error>
+                <mat-error *ngIf="(registerForm.controls[field.formControlName].errors | json | slice:5:6) === '0' && (registerForm.controls[field.formControlName].touched || registerForm.controls[field.formControlName].dirty)">
+                  {{ field.asyncAlert }}
                 </mat-error>
               </mat-form-field>
 
-              <mat-form-field id="lname">
+              <mat-form-field class="lname">
                 <input matInput type="text" formControlName="lname" placeholder="Last name...">
                 <mat-error *ngIf="!registerForm.controls['lname'].valid && registerForm.controls['lname'].touched">
                 </mat-error>
               </mat-form-field>
 
               <br>
-              <div id="center-container">
-                <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.valid">Register</button>
+              <div class="center-container">
+                <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.valid || userNameExists">Register</button>
               </div>
 
             </form>

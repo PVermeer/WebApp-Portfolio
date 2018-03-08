@@ -8,13 +8,13 @@ export interface UserNameAsyncValidatorOptions {
   service: any;
 }
 
-  /**
-   * Takes 2 arguments: debounceTime, service.
-   * - Debounce time in ms.
-   * - Service to be used to connect to external.
-   * E.g. userNameAsyncValidator({debounceTime: 500, service: this.userService})
-   * Use in the Angular reactive forms aSync validator array (third in array).
-  */
+/**
+ * Takes 2 arguments: debounceTime, service.
+ * - Debounce time in ms.
+ * - Service to be used to connect to external.
+ * E.g. userNameAsyncValidator({debounceTime: 500, service: this.userService})
+ * Use in the Angular reactive forms aSync validator array (third in array).
+*/
 export function userNameAsyncValidator(options: UserNameAsyncValidatorOptions) {
 
   const validator = new UsernameAsyncValidator(options);
@@ -38,8 +38,7 @@ export class UsernameAsyncValidator {
       });
     }
     return Observable.timer(this.options.debounceTime).switchMap(() => {
-      const userName = value;
-      const input = userName.toLowerCase().trim();
+      const input = value.toLowerCase().trim();
       return this.options.service.getByUserName(input);
     });
   }
