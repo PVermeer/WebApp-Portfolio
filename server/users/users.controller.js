@@ -33,7 +33,7 @@ exports.getAll = (req, res) => {
     .catch((err) => { res.status(400).send(err); });
 };
 
-exports.getUserName = (req, res) => {
+exports.getUsername = (req, res) => {
   userService.getByUsername(req.params.userName)
     .then((user) => { res.json(user); })
     .catch((err) => { res.status(400).send(err); });

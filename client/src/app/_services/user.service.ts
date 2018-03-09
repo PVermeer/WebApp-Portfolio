@@ -20,8 +20,10 @@ export class UserService {
     return this.http.get('/users/' + _id);
   }
 
-  public getByUserName(userName: string): Observable<any> {
-    return this.http.get('/users/' + userName, httpOptions);
+  public checkUsername(username: string): Observable<any> {
+    return this.http.get('/users/check?username=' + username, httpOptions);
+  }
+
   }
 
   public create(user: User) {

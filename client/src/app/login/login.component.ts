@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, ValidatorFn, AbstractControl, FormControl, ValidationErrors } from '@angular/forms';
-import { usernameValidator, passwordValidator, matchValidator, userNameAsyncValidator } from '../_models/validators';
+  usernameAsyncValidator,  
 import { Router } from '@angular/router';
 import { UserService } from '../_services/user.service';
 
@@ -31,43 +31,43 @@ export class LoginComponent {
     },
   ];
 
-  // NgFor login input fields
+  // NgFor register input fields
   public registerFormInputfields = [
     {
       placeholder: 'First name',
       formControlName: 'firstName',
       type: 'text',
-      alert: '1 - 50 Characters',
+      alert: '1 - 50 Characters, pretty please.',
       asyncAlert: '',
     }, {
       placeholder: 'Last name',
       formControlName: 'lastName',
       type: 'text',
-      alert: '1 - 50 Characters',
+      alert: '1 - 50 Characters, pretty please.',
       asyncAlert: '',
     }, {
       placeholder: 'Username',
-      formControlName: 'userName',
+      formControlName: 'username',
       type: 'text',
-      alert: '3 - 50 Characters and no special characters',
+      alert: '3 - 50 Characters and no special characters, thanks!',
       asyncAlert: 'Username is already taken :(',
     }, {
       placeholder: 'Email',
       formControlName: 'email',
       type: 'text',
-      alert: 'Not a valid email address',
-      asyncAlert: '',
+      alert: 'Not a valid e-mail address',
+      asyncAlert: 'E-mail already exists, you\'re not new!',
     }, {
       placeholder: 'Password',
       formControlName: 'password',
       type: 'password',
-      alert: '8 -50 Characters',
+      alert: '8 -50 Characters, pretty please.',
       asyncAlert: '',
     }, {
       placeholder: 'Confirm password',
       formControlName: 'passwordConfirm',
       type: 'password',
-      alert: 'Passwords do not match',
+      alert: 'Oh ow, passwords do not match',
       asyncAlert: '',
     },
   ];
@@ -76,7 +76,6 @@ export class LoginComponent {
   public loginForm: FormGroup;
   public registerForm: FormGroup;
   public progressBar = false;
-  public userNameExists = false;
 
   // Events
   public login(loginForm) {
@@ -85,8 +84,8 @@ export class LoginComponent {
 
   public register(registerForm) {
     this.progressBar = true;
-    const userNameIndex = registerForm.userName;
-    registerForm.userNameIndex = userNameIndex;
+    const usernameIndex = registerForm.username;
+    registerForm.usernameIndex = usernameIndex;
     this.userService.create(registerForm)
       .subscribe(data => {
         console.log('Registration successful');
@@ -99,7 +98,6 @@ export class LoginComponent {
         });
   }
 
-
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
@@ -108,11 +106,6 @@ export class LoginComponent {
     // Form validation
     this.loginForm = this.validateLogin();
     this.registerForm = this.validateRegister();
-    // this.userNameCheck();
-  }
-
-  click() {
-    console.log(this.registerForm.controls.userName);
   }
 
   // -----------------Constructor methods------------------------
@@ -139,11 +132,11 @@ export class LoginComponent {
         Validators.maxLength(50),
       ]],
 
-      userName: [null, [
+      username: [null, [
         Validators.required,
         usernameValidator({ noSpecialCharacters: true, minLength: 3, maxLength: 50 }),
       ], [
-          userNameAsyncValidator({ debounceTime: 500, service: this.userService }),
+          usernameAsyncValidator({ debounceTime: 500, service: this.userService }),
         ]
       ],
 

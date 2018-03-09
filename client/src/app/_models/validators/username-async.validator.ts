@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/switchMap';
 
-export interface UserNameAsyncValidatorOptions {
+export interface UsernameAsyncValidatorOptions {
   debounceTime: number;
   service: any;
 }
@@ -12,10 +12,10 @@ export interface UserNameAsyncValidatorOptions {
  * Takes 2 arguments: debounceTime, service.
  * - Debounce time in ms.
  * - Service to be used to connect to external.
- * E.g. userNameAsyncValidator({debounceTime: 500, service: this.userService})
+ * E.g. usernameAsyncValidator({debounceTime: 500, service: this.userService})
  * Use in the Angular reactive forms aSync validator array (third in array).
 */
-export function userNameAsyncValidator(options: UserNameAsyncValidatorOptions) {
+export function usernameAsyncValidator(options: UsernameAsyncValidatorOptions) {
 
   const validator = new UsernameAsyncValidator(options);
 
@@ -28,7 +28,7 @@ export function userNameAsyncValidator(options: UserNameAsyncValidatorOptions) {
 export class UsernameAsyncValidator {
 
   constructor(
-    private options: UserNameAsyncValidatorOptions,
+    private options: UsernameAsyncValidatorOptions,
   ) { }
 
   usernameValidator(value) {
@@ -39,7 +39,7 @@ export class UsernameAsyncValidator {
     }
     return Observable.timer(this.options.debounceTime).switchMap(() => {
       const input = value.toLowerCase().trim();
-      return this.options.service.getByUserName(input);
+      return this.options.service.checkUsername(input);
     });
   }
 }

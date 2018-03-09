@@ -14,12 +14,12 @@ const UserSchema = new Schema({
     trim: true,
     required: true,
   },
-  userName: {
+  username: {
     type: String,
     trim: true,
     required: true,
   },
-  userNameIndex: {
+  usernameIndex: {
     type: String,
     lowercase: true,
     trim: true,
