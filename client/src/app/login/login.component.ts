@@ -84,11 +84,15 @@ export class LoginComponent {
 
   public register(registerForm) {
     this.progressBar = true;
+
+    // Create username index
     const usernameIndex = registerForm.username;
     registerForm.usernameIndex = usernameIndex;
+
+    // Create user
     this.userService.create(registerForm)
       .subscribe(data => {
-        console.log('Registration successful');
+        console.log(data);
         this.progressBar = false;
         // this.router.navigate(['/login']);
       },

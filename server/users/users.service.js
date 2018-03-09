@@ -85,23 +85,31 @@ function checkExistence(query) {
   });
 }
 
-function create(userParam) {
+function create(userForm) {
   return new Promise((resolve, reject) => {
-    function createUser() {
-      const user = userParam;
-      user.hash = bcrypt.hashSync(userParam.password, 10);
-      User(user).save((error) => {
-        if (error) reject(error);
-        resolve();
-      });
-    }
-    createUser();
-    // validation
-    // User.findOne({ username: userParam.username }, (error, user) => {
-    //   if (error) reject(error);
-    //   if (user) reject(error);
-    //   else createUser();
-    // });
+    const username = { username: userForm.username };
+    const email = { email: userForm.email };
+    const duplicateError = 'Username / Email already exists';
+    const successMsg = 'Whoopie, registration successful!';
+
+    // Check for duplicates in case client validation fails
+    const promiseArray = [
+      checkExistence(username),
+      checkExistence(email),
+    ];
+
+    // Check for null resolves
+    Promise.all(promiseArray).then((values) => {
+      if (values.every(x => x === null)) {
+        // Create new User
+        const user = userForm;
+        user.hash = bcrypt.hashSync(userForm.password, 10);
+        User(user).save((error) => {
+          if (error) reject(error);
+          resolve(successMsg);
+        });
+      } else reject(duplicateError);
+    });
   });
 }
 

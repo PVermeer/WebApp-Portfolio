@@ -19,12 +19,8 @@ exports.authenticate = (req, res) => {
 
 exports.register = (req, res) => {
   userService.create(req.body)
-    .then(() => {
-      res.json('success');
-    })
-    .catch((err) => {
-      res.status(400).send(err);
-    });
+    .then((response) => { res.json(response); })
+    .catch((err) => { res.status(400).send(err); });
 };
 
 exports.getAll = (req, res) => {
