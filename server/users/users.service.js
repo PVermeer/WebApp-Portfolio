@@ -57,31 +57,31 @@ function getById(_id) {
   return deferred.promise;
 }
 
-// /user?check query
+// /check query string
 function checkExistence(query) {
   return new Promise((resolve, reject) => {
-
-    const key = Object.keys(query);
-    const switchError = 'Whoops, no matching query... :(';
-
-    switch (key[0]) {
-      case 'username':
-        User.findOne({ usernameIndex: query.username }, (error, user) => {
-          if (!user) { resolve(null); }
-          if (user) { resolve(user.usernameIndex); }
-          if (error) { reject(error); }
-        });
-        break;
-      case 'email':
-        User.findOne({ email: query.email }, (error, user) => {
-          if (!user) { resolve(null); }
+    const matchError = 'Whoops, not a matching query string... :(';
+    if (query.username) {
+      return User.findOne(
+        { usernameIndex: query.username },
+        { usernameIndex: 1, _id: 0 }, (error, user) => {
+          if (!user) resolve(null);
+          if (user) resolve(user.usernameIndex);
+          if (error) reject(error);
+        },
+      );
+    }
+    if (query.email) {
+      return User.findOne(
+        { email: query.email },
+        { email: 1, _id: 0 }, (error, user) => {
+          if (!user) resolve(null);
           if (user) { resolve(user.email); }
           if (error) { reject(error); }
-        });
-        break;
-      default:
-        reject(switchError);
+        },
+      );
     }
+    reject(matchError);
   });
 }
 
