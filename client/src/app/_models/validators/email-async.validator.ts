@@ -33,9 +33,7 @@ export class EmailAsyncValidator {
 
   emailValidator(value) {
     if (!value) {
-      return new Promise((resolve) => {
-        resolve(null);
-      });
+      return Promise.resolve(null);
     }
     return Observable.timer(this.options.debounceTime).switchMap(() => {
       const input = value.toLowerCase().trim();

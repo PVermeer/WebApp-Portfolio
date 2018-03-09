@@ -76,12 +76,12 @@ function checkExistence(query) {
         { email: query.email },
         { email: 1, _id: 0 }, (error, user) => {
           if (!user) resolve(null);
-          if (user) { resolve(user.email); }
-          if (error) { reject(error); }
+          if (user) resolve(user.email);
+          if (error) reject(error);
         },
       );
     }
-    reject(matchError);
+    return reject(matchError);
   });
 }
 
