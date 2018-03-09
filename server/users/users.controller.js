@@ -33,8 +33,8 @@ exports.getAll = (req, res) => {
     .catch((err) => { res.status(400).send(err); });
 };
 
-exports.getUsername = (req, res) => {
-  userService.getByUsername(req.params.userName)
+exports.checkExistence = (req, res) => {
+  userService.checkExistence(req.query)
     .then((user) => { res.json(user); })
     .catch((err) => { res.status(400).send(err); });
 };

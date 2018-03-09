@@ -25,7 +25,7 @@ app.use(expressJwt({
 router.post('/authenticate', controller.authenticate);
 router.post('/register', controller.register);
 router.get('/', controller.getAll);
-router.get('/:userName', controller.getUserName);
+router.get('/check', controller.checkExistence);
 router.get('/current', controller.getCurrent);
 router.put('/:_id', controller.update);
 router.delete('/:_id', controller._delete); // eslint-disable-line no-underscore-dangle

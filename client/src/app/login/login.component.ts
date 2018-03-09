@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, ValidatorFn, AbstractControl, FormControl, ValidationErrors } from '@angular/forms';
-  usernameAsyncValidator,  
+import { usernameValidator, passwordValidator, matchValidator, usernameAsyncValidator, emailAsyncValidator } from '../_models/validators';
 import { Router } from '@angular/router';
 import { UserService } from '../_services/user.service';
 
@@ -142,7 +142,11 @@ export class LoginComponent {
 
       email: [null, [
         Validators.required,
-        Validators.email]],
+        Validators.email
+      ], [
+        emailAsyncValidator({ debounceTime: 500, service: this.userService }),
+      ]
+    ],
 
       lname: [null, [
         Validators.maxLength(50),

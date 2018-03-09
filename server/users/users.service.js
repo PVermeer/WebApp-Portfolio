@@ -57,14 +57,31 @@ function getById(_id) {
   return deferred.promise;
 }
 
-function getByUsername(input) {
+// /user?check query
+function checkExistence(query) {
   return new Promise((resolve, reject) => {
-    const userName = input.trim().toLowerCase();
-    User.findOne({ userNameIndex: userName }, (error, user) => {
-      if (error) { reject(error); }
-      if (!user) { resolve(null); }
-      if (user) { resolve(user.userNameIndex); }
-    });
+
+    const key = Object.keys(query);
+    const switchError = 'Whoops, no matching query... :(';
+
+    switch (key[0]) {
+      case 'username':
+        User.findOne({ usernameIndex: query.username }, (error, user) => {
+          if (!user) { resolve(null); }
+          if (user) { resolve(user.usernameIndex); }
+          if (error) { reject(error); }
+        });
+        break;
+      case 'email':
+        User.findOne({ email: query.email }, (error, user) => {
+          if (!user) { resolve(null); }
+          if (user) { resolve(user.email); }
+          if (error) { reject(error); }
+        });
+        break;
+      default:
+        reject(switchError);
+    }
   });
 }
 
@@ -141,9 +158,9 @@ function _delete(_id) {
 // service.authenticate = authenticate;
 service.getAll = getAll;
 service.getById = getById;
-service.getByUsername = getByUsername;
 service.create = create;
 service.update = update;
 service.delete = _delete;
+service.checkExistence = checkExistence;
 
 module.exports = service;

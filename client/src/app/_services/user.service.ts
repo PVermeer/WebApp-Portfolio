@@ -24,6 +24,8 @@ export class UserService {
     return this.http.get('/users/check?username=' + username, httpOptions);
   }
 
+  public checkEmail(email: string): Observable<any> {
+    return this.http.get('/users/check?email=' + email, httpOptions);
   }
 
   public create(user: User) {
