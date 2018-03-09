@@ -113,9 +113,23 @@ export class LoginComponent {
   // Standard validations
   private validateLogin() {
     return this.formBuilder.group({
-      nameEmail: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      password: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(50)]],
-      lname: [null, [Validators.maxLength(50)]],
+      nameEmail: [null, [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(50),
+      ],
+      ],
+      password: [null,
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.maxLength(50),
+        ]
+      ],
+      lname: [null, [
+        Validators.maxLength(50),
+      ]
+      ],
     });
   }
 
@@ -144,9 +158,9 @@ export class LoginComponent {
         Validators.required,
         Validators.email
       ], [
-        emailAsyncValidator({ debounceTime: 500, service: this.userService }),
-      ]
-    ],
+          emailAsyncValidator({ debounceTime: 500, service: this.userService }),
+        ]
+      ],
 
       lname: [null, [
         Validators.maxLength(50),
