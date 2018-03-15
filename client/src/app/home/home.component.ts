@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import { SidenavService } from '../_services/sidenav.service';
-import { SidenavContent, MatToggle, MatToggleExp } from '../_models/sidenav';
+import { SidenavContent, MatToggle, MatToggleExp } from '../_models/sidenav.model';
 import { CssAnimateInviewService } from '../_services/css-animate-inview.service';
 
 @Component({

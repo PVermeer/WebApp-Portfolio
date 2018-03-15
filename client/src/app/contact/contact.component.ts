@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { SidenavService } from '../_services/sidenav.service';
-import { SidenavContent, MatToggleExp, MatToggle } from '../_models/sidenav';
+import { SidenavContent, MatToggleExp, MatToggle } from '../_models/sidenav.model';
 
 @Component({
   selector: 'app-contact',

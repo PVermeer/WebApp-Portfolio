@@ -1,22 +1,24 @@
-// Modules
 const express = require('express');
 const path = require('path');
 const compression = require('compression');
 const bodyParser = require('body-parser');
 
+require('./database/connection');
 const mail = require('./mail/mail');
+const users = require('./users/users');
 
 const app = express();
 
 // Middleware
 app.use(compression());
-app.use(express.static('./client/dist'));
-app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // -----------------Routes--------------------
 
 app.use('/mail', mail);
+app.use('/users', users);
 
 app.use('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));

@@ -4,7 +4,7 @@ import { MatSidenav, MatExpansionPanel } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 
-import { SidenavContent } from '../../_models/sidenav';
+import { SidenavContent } from '../../_models/sidenav.model';
 import { SidenavService } from '../../_services/sidenav.service';
 import { routerTransition } from '../../_animations/router.animation';
 
