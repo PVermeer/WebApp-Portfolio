@@ -21,9 +21,9 @@ import { LoginRegisterDialogComponent } from '../login-register-dialog/login-reg
 export class SidenavComponent implements OnDestroy {
 
   // Get elements for toggle options
-  @ViewChild('sidenav') sidenav: MatSidenav;
-  @ViewChild('expHomeNav') expHomeNav: MatExpansionPanel;
-  @ViewChildren('expRouteNav') expRoutedNav: QueryList<MatExpansionPanel>;
+  @ViewChild('sidenav') private sidenav: MatSidenav;
+  @ViewChild('expHomeNav') private expHomeNav: MatExpansionPanel;
+  @ViewChildren('expRouteNav') private expRoutedNav: QueryList<MatExpansionPanel>;
 
   // App sidenav config
   public title = 'app';

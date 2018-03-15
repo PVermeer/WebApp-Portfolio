@@ -50,7 +50,9 @@
       <mat-card>
         <mat-list>
           <mat-list-item>
-            <a mat-list-item routerLink="login">Login</a>
+            <a mat-list-item (click)="logIn()">Login</a>
+          </mat-list-item>
+          <mat-list-item>
             <a mat-list-item routerLink="user">User page</a>
           </mat-list-item>
           <mat-list-item>
