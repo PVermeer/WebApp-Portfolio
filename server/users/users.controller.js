@@ -1,59 +1,30 @@
-// const express = require('express');
 
-// const router = express.Router();
 const userService = require('./users.service');
 
-exports.authenticate = (req, res) => {
-  userService.authenticate(req.body.username, req.body.password)
-    .then((user) => {
-      if (user) {
-        // authentication successful
-        res.send(user);
-      } else {
-        // authentication failed
-        res.status(400).send('Username or password is incorrect');
-      }
-    })
-    .catch((err) => { res.status(400).send(err); });
-};
-
-exports.register = (req, res) => {
-  userService.create(req.body)
+exports.logIn = (req, res) => {
+  userService.logIn(req.body, res)
     .then((response) => { res.json(response); })
     .catch((err) => { res.status(400).send(err); });
 };
 
-exports.getAll = (req, res) => {
-  userService.getAll()
-    .then((users) => { res.send(users); })
+exports.register = (req, res) => {
+  userService.register(req.body)
+    .then((response) => { res.json(response); })
     .catch((err) => { res.status(400).send(err); });
 };
 
-exports.checkExistence = (req, res) => {
-  userService.checkExistence(req.query)
+exports.authenticate = (req, res) => {
+  res.status(200).send();
+};
+
+exports.checkDuplicate = (req, res) => {
+  userService.checkDuplicate(req.query)
     .then((user) => { res.json(user); })
     .catch((err) => { res.status(400).send(err); });
 };
 
-exports.getCurrent = (req, res) => {
-  userService.getById(req.user.sub)
-    .then((user) => {
-      if (user) { res.send(user); } else { res.sendStatus(404); }
-    })
+exports.userInfo = (req, res) => {
+  userService.userInfo(req)
+    .then((response) => { res.json(response); })
     .catch((err) => { res.status(400).send(err); });
 };
-
-exports.update = (req, res) => {
-  userService.update(req.params._id, req.body)
-    .then(() => { res.json('success'); })
-    .catch((err) => { res.status(400).send(err); });
-};
-
-// Remove later after testing
-/* eslint-disable no-underscore-dangle */
-exports._delete = (req, res) => {
-  userService.delete(req.params._id)
-    .then(() => { res.json('success'); })
-    .catch((err) => { res.status(400).send(err); });
-};
-/* eslint-enable no-underscore-dangle */

@@ -30,11 +30,16 @@ const UserSchema = new Schema({
     lowercase: true,
     required: true,
   },
+  type: {
+    type: String,
+    lowercase: true,
+    required: true,
+    default: 'user',
+  },
   hash: {
     type: String,
     required: true,
   },
 }, { timestamps: { createdAt: 'created_at' } });
 
-const User = mongoose.model('User', UserSchema);
-module.exports = User;
+exports.User = mongoose.model('User', UserSchema);

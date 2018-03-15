@@ -11,6 +11,9 @@ import { HomeComponent } from './home/home.component';
 import { SidenavComponent } from './_components/sidenav/sidenav.component';
 import { AboutComponent } from './about/about.component';
 import { LoginComponent } from './login/login.component';
+import { UserComponent } from './user/user.component';
+import { AuthGuard } from './_authentication/auth.guard';
+import { JwtInterceptorProvider } from './_authentication/jwt.interceptor';
 
 @NgModule({
   declarations: [
@@ -19,6 +22,7 @@ import { LoginComponent } from './login/login.component';
     SidenavComponent,
     AboutComponent,
     LoginComponent,
+    UserComponent,
   ],
   imports: [
     BrowserModule,
@@ -28,7 +32,7 @@ import { LoginComponent } from './login/login.component';
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [AuthGuard, JwtInterceptorProvider],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

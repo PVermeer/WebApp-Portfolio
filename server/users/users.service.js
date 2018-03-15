@@ -1,174 +1,96 @@
-const _ = require('lodash');
-// const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const Q = require('q');
-const mongo = require('mongoskin');
-// const mongoose = require('mongoose');
+// Auth services
+const {
+  createTokens, comparePasswords, hashPassword, findUserByEmail,
+  findUserByUsername, saveUser,
+} = require('./auth.service');
 
-const db = '';
-const service = {};
-const deferred = Q.defer();
+// Models
+const { User } = require('../database/models/user');
 
-const User = require('../database/models/user');
+// Exports
+const userService = {};
 
-// function authenticate(username, password) {
-//   db.users.findOne({ username }, (err, user) => {
-//     if (err) { deferred.reject(`${err.name}: ${err.message}`); }
-//     // authentication successful
-//     if (user && bcrypt.compareSync(password, user.hash)) {
-//       deferred.resolve({
-//         _id: user._id,
-//         username: user.username,
-//         firstName: user.firstName,
-//         lastName: user.lastName,
-//         token: jwt.sign({
-//           sub: user._id,
-//         }, config.secret),
-//       });
-//     } else {
-//       // authentication failed
-//       deferred.resolve();
-//     }
-//   });
-//   return deferred.promise;
-// }
+// Reject error messages (status !200)
+const checkDuplicateError = 'Whoops, not a matching query string... :(';
+const tokenError = 'Whoops, couldn\'t create tokens';
 
-function getAll() {
-  db.users.find().toArray((err, users) => {
-    if (err) { deferred.reject(`${err.name}: ${err.message}`); }
-    // return users (without hashed passwords)
-    const usersArray = _.map(users, user => _.omit(user, 'hash'));
-    deferred.resolve(usersArray);
-  });
-  return deferred.promise;
-}
+// Error messages (status 200)
+const loginError = { error: 'Oh, ow.. Username or password is incorrect' };
+const duplicateError = { error: 'Username / Email already exists' };
+const saveUserError = { error: 'Could not save user to the database' };
 
-function getById(_id) {
-  db.users.findById(_id, (err, user) => {
-    if (err) deferred.reject(`${err.name}: ${err.message}`);
-    if (user) {
-      // return user (without hashed password)
-      deferred.resolve(_.omit(user, 'hash'));
-    } else {
-      // user not found
-      deferred.resolve();
-    }
-  });
-  return deferred.promise;
-}
+// Success messages
+const registrationSuccess = { success: 'Whoopie, registration successful!' };
+const loginSuccess = { success: 'Whoopie, registration successful!' };
 
-// /check query string
-function checkExistence(query) {
-  return new Promise((resolve, reject) => {
-    const matchError = 'Whoops, not a matching query string... :(';
-    if (query.username) {
-      return User.findOne(
-        { usernameIndex: query.username },
-        { usernameIndex: 1, _id: 0 }, (error, user) => {
-          if (!user) resolve(null);
-          if (user) resolve(user.usernameIndex);
-          if (error) reject(error);
-        },
-      );
-    }
-    if (query.email) {
-      return User.findOne(
-        { email: query.email },
-        { email: 1, _id: 0 }, (error, user) => {
-          if (!user) resolve(null);
-          if (user) resolve(user.email);
-          if (error) reject(error);
-        },
-      );
-    }
-    return reject(matchError);
-  });
-}
 
-function create(userForm) {
-  return new Promise((resolve, reject) => {
-    const username = { username: userForm.username };
-    const email = { email: userForm.email };
-    const duplicateError = 'Username / Email already exists';
-    const successMsg = 'Whoopie, registration successful!';
+// --------------functions--------------
 
-    // Check for duplicates in case client validation fails
-    const promiseArray = [
-      checkExistence(username),
-      checkExistence(email),
-    ];
-
-    // Check for null resolves
-    Promise.all(promiseArray).then((values) => {
-      if (values.every(x => x === null)) {
-        // Create new User
-        const user = userForm;
-        user.hash = bcrypt.hashSync(userForm.password, 10);
-        User(user).save((error) => {
-          if (error) reject(error);
-          resolve(successMsg);
-        });
-      } else reject(duplicateError);
-    });
-  });
-}
-
-function update(_id, userParam) {
-  function updateUser() {
-    // fields to update
-    const set = {
-      firstName: userParam.firstName,
-      lastName: userParam.lastName,
-      username: userParam.username,
-    };
-    // update password if it was entered
-    if (userParam.password) {
-      set.hash = bcrypt.hashSync(userParam.password, 10);
-    }
-    db.users.update(
-      { _id: mongo.helper.toObjectID(_id) },
-      { $set: set },
-      (err) => {
-        if (err) { deferred.reject(`${err.name}: ${err.message}`); }
-        deferred.resolve();
-      },
-    );
+// Check for duplicates as validation in register form
+async function checkDuplicate(query) {
+  if (query.username) {
+    const user = await findUserByUsername(query.username, { username: 1, _id: 0 });
+    if (!user) return null;
+    if (user) return user.username;
   }
-
-  // validation
-  db.users.findById(_id, (err, user) => {
-    if (err) { deferred.reject(`${err.name}: ${err.message}`); }
-    if (user.username !== userParam.username) {
-      // username has changed so check if the new username is already taken
-      db.users.findOne({ username: userParam.username }, () => {
-        if (err) { deferred.reject(`${err.name}: ${err.message}`); }
-        if (user) {
-          // username already exists
-          deferred.reject(`Username "${userParam.username}" is already taken`);
-        } else { updateUser(); }
-      });
-    } else { updateUser(); }
-  });
-  return deferred.promise;
+  if (query.email) {
+    const user = await findUserByEmail(query.email, { email: 1, _id: 0 });
+    if (!user) return null;
+    if (user) return user.email;
+  }
+  return Promise.reject(checkDuplicateError);
 }
 
-// Remove later after testing
-/* eslint-disable no-underscore-dangle */
-function _delete(_id) {
-  db.users.remove({ _id: mongo.helper.toObjectID(_id) }, (err) => {
-    if (err) { deferred.reject(`${err.name}: ${err.message}`); }
-    deferred.resolve();
-  });
-  return deferred.promise;
+// Login
+async function logIn(loginForm, res) {
+  const user = await findUserByEmail(loginForm.email, { hash: 1, type: 1 });
+  if (!user) return loginError;
+
+  const password = await comparePasswords(loginForm.password, user.hash);
+  if (!password) return loginError;
+
+  const tokens = await createTokens(user._id, user.type, user.hash);
+  if (!tokens) return Promise.reject(tokenError);
+
+  res.set('x-token', tokens.token);
+  res.set('x-refresh-token', tokens.refreshToken);
+
+  return loginSuccess;
 }
-/* eslint-enable no-underscore-dangle */
 
-// service.authenticate = authenticate;
-service.getAll = getAll;
-service.getById = getById;
-service.create = create;
-service.update = update;
-service.delete = _delete;
-service.checkExistence = checkExistence;
+// Register user
+async function register(userForm) {
+  const user = userForm;
 
-module.exports = service;
+  const exists = await Promise.all([
+    checkDuplicate({ username: userForm.username }),
+    checkDuplicate({ email: userForm.email }),
+  ]);
+
+  if (exists.every(x => x !== null)) return duplicateError;
+
+  user.hash = await hashPassword(userForm.password);
+
+  await saveUser(user);
+  if (!user) return saveUserError;
+  return registrationSuccess;
+}
+
+async function userInfo() {
+  const query = { username: 'henkie' };
+  return User.findOne(
+    { usernameIndex: query.username },
+    { _id: 0, hash: 0 },
+    async (error, user) => {
+      if (await error) return error;
+      return user;
+    },
+  );
+}
+
+userService.logIn = logIn;
+userService.register = register;
+userService.checkDuplicate = checkDuplicate;
+userService.userInfo = userInfo;
+
+module.exports = userService;

@@ -12,12 +12,8 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  public getAll() {
-    return this.http.get<User[]>('/users');
-  }
-
   public getById(_id: string) {
-    return this.http.get('/users/' + _id);
+    return this.http.get('/users/' + _id, httpOptions);
   }
 
   public checkUsername(username: string): Observable<any> {
@@ -28,15 +24,12 @@ export class UserService {
     return this.http.get('/users/check?email=' + email, httpOptions);
   }
 
-  public create(user: User) {
-    return this.http.post('/users/register', user);
+  public registerUser(user: User) {
+    return this.http.post('/users/register', user, httpOptions);
   }
 
-  public update(user: User) {
-    return this.http.put('/users/' + user._id, user);
+  public userInfo(): Observable<any> {
+    return this.http.get('/users/userinfo', httpOptions);
   }
 
-  public delete(_id: string) {
-    return this.http.delete('/users/' + _id);
-  }
 }

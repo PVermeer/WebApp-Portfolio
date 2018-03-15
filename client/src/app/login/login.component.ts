@@ -1,24 +1,28 @@
-import { Component } from '@angular/core';
-import { FormGroup, Validators, FormBuilder, ValidatorFn, AbstractControl, FormControl, ValidationErrors } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { FormGroup, Validators, FormBuilder, ValidationErrors } from '@angular/forms';
 import { usernameValidator, passwordValidator, matchValidator, usernameAsyncValidator, emailAsyncValidator } from '../_models/validators';
 import { Router } from '@angular/router';
 import { UserService } from '../_services/user.service';
+import { AuthenticationService } from '../_authentication/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  providers: [UserService],
+  providers: [UserService, AuthenticationService],
 })
 export class LoginComponent {
 
+  @ViewChild('regForm') regForm;
+
   public title = 'Login';
+  public tabPage = 0;
 
   // NgFor login input fields
   public loginFormInputfields = [
     {
-      placeholder: 'Username or email',
-      formControlName: 'nameEmail',
+      placeholder: 'Email',
+      formControlName: 'email',
       type: 'text',
       alert: '3 - 50 Characters',
       asyncAlert: '',
@@ -79,9 +83,19 @@ export class LoginComponent {
 
   // Events
   public login(loginForm) {
-    console.log(loginForm);
+    this.progressBar = true;
+
+    // Login user
+    this.authenticationService.login(loginForm).subscribe(user => {
+      this.progressBar = false;
+    },
+      error => {
+        console.log(error);
+        this.progressBar = false;
+      });
   }
 
+  // Register new user
   public register(registerForm) {
     this.progressBar = true;
 
@@ -90,22 +104,23 @@ export class LoginComponent {
     registerForm.usernameIndex = usernameIndex;
 
     // Create user
-    this.userService.create(registerForm)
-      .subscribe(data => {
-        console.log(data);
+    this.userService.registerUser(registerForm).subscribe(response => {
+      this.progressBar = false;
+      this.tabPage = 0;
+      this.regForm.resetForm();
+      console.log(response);
+    },
+      error => {
         this.progressBar = false;
-        // this.router.navigate(['/login']);
-      },
-        error => {
-          console.log(error);
-          this.progressBar = false;
-        });
+        console.log(error);
+      });
   }
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private userService: UserService,
+    private authenticationService: AuthenticationService,
   ) {
     // Form validation
     this.loginForm = this.validateLogin();
@@ -117,23 +132,19 @@ export class LoginComponent {
   // Standard validations
   private validateLogin() {
     return this.formBuilder.group({
-      nameEmail: [null, [
+      email: [null, [
         Validators.required,
         Validators.minLength(3),
         Validators.maxLength(50),
-      ],
-      ],
-      password: [null,
-        [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.maxLength(50),
-        ]
-      ],
+      ]],
+      password: [null, [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(50),
+      ]],
       lname: [null, [
         Validators.maxLength(50),
-      ]
-      ],
+      ]],
     });
   }
 

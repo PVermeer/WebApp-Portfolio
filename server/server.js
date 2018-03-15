@@ -14,7 +14,6 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
 // -----------------Routes--------------------
 
 app.use('/users', users);
