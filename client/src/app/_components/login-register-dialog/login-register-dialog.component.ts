@@ -1,22 +1,32 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, ValidationErrors } from '@angular/forms';
-import { usernameValidator, passwordValidator, matchValidator, usernameAsyncValidator, emailAsyncValidator } from '../_models/validators';
+import {
+  usernameValidator, passwordValidator, matchValidator, usernameAsyncValidator,
+  emailAsyncValidator
+} from '../../_models/validators';
 import { Router } from '@angular/router';
-import { UserService } from '../_services/user.service';
-import { AuthenticationService } from '../_authentication/auth.service';
+import { MatDialogRef, DialogPosition } from '@angular/material';
+
+import { UserService } from '../../_services/user.service';
+import { AuthenticationService } from '../../_authentication/auth.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  selector: 'app-login-register-dialog',
+  templateUrl: './login-register-dialog.component.html',
+  styleUrls: ['./login-register-dialog.component.css'],
   providers: [UserService, AuthenticationService],
 })
-export class LoginComponent {
+export class LoginRegisterDialogComponent implements OnInit {
 
-  @ViewChild('regForm') regForm;
+  @ViewChild('regForm') private regForm;
 
+  // Variables
   public title = 'Login';
   public tabPage = 0;
+  private dialogPosition: DialogPosition = { top: '25%' };
+  public loginForm: FormGroup;
+  public registerForm: FormGroup;
+  public progressBar = false;
 
   // NgFor login input fields
   public loginFormInputfields = [
@@ -76,10 +86,6 @@ export class LoginComponent {
     },
   ];
 
-  // Variables
-  public loginForm: FormGroup;
-  public registerForm: FormGroup;
-  public progressBar = false;
 
   // Events
   public login(loginForm) {
@@ -88,6 +94,7 @@ export class LoginComponent {
     // Login user
     this.authenticationService.login(loginForm).subscribe(user => {
       this.progressBar = false;
+      this.matDialog.close();
     },
       error => {
         console.log(error);
@@ -121,10 +128,16 @@ export class LoginComponent {
     private router: Router,
     private userService: UserService,
     private authenticationService: AuthenticationService,
+    private matDialog: MatDialogRef<LoginRegisterDialogComponent>,
   ) {
     // Form validation
     this.loginForm = this.validateLogin();
     this.registerForm = this.validateRegister();
+  }
+
+  ngOnInit() {
+    // Dialog options
+    this.matDialog.updatePosition(this.dialogPosition);
   }
 
   // -----------------Constructor methods------------------------
@@ -132,12 +145,12 @@ export class LoginComponent {
   // Standard validations
   private validateLogin() {
     return this.formBuilder.group({
-      email: [null, [
+      email: ['henkie@henk.nl', [
         Validators.required,
         Validators.minLength(3),
         Validators.maxLength(50),
       ]],
-      password: [null, [
+      password: ['password', [
         Validators.required,
         Validators.minLength(8),
         Validators.maxLength(50),

@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
+import { MatDialog } from '@angular/material';
+import { LoginRegisterDialogComponent } from '../_components/login-register-dialog/login-register-dialog.component';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -11,6 +13,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private router: Router,
     private http: HttpClient,
+    private matDialog: MatDialog
   ) { }
 
   canActivate(): Observable<boolean> {
@@ -19,7 +22,7 @@ export class AuthGuard implements CanActivate {
         return true;
       }
     }).catch(() => {
-      this.router.navigate(['/login']);
+      this.matDialog.open(LoginRegisterDialogComponent);
       return Observable.of(false);
     });
   }

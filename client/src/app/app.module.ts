@@ -14,10 +14,10 @@ import { ContactComponent } from './contact/contact.component';
 import { ContactDetailsComponent } from './contact/contact-details/contact-details.component';
 import { ContactFormComponent } from './contact/contact-form/contact-form.component';
 import { ContactDialogComponent } from './contact/contact-form/contact-dialog/contact-dialog.component';
-import { LoginComponent } from './login/login.component';
 import { UserComponent } from './user/user.component';
 import { AuthGuard } from './_authentication/auth.guard';
 import { JwtInterceptorProvider } from './_authentication/jwt.interceptor';
+import { LoginRegisterDialogComponent } from './_components/login-register-dialog/login-register-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,8 +29,8 @@ import { JwtInterceptorProvider } from './_authentication/jwt.interceptor';
     ContactDetailsComponent,
     ContactFormComponent,
     ContactDialogComponent,
-    LoginComponent,
     UserComponent,
+    LoginRegisterDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,7 +40,7 @@ import { JwtInterceptorProvider } from './_authentication/jwt.interceptor';
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  entryComponents: [ContactDialogComponent],
+  entryComponents: [ContactDialogComponent, LoginRegisterDialogComponent],
   providers: [AuthGuard, JwtInterceptorProvider],
   bootstrap: [AppComponent]
 })

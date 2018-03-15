@@ -1,12 +1,13 @@
 import { Component, ChangeDetectorRef, OnDestroy, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { MatSidenav, MatExpansionPanel } from '@angular/material';
+import { MatSidenav, MatExpansionPanel, MatDialog } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 
 import { SidenavContent } from '../../_models/sidenav.model';
 import { SidenavService } from '../../_services/sidenav.service';
 import { routerTransition } from '../../_animations/router.animation';
+import { LoginRegisterDialogComponent } from '../login-register-dialog/login-register-dialog.component';
 
 @Component({
   selector: 'app-sidenav',
@@ -49,10 +50,16 @@ export class SidenavComponent implements OnDestroy {
   // Router animation
   public getState(outlet) { return outlet.activatedRouteData.state; }
 
+  // Login
+  public logIn() {
+    this.matDialog.open(LoginRegisterDialogComponent);
+  }
+
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
     private sidenavService: SidenavService,
+    public matDialog: MatDialog,
   ) {
     // Sidenav mobile support
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
