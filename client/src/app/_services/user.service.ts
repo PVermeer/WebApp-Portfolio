@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { User } from '../_models/user.model';
 import { Observable } from 'rxjs/Observable';
+
+import { UserRegister, UserLogin } from '../_models/user.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -11,6 +12,10 @@ const httpOptions = {
 export class UserService {
 
   constructor(private http: HttpClient) { }
+
+  public login(loginForm: UserLogin): Observable<any> {
+    return this.http.post<any>('/users/login', loginForm, httpOptions);
+  }
 
   public getById(_id: string) {
     return this.http.get('/users/' + _id, httpOptions);
@@ -24,7 +29,7 @@ export class UserService {
     return this.http.get('/users/check?email=' + email, httpOptions);
   }
 
-  public registerUser(user: User) {
+  public registerUser(user: UserRegister) {
     return this.http.post('/users/register', user, httpOptions);
   }
 

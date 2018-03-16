@@ -18,6 +18,7 @@ import { UserComponent } from './user/user.component';
 import { AuthGuard } from './_authentication/auth.guard';
 import { JwtInterceptorProvider } from './_authentication/jwt.interceptor';
 import { LoginRegisterDialogComponent } from './_components/login-register-dialog/login-register-dialog.component';
+import { SnackbarComponent } from './_components/snackbar/snackbar.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { LoginRegisterDialogComponent } from './_components/login-register-dialo
     ContactDialogComponent,
     UserComponent,
     LoginRegisterDialogComponent,
+    SnackbarComponent,
   ],
   imports: [
     BrowserModule,

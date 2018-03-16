@@ -1,12 +1,15 @@
 // Template to for custom components, easy copy paste
-// Insert in new sass-file <component_name>-theme.scss in the component folder
+// Insert in new sass-file <component_name>.theme.scss in the component folder
 // Only add colors, other styles go in the css.
+// Import custom component theme file in theme.css and include it in the custom-theme mixin.
 
 @mixin COMPONENT_NAME($theme) {
   $primary: mat-color(map-get($theme, primary));
+  $primary-text: mat-color(map-get($theme, primary), default-contrast);
   $primary-lighter: mat-color(map-get($theme, primary), lighter);
   $accent: mat-color(map-get($theme, accent));
   $warn: mat-color(map-get($theme, warn));
+  $warn-text: mat-color(map-get($theme, warn), default-contrast);
   $background: mat-color(map-get($theme, background), background);
   $foreground: mat-color(map-get($theme, foreground), text);
 

@@ -1,4 +1,4 @@
-export class User {
+export class UserRegister {
   _id: string;
   firstName: string;
   lastName: string;
@@ -7,7 +7,7 @@ export class User {
   password: string;
 }
 
-export interface LoginForm {
+export interface UserLogin {
   email: string;
   password: string;
 }

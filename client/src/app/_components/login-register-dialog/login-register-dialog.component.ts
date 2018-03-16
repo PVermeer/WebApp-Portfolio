@@ -9,12 +9,13 @@ import { MatDialogRef, DialogPosition } from '@angular/material';
 
 import { UserService } from '../../_services/user.service';
 import { AuthenticationService } from '../../_authentication/auth.service';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-login-register-dialog',
   templateUrl: './login-register-dialog.component.html',
   styleUrls: ['./login-register-dialog.component.css'],
-  providers: [UserService, AuthenticationService],
+  providers: [UserService, AuthenticationService, SnackbarComponent],
 })
 export class LoginRegisterDialogComponent implements OnInit {
 
@@ -92,12 +93,18 @@ export class LoginRegisterDialogComponent implements OnInit {
     this.progressBar = true;
 
     // Login user
-    this.authenticationService.login(loginForm).subscribe(user => {
+    this.userService.login(loginForm).subscribe(response => {
       this.progressBar = false;
+
+      if (response.error) {
+        return this.snackbarComponent.snackbarError(response.error);
+      }
+
+      this.router.navigate(['/user']);
+      this.snackbarComponent.snackbarSucces(response.success);
       this.matDialog.close();
     },
       error => {
-        console.log(error);
         this.progressBar = false;
       });
   }
@@ -127,6 +134,7 @@ export class LoginRegisterDialogComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private userService: UserService,
+    private snackbarComponent: SnackbarComponent,
     private authenticationService: AuthenticationService,
     private matDialog: MatDialogRef<LoginRegisterDialogComponent>,
   ) {
