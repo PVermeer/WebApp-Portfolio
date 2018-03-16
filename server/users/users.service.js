@@ -21,7 +21,7 @@ const saveUserError = { error: 'Could not save user to the database' };
 
 // Success messages
 const registrationSuccess = { success: 'Whoopie, registration successful!' };
-const loginSuccess = { success: 'Whoopie, registration successful!' };
+const loginSuccess = { success: 'Whoopie, login successful!' };
 
 
 // --------------functions--------------

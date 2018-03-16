@@ -4,7 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/map';
 import { MatDialog } from '@angular/material';
+
 import { LoginRegisterDialogComponent } from '../_components/login-register-dialog/login-register-dialog.component';
 
 @Injectable()

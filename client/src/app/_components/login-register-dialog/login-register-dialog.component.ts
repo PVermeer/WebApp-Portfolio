@@ -1,21 +1,19 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, ValidationErrors } from '@angular/forms';
-import {
-  usernameValidator, passwordValidator, matchValidator, usernameAsyncValidator,
-  emailAsyncValidator
-} from '../../_models/validators';
 import { Router } from '@angular/router';
 import { MatDialogRef, DialogPosition } from '@angular/material';
 
+import { usernameValidator, passwordValidator, matchValidator, usernameAsyncValidator,
+  emailAsyncValidator } from '../../_models/validators';
 import { UserService } from '../../_services/user.service';
-import { AuthenticationService } from '../../_authentication/auth.service';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
+
 
 @Component({
   selector: 'app-login-register-dialog',
   templateUrl: './login-register-dialog.component.html',
   styleUrls: ['./login-register-dialog.component.css'],
-  providers: [UserService, AuthenticationService, SnackbarComponent],
+  providers: [UserService, SnackbarComponent],
 })
 export class LoginRegisterDialogComponent implements OnInit {
 
@@ -87,7 +85,6 @@ export class LoginRegisterDialogComponent implements OnInit {
     },
   ];
 
-
   // Events
   public login(loginForm) {
     this.progressBar = true;
@@ -135,7 +132,6 @@ export class LoginRegisterDialogComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private snackbarComponent: SnackbarComponent,
-    private authenticationService: AuthenticationService,
     private matDialog: MatDialogRef<LoginRegisterDialogComponent>,
   ) {
     // Form validation

@@ -36,9 +36,13 @@ mat-form-field {
   align-items: center;
 }
 
+#progress-wrapper {
+  height: 2px;
+}
+
 mat-progress-bar {
   position: relative;
-  top: 0;
+  top: -10px;
   left: 0;
   right: 0;
 }
