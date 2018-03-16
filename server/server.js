@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 require('./database/connection');
 const mail = require('./mail/mail');
 const users = require('./users/users');
+const { sendErrorMail } = require('./mail/error');
 
 const app = express();
 
@@ -20,10 +21,17 @@ app.use(bodyParser.json());
 app.use('/mail', mail);
 app.use('/users', users);
 
-app.use('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+app.get('*', (req, res, next) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'), (error) => {
+    if (error) next(error);
+  });
 });
 
+app.use((error, req, res, next) => {
+  res.status(500).send('Something broke!');
+  sendErrorMail(error);
+  next();
+});
 
 // Start server
 const port = process.env.PORT || 8080;
