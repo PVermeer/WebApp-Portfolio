@@ -105,10 +105,14 @@ exports.requiresUserAuth = async (req, res, next) => {
   if (!token) return res.status(401).send();
 
   const verifiedToken = await exports.verifyToken(token);
-  if (verifiedToken) return next();
+  if (verifiedToken) {
+    req.userId = verifiedToken.user;
+    return next();
+  }
 
   const refreshToken = req.headers['x-refresh-token'];
   if (!refreshToken) return res.status(401).send();
+  req.userId = refreshToken.user;
 
   const newTokens = await exports.refreshTokens(refreshToken);
   if (!newTokens) return res.status(401).send();

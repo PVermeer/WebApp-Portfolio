@@ -76,13 +76,13 @@ async function register(userForm) {
   return registrationSuccess;
 }
 
-async function userInfo() {
-  const query = { username: 'henkie' };
+function userInfo(req) {
+  const { userId } = req;
   return User.findOne(
-    { usernameIndex: query.username },
+    { _id: userId },
     { _id: 0, hash: 0 },
-    async (error, user) => {
-      if (await error) return error;
+    (error, user) => {
+      if (error) return error;
       return user;
     },
   );
