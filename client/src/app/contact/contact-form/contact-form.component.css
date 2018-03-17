@@ -13,7 +13,7 @@ mat-form-field {
   flex: 1;
 }
 
-#lname {
+.lname {
   display: none;
 }
 

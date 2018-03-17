@@ -24,12 +24,37 @@ export class ContactFormComponent {
   public formInput: ContactFormInput;
   public progressBar = false;
 
-  // Custom alerts
-  public nameAlert = 'Vul dit veld in';
-  public emailAlert = 'Geen geldig e-mail adres';
-  public subjectAlert = 'Minmaal 3 en maximaal 50 karakters';
-  public messageAlert = 'Minmaal 3 en maximaal 1000 karakters';
-  public lnameAlert = '';
+  // Contact form fields
+  public contactFormInputfields = [
+    {
+      placeholder: 'Name',
+      formControlName: 'name',
+      type: 'text',
+      alert: '3 - 50 Characters, pretty please.',
+      asyncAlert: '',
+    }, {
+      placeholder: 'E-mail',
+      formControlName: 'email',
+      type: 'text',
+      alert: 'Not a valid e-mail address',
+      asyncAlert: '',
+    }, {
+      placeholder: 'Subject',
+      formControlName: 'subject',
+      type: 'text',
+      alert: '3 - 50 Characters, pretty please.',
+      asyncAlert: '',
+    },
+  ];
+  public contactFormTextfields = [
+    {
+      placeholder: 'Message',
+      formControlName: 'message',
+      type: 'text',
+      alert: 'Required',
+      asyncAlert: '',
+    }
+  ];
 
   // Post form to back-end
   private postForm(formInput) {
@@ -56,7 +81,16 @@ export class ContactFormComponent {
     public matDialog: MatDialog,
   ) {
     // Form validation
-    this.contactForm = formBuilder.group({
+    this.contactForm = this.validateContactForm();
+
+
+  }
+
+  // -----------------Constructor methods------------------------
+
+  // Validations
+  private validateContactForm() {
+    return this.formBuilder.group({
       name: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
       email: [null, Validators.compose([Validators.required, Validators.email])],
       subject: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
