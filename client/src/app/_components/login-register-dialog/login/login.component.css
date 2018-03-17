@@ -1,0 +1,19 @@
+/* Material form */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-form-field {
+  flex: 1;
+}
+
+.lname {
+  display: none;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
