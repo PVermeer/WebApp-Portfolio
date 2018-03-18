@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { UserService } from '../../../_services/user.service';
 import { SnackbarComponent } from '../../snackbar/snackbar.component';
-import { LoginRegisterDialogComponent } from '../login-register-dialog.component';
+import { UserDialogComponent } from '../user-dialog.component';
 
 @Component({
   selector: 'app-login',
@@ -36,11 +36,11 @@ export class LoginComponent {
 
   // Events
   public login(loginForm) {
-    this.loginRegisterDialogComponent.progressBar = true;
+    this.userDialogComponent.progressBar = true;
 
     // Login user
     this.userService.login(loginForm).subscribe(response => {
-      this.loginRegisterDialogComponent.progressBar = false;
+      this.userDialogComponent.progressBar = false;
 
       if (response.error) {
         return this.snackbarComponent.snackbarError(response.error);
@@ -48,10 +48,10 @@ export class LoginComponent {
 
       this.router.navigate(['/user']);
       this.snackbarComponent.snackbarSucces(response.success);
-      this.loginRegisterDialogComponent.matDialog.close();
+      this.userDialogComponent.matDialog.close();
     },
       error => {
-        this.loginRegisterDialogComponent.progressBar = false;
+        this.userDialogComponent.progressBar = false;
       });
   }
 
@@ -60,7 +60,7 @@ export class LoginComponent {
     private router: Router,
     private userService: UserService,
     private snackbarComponent: SnackbarComponent,
-    private loginRegisterDialogComponent: LoginRegisterDialogComponent,
+    private userDialogComponent: UserDialogComponent,
   ) {
     // Form validation
     this.loginForm = this.validateLogin();
@@ -86,6 +86,5 @@ export class LoginComponent {
       ]],
     });
   }
-
 
 }

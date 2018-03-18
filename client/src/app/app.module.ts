@@ -17,10 +17,10 @@ import { ContactDialogComponent } from './contact/contact-form/contact-dialog/co
 import { UserComponent } from './user/user.component';
 import { AuthGuard } from './_authentication/auth.guard';
 import { JwtInterceptorProvider } from './_authentication/jwt.interceptor';
-import { LoginRegisterDialogComponent } from './_components/login-register-dialog/login-register-dialog.component';
+import { UserDialogComponent } from './_components/user-dialog/user-dialog.component';
 import { SnackbarComponent } from './_components/snackbar/snackbar.component';
-import { LoginComponent } from './_components/login-register-dialog/login/login.component';
-import { RegisterComponent } from './_components/login-register-dialog/register/register.component';
+import { LoginComponent } from './_components/user-dialog/login/login.component';
+import { RegisterComponent } from './_components/user-dialog/register/register.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +33,7 @@ import { RegisterComponent } from './_components/login-register-dialog/register/
     ContactFormComponent,
     ContactDialogComponent,
     UserComponent,
-    LoginRegisterDialogComponent,
+    UserDialogComponent,
     SnackbarComponent,
     LoginComponent,
     RegisterComponent
@@ -46,7 +46,7 @@ import { RegisterComponent } from './_components/login-register-dialog/register/
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  entryComponents: [ContactDialogComponent, LoginRegisterDialogComponent],
+  entryComponents: [ContactDialogComponent, UserDialogComponent],
   providers: [AuthGuard, JwtInterceptorProvider],
   bootstrap: [AppComponent]
 })

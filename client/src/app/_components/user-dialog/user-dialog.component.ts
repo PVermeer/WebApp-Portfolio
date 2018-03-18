@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef, DialogPosition } from '@angular/material';
 
 @Component({
-  selector: 'app-login-register-dialog',
-  templateUrl: './login-register-dialog.component.html',
-  styleUrls: ['./login-register-dialog.component.css'],
+  selector: 'app-user-dialog',
+  templateUrl: './user-dialog.component.html',
+  styleUrls: ['./user-dialog.component.css'],
 })
-export class LoginRegisterDialogComponent implements OnInit {
+export class UserDialogComponent implements OnInit {
 
   // Variables
   public title = 'Login';
@@ -15,7 +15,7 @@ export class LoginRegisterDialogComponent implements OnInit {
   private dialogPosition: DialogPosition = { top: '25%' };
 
   constructor(
-    public matDialog: MatDialogRef<LoginRegisterDialogComponent>,
+    public matDialog: MatDialogRef<UserDialogComponent>,
   ) { }
 
   ngOnInit() {

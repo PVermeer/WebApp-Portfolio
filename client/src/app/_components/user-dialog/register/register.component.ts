@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
-import { LoginRegisterDialogComponent } from '../login-register-dialog.component';
+import { UserDialogComponent } from '../user-dialog.component';
 import { UserService } from '../../../_services/user.service';
 import { SnackbarComponent } from '../../snackbar/snackbar.component';
 import {
@@ -65,7 +65,7 @@ export class RegisterComponent {
 
   // Register new user
   public register(registerForm) {
-    this.loginRegisterDialogComponent.progressBar = true;
+    this.userDialogComponent.progressBar = true;
 
     // Create username index
     const usernameIndex = registerForm.username;
@@ -73,18 +73,18 @@ export class RegisterComponent {
 
     // Create user
     this.userService.registerUser(registerForm).subscribe(response => {
-      this.loginRegisterDialogComponent.progressBar = false;
+      this.userDialogComponent.progressBar = false;
 
       if (response.error) {
         return this.snackbarComponent.snackbarError(response.error);
       }
 
       this.snackbarComponent.snackbarSucces(response.success);
-      this.loginRegisterDialogComponent.tabPage = 0;
+      this.userDialogComponent.tabPage = 0;
       this.regForm.resetForm();
     },
       error => {
-        this.loginRegisterDialogComponent.progressBar = false;
+        this.userDialogComponent.progressBar = false;
         console.log(error);
       });
   }
@@ -93,7 +93,7 @@ export class RegisterComponent {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private snackbarComponent: SnackbarComponent,
-    private loginRegisterDialogComponent: LoginRegisterDialogComponent,
+    private userDialogComponent: UserDialogComponent,
   ) {
     // Form validation
     this.registerForm = this.validateRegister();

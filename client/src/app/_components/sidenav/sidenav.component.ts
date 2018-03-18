@@ -7,7 +7,7 @@ import 'rxjs/add/observable/fromEvent';
 import { SidenavContent } from '../../_models/sidenav.model';
 import { SidenavService } from '../../_services/sidenav.service';
 import { routerTransition } from '../../_animations/router.animation';
-import { LoginRegisterDialogComponent } from '../login-register-dialog/login-register-dialog.component';
+import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 
 @Component({
   selector: 'app-sidenav',
@@ -52,7 +52,7 @@ export class SidenavComponent implements OnDestroy {
 
   // Login
   public logIn() {
-    this.matDialog.open(LoginRegisterDialogComponent);
+    this.matDialog.open(UserDialogComponent);
   }
 
   constructor(

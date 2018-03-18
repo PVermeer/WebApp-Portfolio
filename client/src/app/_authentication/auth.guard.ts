@@ -7,7 +7,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import { MatDialog } from '@angular/material';
 
-import { LoginRegisterDialogComponent } from '../_components/login-register-dialog/login-register-dialog.component';
+import { UserDialogComponent } from '../_components/user-dialog/user-dialog.component';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
         return true;
       }
     }).catch(() => {
-      this.matDialog.open(LoginRegisterDialogComponent);
+      this.matDialog.open(UserDialogComponent);
       return Observable.of(false);
     });
   }
