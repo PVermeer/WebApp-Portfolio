@@ -2,8 +2,12 @@ const express = require('express');
 
 const controller = require('./users.controller');
 const { requiresUserAuth, requiresAdminAuth } = require('./auth.service');
+const { DbConnectionError } = require('../database/connection');
 
 const router = express.Router();
+
+// Middleware
+router.use(DbConnectionError);
 
 // -----------Routes-------------------
 
