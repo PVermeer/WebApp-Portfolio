@@ -23,9 +23,10 @@ export class AuthGuard implements CanActivate {
       if (response.status === 200) {
         return true;
       }
-    }).catch(() => {
-      this.matDialog.open(UserDialogComponent);
-      return Observable.of(false);
+      return false;
+      // }).catch(() => {
+      // this.matDialog.open(UserDialogComponent);
+      // return Observable.of(false);
     });
   }
 
