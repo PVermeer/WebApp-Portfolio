@@ -45,7 +45,7 @@ export class SidenavComponent implements OnDestroy {
   public scrollTo(element) { this.sidenavService.scrollIntoView(element); }
 
   // Toggle theme for entire app
-  private toggleTheme(event) { this.sidenavService.passThemeToggle(event.checked); }
+  public toggleTheme(event) { this.sidenavService.passThemeToggle(event.checked); }
 
   // Router animation
   public getState(outlet) { return outlet.activatedRouteData.state; }

@@ -23,7 +23,7 @@ export class LoginComponent {
       placeholder: 'Email',
       formControlName: 'email',
       type: 'text',
-      alert: '3 - 50 Characters',
+      alert: 'Not a valid e-mail address',
       asyncAlert: '',
     }, {
       placeholder: 'Password',
@@ -73,8 +73,7 @@ export class LoginComponent {
     return this.formBuilder.group({
       email: ['henkie@henk.nl', [
         Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(50),
+        Validators.email,
       ]],
       password: ['password', [
         Validators.required,

@@ -12,7 +12,7 @@ export class UserDialogComponent implements OnInit {
   public title = 'Login';
   public tabPage = 0;
   public progressBar = false;
-  private dialogPosition: DialogPosition = { top: '25%' };
+  private dialogPosition: DialogPosition = { top: '150px' };
 
   constructor(
     public matDialog: MatDialogRef<UserDialogComponent>,

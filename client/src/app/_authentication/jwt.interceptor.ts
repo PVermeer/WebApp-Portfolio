@@ -1,9 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-// import { map } from 'rxjs/operators';
-// import 'rxjs/add/operator/do';
-// import 'rxjs/add/operator/map';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -23,7 +20,7 @@ export class JwtInterceptor implements HttpInterceptor {
         const refreshToken = response.headers.get('x-refresh-token');
         const tokens = { token, refreshToken };
 
-        if (tokens.token !== null || tokens.refreshToken !== null) {
+        if (tokens.token !== null && tokens.refreshToken !== null) {
           localStorage.setItem('currentUser', JSON.stringify(tokens));
         }
       }

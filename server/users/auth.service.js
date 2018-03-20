@@ -77,8 +77,8 @@ exports.verifyRefreshToken = (refreshToken, user) => new Promise((resolve) => {
   });
 });
 
-exports.decodeToken = async (refreshToken) => {
-  const decoded = await jwt.decode(refreshToken);
+exports.decodeToken = async (token) => {
+  const decoded = await jwt.decode(token);
   return decoded;
 };
 

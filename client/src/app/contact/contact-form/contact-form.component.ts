@@ -57,7 +57,7 @@ export class ContactFormComponent {
   ];
 
   // Post form to back-end
-  private postForm(formInput) {
+  public postForm(formInput) {
     this.progressBar = true;
     this.postBackendService.postRequest(formInput).subscribe(
       (res) => {

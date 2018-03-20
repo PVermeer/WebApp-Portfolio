@@ -4,7 +4,7 @@ export function routerTransition() {
   return fadeAnimation();
 }
 
-function fadeAnimation() {
+export function fadeAnimation() {
   return trigger('routerTransition', [
     transition('* <=> *', [
       query(':enter, :leave', style({ position: 'absolute', width: '100%', height: '100%' })
@@ -21,7 +21,7 @@ function fadeAnimation() {
   ]);
 }
 
-function slideToRight() {
+export function slideToRight() {
   return trigger('routerTransition', [
     transition('* <=> *', [
       query(':enter, :leave', style({ position: 'absolute', width: '100%' })
@@ -40,7 +40,7 @@ function slideToRight() {
   ]);
 }
 
-function slideToLeft() {
+export function slideToLeft() {
   return trigger('routerTransition', [
     transition('* <=> *', [
       query(':enter, :leave', style({ position: 'absolute', width: '100%' })
@@ -59,7 +59,7 @@ function slideToLeft() {
   ]);
 }
 
-function slideToBottom() {
+export function slideToBottom() {
   return trigger('routerTransition', [
     transition('* <=> *', [
       query(':enter, :leave', style({ position: 'absolute', width: '100%', height: '100%' })
@@ -78,7 +78,7 @@ function slideToBottom() {
   ]);
 }
 
-function slideToTop() {
+export function slideToTop() {
   return trigger('routerTransition', [
     transition('* <=> *', [
       query(':enter, :leave', style({ position: 'absolute', width: '100%', height: '100%' })
