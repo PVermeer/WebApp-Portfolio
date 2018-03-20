@@ -101,21 +101,19 @@ exports.refreshTokens = async (refreshToken) => {
 
 // User authentication
 exports.requiresUserAuth = async (req, res, next) => {
+  const authError = 'You\'re not logged in!';
+
   const token = req.headers['x-token'];
-  if (!token) return res.status(401).send();
+  if (!token) return res.status(401).send(authError);
 
   const verifiedToken = await exports.verifyToken(token);
-  if (verifiedToken) {
-    req.userId = verifiedToken.user;
-    return next();
-  }
+  if (verifiedToken) { req.userId = verifiedToken.user; return next(); }
 
   const refreshToken = req.headers['x-refresh-token'];
-  if (!refreshToken) return res.status(401).send();
-  req.userId = refreshToken.user;
+  if (!refreshToken) return res.status(401).send(authError);
 
   const newTokens = await exports.refreshTokens(refreshToken);
-  if (!newTokens) return res.status(401).send();
+  if (!newTokens) return res.status(401).send(authError);
 
   res.set('x-token', newTokens.token);
   res.set('x-refresh-token', newTokens.refreshToken);

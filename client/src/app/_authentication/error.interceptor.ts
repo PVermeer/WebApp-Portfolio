@@ -1,27 +1,33 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
 import { MatDialog } from '@angular/material';
+import 'rxjs/add/observable/throw';
 
 import { UserDialogComponent } from '../_components/user-dialog/user-dialog.component';
+import { SnackbarComponent } from '../_components/snackbar/snackbar.component';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
   constructor(
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private snackbarComponent: SnackbarComponent,
   ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request).catch(errorResponse => {
-      const status = errorResponse.status;
-      if (status === 401) { this.matDialog.open(UserDialogComponent); }
+    return next.handle(request).catch((responseError: any) => {
+      if (responseError instanceof HttpErrorResponse) {
+        const status = responseError.status;
 
-      return Observable.throw(status);
+        if (status === 401) { this.matDialog.open(UserDialogComponent); }
+
+      }
+      this.snackbarComponent.snackbarError(responseError.status + ' ' + responseError.error);
+      return Observable.throw(responseError.error);
     });
   }
+
 }
 
 export const ErrorInterceptorProvider = {

@@ -24,9 +24,6 @@ export class AuthGuard implements CanActivate {
         return true;
       }
       return false;
-      // }).catch(() => {
-      // this.matDialog.open(UserDialogComponent);
-      // return Observable.of(false);
     });
   }
 

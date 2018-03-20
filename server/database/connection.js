@@ -52,6 +52,6 @@ process.on('SIGINT', () => {
 
 // Middleware connection error catcher
 exports.DbConnectionError = (req, res, next) => {
-  if (!connectionFlag) return res.status(500).json({ error: 'Database is not up' });
+  if (!connectionFlag) return res.status(500).send('Database is not up');
   return next();
 };

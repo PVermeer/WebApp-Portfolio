@@ -48,7 +48,7 @@ import { ErrorInterceptorProvider } from './_authentication/error.interceptor';
     HttpClientModule,
   ],
   entryComponents: [ContactDialogComponent, UserDialogComponent],
-  providers: [AuthGuard, JwtInterceptorProvider, ErrorInterceptorProvider],
+  providers: [AuthGuard, JwtInterceptorProvider, ErrorInterceptorProvider, SnackbarComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
