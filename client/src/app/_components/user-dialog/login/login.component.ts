@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import { UserService } from '../../../_services/user.service';
 import { SnackbarComponent } from '../../snackbar/snackbar.component';
@@ -46,7 +45,6 @@ export class LoginComponent {
         return this.snackbarComponent.snackbarError(response.error);
       }
 
-      this.router.navigate(['/user']);
       this.snackbarComponent.snackbarSucces(response.success);
       this.userDialogComponent.matDialog.close();
     },
@@ -57,7 +55,6 @@ export class LoginComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router,
     private userService: UserService,
     private snackbarComponent: SnackbarComponent,
     private userDialogComponent: UserDialogComponent,
