@@ -42,6 +42,10 @@ export class UserService {
     return this.http.post('/users/register', user, httpOptions);
   }
 
+  public updateUser(user: UserRegister): Observable<any> {
+    return this.http.put('/users/update', user, httpOptions);
+  }
+
   public userInfo(): Observable<any> {
     return this.http.get('/users/userinfo', httpOptions);
   }

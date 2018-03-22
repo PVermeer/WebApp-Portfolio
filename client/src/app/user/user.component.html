@@ -1,15 +1,8 @@
 <section>
   <div class="container">
-    <p>
-      user works!
-    </p>
-    <button (click)="logout()">Logout</button>
+    <app-user-details></app-user-details>
     <br>
     <br>
-
-    <button (click)="userInfo()">User info</button>
-    <br>
-    <br>
-    {{info}}
+    <button mat-raised-button color="primary" (click)="logout()">Log out</button>
   </div>
 </section>

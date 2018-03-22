@@ -20,7 +20,7 @@ import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 })
 export class SidenavComponent implements OnDestroy {
 
-  // Get elements for toggle options
+  // Get elements
   @ViewChild('sidenav') private sidenav: MatSidenav;
   @ViewChild('expHomeNav') private expHomeNav: MatExpansionPanel;
   @ViewChildren('expRouteNav') private expRoutedNav: QueryList<MatExpansionPanel>;
@@ -41,13 +41,11 @@ export class SidenavComponent implements OnDestroy {
   public sidenavContent: SidenavContent[];
   private _mobileQueryListener: () => void;
 
-  // Smooth scroll
+  // Methods
   public scrollTo(element) { this.sidenavService.scrollIntoView(element); }
 
-  // Toggle theme for entire app
   public toggleTheme(event) { this.sidenavService.passThemeToggle(event.checked); }
 
-  // Router animation
   public getState(outlet) { return outlet.activatedRouteData.state; }
 
   // Login

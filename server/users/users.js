@@ -20,6 +20,7 @@ router.get('/check', controller.checkDuplicate);
 router.use(requiresUserAuth);
 router.get('/auth', controller.authenticate);
 router.get('/userinfo', controller.userInfo);
+router.put('/update', controller.userUpdate);
 
 // Admin authentication
 router.use(requiresAdminAuth);

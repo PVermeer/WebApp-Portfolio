@@ -1,7 +1,7 @@
 // Auth services
 const {
   createTokens, comparePasswords, hashPassword, findUserByEmail,
-  findUserByUsername, saveUser,
+  findUserByUsername, saveUser, updateUser,
 } = require('./auth.service');
 
 // Models
@@ -22,11 +22,12 @@ const saveUserError = { error: 'Could not save user to the database' };
 // Success messages
 const registrationSuccess = { success: 'Whoopie, registration successful!' };
 const loginSuccess = { success: 'Whoopie, login successful!' };
+const updateSuccess = { success: 'Whoopie, update successful!' };
 
 
 // --------------functions--------------
 
-// Check for duplicates as validation in register form
+// Check for duplicates
 async function checkDuplicate(query) {
   if (query.username) {
     const user = await findUserByUsername(query.username, { username: 1, _id: 0 });
@@ -67,20 +68,44 @@ async function register(userForm) {
     checkDuplicate({ email: userForm.email }),
   ]);
 
-  if (exists.every(x => x !== null)) return duplicateError;
+  if (exists.some(x => x !== null)) { return duplicateError; }
 
+  user.usernameIndex = user.username.toLowerCase().trim();
   user.hash = await hashPassword(userForm.password);
 
-  await saveUser(user);
-  if (!user) return saveUserError;
+  const savedUser = await saveUser(user);
+  if (!savedUser) return saveUserError;
+
   return registrationSuccess;
+}
+
+// Update user
+async function userUpdate(req) {
+  const updateForm = req.body;
+  Object.keys(updateForm).forEach((key => (updateForm[key] === null || '') && delete updateForm[key]));
+  const { userId } = req;
+
+  const exists = [];
+  if (updateForm.username) exists.push(await checkDuplicate({ username: updateForm.username }));
+  if (updateForm.email) exists.push(await checkDuplicate({ email: updateForm.email }));
+
+  if (exists.some(x => x !== null)) {
+    return duplicateError;
+  }
+
+  if (updateForm.username) updateForm.usernameIndex = updateForm.username.toLowerCase().trim();
+  if (updateForm.password) updateForm.hash = await hashPassword(updateForm.password);
+
+  const result = await updateUser(updateForm, userId);
+  if (!result) return saveUserError;
+  return updateSuccess;
 }
 
 function userInfo(req) {
   const { userId } = req;
   return User.findOne(
     { _id: userId },
-    { _id: 0, hash: 0 },
+    { _id: 0, hash: 0, usernameIndex: 0 },
     (error, user) => {
       if (error) return error;
       return user;
@@ -88,9 +113,10 @@ function userInfo(req) {
   );
 }
 
+userService.checkDuplicate = checkDuplicate;
 userService.logIn = logIn;
 userService.register = register;
-userService.checkDuplicate = checkDuplicate;
+userService.userUpdate = userUpdate;
 userService.userInfo = userInfo;
 
 module.exports = userService;

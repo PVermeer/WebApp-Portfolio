@@ -1,0 +1,60 @@
+<div id="progress-wrapper">
+  <mat-progress-bar mode="indeterminate" *ngIf="progressBar"></mat-progress-bar>
+</div>
+<h3 mat-dialog-title>{{title}}</h3>
+<mat-dialog-content>
+  <mat-horizontal-stepper linear #stepper>
+    <mat-step [stepControl]="confirmForm" [label]="confirmStep1" editable="false">
+      <br>
+      <br>
+      <form [formGroup]="confirmForm" (ngSubmit)="confirm(confirmForm.value)">
+
+        <mat-form-field *ngFor="let field of confirmFormInputfields">
+          <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
+          <mat-error *ngIf="(confirmForm.controls[field.formControlName].errors | json | slice:5:6) !== '0'
+                && !confirmForm.controls[field.formControlName].valid
+                && (confirmForm.controls[field.formControlName].touched || confirmForm.controls[field.formControlName].dirty)">
+            {{ field.alert }}
+          </mat-error>
+          <mat-error *ngIf="(confirmForm.controls[field.formControlName].errors | json | slice:5:6) === '0'
+                && (confirmForm.controls[field.formControlName].touched || confirmForm.controls[field.formControlName].dirty)">
+            {{ field.asyncAlert }}
+          </mat-error>
+        </mat-form-field>
+
+        <input id="hide" matInput type="text" formControlName="userValidator">
+
+        <br>
+        <div class="center-container">
+          <button mat-raised-button color="primary" type="submit">Confirm</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [label]="confirmStep2">
+      <form [formGroup]="userForm" (ngSubmit)="updateUser(userForm.value)">
+
+        <mat-form-field *ngFor="let field of (userFormFields | async)" floatLabel="always">
+          <mat-label>{{field.label}}</mat-label>
+          <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
+          <mat-error *ngIf="(userForm.controls[field.formControlName].errors | json | slice:5:6) !== '0'
+                          && !userForm.controls[field.formControlName].valid
+                          && (userForm.controls[field.formControlName].touched || userForm.controls[field.formControlName].dirty)">
+            {{ field.alert }}
+          </mat-error>
+          <mat-error *ngIf="(userForm.controls[field.formControlName].errors | json | slice:5:6) === '0'
+                          && (userForm.controls[field.formControlName].touched || userForm.controls[field.formControlName].dirty)">
+            {{ field.asyncAlert }}
+          </mat-error>
+        </mat-form-field>
+
+        <br>
+        <div class="center-container">
+          <button mat-raised-button color="primary" type="button" (click)="matDialog.close()">Go back</button>
+          <button mat-raised-button color="primary" type="submit">Update</button>
+        </div>
+
+      </form>
+    </mat-step>
+  </mat-horizontal-stepper>
+</mat-dialog-content>

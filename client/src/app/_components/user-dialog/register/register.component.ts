@@ -17,6 +17,7 @@ import {
 })
 export class RegisterComponent {
 
+  // Get elements
   @ViewChild('regForm') private regForm;
 
   // Variables
@@ -63,7 +64,7 @@ export class RegisterComponent {
     },
   ];
 
-  // Register new user
+  // Methods
   public register(registerForm) {
     this.userDialogComponent.progressBar = true;
 
@@ -85,7 +86,6 @@ export class RegisterComponent {
     },
       error => {
         this.userDialogComponent.progressBar = false;
-        console.log(error);
       });
   }
 
@@ -99,9 +99,7 @@ export class RegisterComponent {
     this.registerForm = this.validateRegister();
   }
 
-  // -----------------Constructor methods------------------------
-
-  // Validations
+  // Constructor methods
   private validateRegister() {
     return this.formBuilder.group({
       firstName: ['asd', [

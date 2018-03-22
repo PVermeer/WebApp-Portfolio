@@ -21,7 +21,9 @@ import { UserDialogComponent } from './_components/user-dialog/user-dialog.compo
 import { SnackbarComponent } from './_components/snackbar/snackbar.component';
 import { LoginComponent } from './_components/user-dialog/login/login.component';
 import { RegisterComponent } from './_components/user-dialog/register/register.component';
+import { UserDetailsComponent } from './user/user-details/user-details.component';
 import { ErrorInterceptorProvider } from './_authentication/error.interceptor';
+import { ConfirmDialogComponent } from './user/user-details/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,9 @@ import { ErrorInterceptorProvider } from './_authentication/error.interceptor';
     UserDialogComponent,
     SnackbarComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    UserDetailsComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +51,7 @@ import { ErrorInterceptorProvider } from './_authentication/error.interceptor';
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  entryComponents: [ContactDialogComponent, UserDialogComponent],
+  entryComponents: [ContactDialogComponent, UserDialogComponent, ConfirmDialogComponent],
   providers: [AuthGuard, JwtInterceptorProvider, ErrorInterceptorProvider, SnackbarComponent],
   bootstrap: [AppComponent]
 })

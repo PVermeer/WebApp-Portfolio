@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { UserService } from '../_services/user.service';
 
@@ -8,25 +8,15 @@ import { UserService } from '../_services/user.service';
   styleUrls: ['./user.component.css'],
   providers: [UserService],
 })
-export class UserComponent implements OnInit {
-
-  public info: string;
-
-  constructor(
-    private userService: UserService,
-  ) { }
+export class UserComponent {
 
   public logout() {
     this.userService.logout();
   }
 
-  public userInfo() {
-    this.userService.userInfo().subscribe((response) => {
-    this.info = JSON.stringify(response);
-    });
-  }
+  constructor(
+    private userService: UserService,
+  ) { }
 
-  ngOnInit() {
-  }
 
 }

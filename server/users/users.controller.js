@@ -28,3 +28,9 @@ exports.userInfo = (req, res) => {
     .then((response) => { res.json(response); })
     .catch((err) => { res.status(400).send(err); });
 };
+
+exports.userUpdate = (req, res) => {
+  userService.userUpdate(req)
+    .then((response) => { res.json(response); })
+    .catch((err) => { res.status(400).send(err); });
+};

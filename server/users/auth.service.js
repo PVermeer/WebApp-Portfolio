@@ -37,6 +37,14 @@ exports.saveUser = userForm => new Promise((resolve, reject) => {
   });
 });
 
+// Update user
+exports.updateUser = (updateForm, id) => new Promise((resolve, reject) => {
+  User.update({ _id: id }, { $set: updateForm }, { runValidators: true }, (error, result) => {
+    if (error) reject(error);
+    resolve(result);
+  });
+});
+
 // Password
 exports.hashPassword = password => new Promise((resolve, reject) => {
   hash(password, 10, (error, result) => {
