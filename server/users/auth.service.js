@@ -15,7 +15,8 @@ exports.findUserByEmail = (email, fetch) => new Promise((resolve, reject) => {
   });
 });
 
-exports.findUserByUsername = (usernameIndex, fetch) => new Promise((resolve, reject) => {
+exports.findUserByUsername = (username, fetch) => new Promise((resolve, reject) => {
+  const usernameIndex = username.toLowerCase().trim();
   User.findOne({ usernameIndex }, fetch, (error, result) => {
     if (error) reject(error);
     resolve(result);
@@ -62,8 +63,8 @@ exports.comparePasswords = (password, hashPassword) => new Promise((resolve, rej
 
 // ----------------------Tokens--------------------
 exports.createTokens = (id, type, hashPassword) => new Promise((resolve) => {
-  const token = jwt.sign({ user: id, type }, secret, { expiresIn: '10m' });
-  const refreshToken = jwt.sign({ user: id, type }, secret2 + hashPassword, { expiresIn: '30m' });
+  const token = jwt.sign({ user: id, type }, secret, { expiresIn: '30m' });
+  const refreshToken = jwt.sign({ user: id, type }, secret2 + hashPassword, { expiresIn: '7d' });
 
   Promise.all([token, refreshToken]).then(() => {
     const tokens = { token, refreshToken };
@@ -102,6 +103,7 @@ exports.refreshTokens = async (refreshToken) => {
   const newTokens = await exports.createTokens(user._id, user.type, user.hash);
   if (!newTokens.token || !newTokens.refreshToken) return false;
 
+  newTokens.userId = user.id;
   return newTokens;
 };
 
@@ -123,6 +125,7 @@ exports.requiresUserAuth = async (req, res, next) => {
   const newTokens = await exports.refreshTokens(refreshToken);
   if (!newTokens) return res.status(401).send(authError);
 
+  req.UserId = newTokens.userId;
   res.set('x-token', newTokens.token);
   res.set('x-refresh-token', newTokens.refreshToken);
 

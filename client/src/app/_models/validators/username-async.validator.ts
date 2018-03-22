@@ -38,8 +38,7 @@ export class UsernameAsyncValidator {
       });
     }
     return Observable.timer(this.options.debounceTime).switchMap(() => {
-      const input = value.toLowerCase().trim();
-      return this.options.service.checkUsername(input);
+      return this.options.service.checkUsername(value);
     });
   }
 }

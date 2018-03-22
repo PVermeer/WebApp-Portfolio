@@ -48,8 +48,7 @@ export class SidenavComponent implements OnDestroy {
 
   public getState(outlet) { return outlet.activatedRouteData.state; }
 
-  // Login
-  public logIn() {
+  public login() {
     this.matDialog.open(UserDialogComponent);
   }
 

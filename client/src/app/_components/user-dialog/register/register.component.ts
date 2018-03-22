@@ -68,11 +68,6 @@ export class RegisterComponent {
   public register(registerForm) {
     this.userDialogComponent.progressBar = true;
 
-    // Create username index
-    const usernameIndex = registerForm.username;
-    registerForm.usernameIndex = usernameIndex;
-
-    // Create user
     this.userService.registerUser(registerForm).subscribe(response => {
       this.userDialogComponent.progressBar = false;
 
