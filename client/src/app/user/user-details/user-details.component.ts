@@ -1,10 +1,10 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import { MatDialog } from '@angular/material';
 
 import { UserService } from '../../_services/user.service';
-import { SnackbarComponent } from '../../_components/snackbar/snackbar.component';
 import {
   usernameValidator, usernameAsyncValidator, emailAsyncValidator,
   passwordValidator, matchValidator, emailValidator,
@@ -15,7 +15,6 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
   selector: 'app-user-details',
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.css'],
-  providers: [SnackbarComponent],
 })
 export class UserDetailsComponent implements OnInit {
 
@@ -55,7 +54,6 @@ export class UserDetailsComponent implements OnInit {
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
-    private snackbarComponent: SnackbarComponent,
     private matDialog: MatDialog,
   ) {
     this.userForm = this.validateForm();

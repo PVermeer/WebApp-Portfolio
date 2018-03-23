@@ -3,6 +3,7 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
 import { Observable } from 'rxjs/Observable';
 import { MatDialog } from '@angular/material';
 import 'rxjs/add/observable/throw';
+import 'rxjs/add/operator/catch';
 
 import { UserDialogComponent } from '../_components/user-dialog/user-dialog.component';
 import { SnackbarComponent } from '../_components/snackbar/snackbar.component';
