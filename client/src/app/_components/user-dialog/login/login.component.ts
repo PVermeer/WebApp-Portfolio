@@ -46,7 +46,7 @@ export class LoginComponent {
       }
 
       this.snackbarComponent.snackbarSucces(response.success);
-      this.userDialogComponent.matDialog.close();
+      this.userDialogComponent.matDialog.close(response.success);
     },
       error => {
         this.userDialogComponent.progressBar = false;

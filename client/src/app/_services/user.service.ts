@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { UserRegister, UserLogin } from '../_models/user.model';
 import { Router } from '@angular/router';
+import { SnackbarComponent } from '../_components/snackbar/snackbar.component';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -15,6 +16,7 @@ export class UserService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private snackbarComponent: SnackbarComponent,
   ) { }
 
   public login(loginForm: UserLogin): Observable<any> {
@@ -24,6 +26,11 @@ export class UserService {
   public logout() {
     localStorage.removeItem('currentUser');
     this.router.navigate(['/home']);
+    this.snackbarComponent.snackbarSucces('Logged out');
+  }
+
+  public loginCheck(): Observable<any> {
+    return this.http.get('/users/logincheck', httpOptions);
   }
 
   public getById(_id: string): Observable<any> {

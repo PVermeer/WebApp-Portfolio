@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnDestroy, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { Component, ChangeDetectorRef, OnDestroy, ViewChild, ViewChildren, QueryList, OnInit } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MatSidenav, MatExpansionPanel, MatDialog } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
@@ -8,17 +8,17 @@ import { SidenavContent } from '../../_models/sidenav.model';
 import { SidenavService } from '../../_services/sidenav.service';
 import { routerTransition } from '../../_animations/router.animation';
 import { UserDialogComponent } from '../user-dialog/user-dialog.component';
+import { UserService } from '../../_services/user.service';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.css'],
-  providers: [
-    MediaMatcher,
-  ],
+  providers: [MediaMatcher, UserService],
   animations: [routerTransition()]
 })
-export class SidenavComponent implements OnDestroy {
+export class SidenavComponent implements OnInit, OnDestroy {
 
   // Get elements
   @ViewChild('sidenav') private sidenav: MatSidenav;
@@ -40,6 +40,7 @@ export class SidenavComponent implements OnDestroy {
   public mobileQuery: MediaQueryList;
   public sidenavContent: SidenavContent[];
   private _mobileQueryListener: () => void;
+  public isLoggedIn = false;
 
   // Methods
   public scrollTo(element) { this.sidenavService.scrollIntoView(element); }
@@ -49,14 +50,21 @@ export class SidenavComponent implements OnDestroy {
   public getState(outlet) { return outlet.activatedRouteData.state; }
 
   public login() {
-    this.matDialog.open(UserDialogComponent);
+    const loginDialog = this.matDialog.open(UserDialogComponent);
+    loginDialog.afterClosed().subscribe(success => {
+      if (success) { this.isLoggedIn = true; }
+    });
   }
+
+  public logout() { this.userService.logout(); this.isLoggedIn = false; }
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
     private sidenavService: SidenavService,
     public matDialog: MatDialog,
+    private userService: UserService,
+    private snackbarComponent: SnackbarComponent,
   ) {
     // Sidenav mobile support
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -72,6 +80,15 @@ export class SidenavComponent implements OnDestroy {
 
     // Sends out scroll events on sidenav content
     this.scrollEvents();
+  }
+
+  ngOnInit() {
+    // Check if user still has valid tokens
+    this.userService.loginCheck().subscribe(response => {
+      if (response.error) { return this.isLoggedIn = false; }
+      this.isLoggedIn = true;
+      this.snackbarComponent.snackbarSucces(response.success);
+    });
   }
 
   ngOnDestroy(): void {

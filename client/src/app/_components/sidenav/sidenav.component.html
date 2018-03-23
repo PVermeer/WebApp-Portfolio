@@ -11,6 +11,18 @@
         {{link.label}}
       </a>
     </nav>
+    <span class="toolbar-spacer"></span>
+
+    <button *ngIf="isLoggedIn; else loginButton" mat-button [matMenuTriggerFor]="menu">User menu</button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="logout()">Logout</button>
+      <a mat-menu-item routerLink="user">User page</a>
+    </mat-menu>
+
+    <ng-template #loginButton>
+      <button mat-button id="login-button" (click)="login()">Login</button>
+    </ng-template>
+
   </mat-toolbar>
 
   <mat-sidenav-container [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
@@ -49,15 +61,24 @@
       <!-- Bottom cards -->
       <mat-card>
         <mat-list>
-          <mat-list-item>
-            <a mat-list-item (click)="logIn()">Login</a>
-          </mat-list-item>
-          <mat-list-item>
+
+          <mat-list-item *ngIf="isLoggedIn">
             <a mat-list-item routerLink="user">User page</a>
           </mat-list-item>
+
+          <mat-list-item *ngIf="isLoggedIn; else logoutItem">
+            <a mat-list-item (click)="logout()">Logout</a>
+          </mat-list-item>
+          <ng-template #logoutItem>
+            <mat-list-item>
+              <a mat-list-item (click)="login()">Login</a>
+            </mat-list-item>
+          </ng-template>
+
           <mat-list-item>
             <mat-slide-toggle color="accent" (change)="toggleTheme($event)">Dark theme</mat-slide-toggle>
           </mat-list-item>
+
         </mat-list>
       </mat-card>
     </mat-sidenav>
