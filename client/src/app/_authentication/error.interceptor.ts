@@ -24,7 +24,11 @@ export class ErrorInterceptor implements HttpInterceptor {
         if (status === 401) { this.matDialog.open(UserDialogComponent); }
 
       }
-      this.snackbarComponent.snackbarError(responseError.status + ' ' + responseError.statusText);
+      if (typeof responseError.error === 'string' || responseError.error instanceof String) {
+        this.snackbarComponent.snackbarError(responseError.status + ' ' + responseError.error);
+      } else {
+        this.snackbarComponent.snackbarError(responseError.status + ' ' + responseError.statusText);
+      }
       return Observable.throw(responseError.error);
     });
   }
