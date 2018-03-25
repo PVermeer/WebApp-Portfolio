@@ -65,14 +65,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-
     // Change sidenav contents based on route
-    this.sideNavContentChange(sidenavService);
-
+    this.sideNavContentChange();
     // Toggle materials based on route
-    this.toggleSidenav(sidenavService);
-    this.toggleExpansions(sidenavService);
-
+    this.toggleSidenav();
+    this.toggleExpansions();
     // Sends out scroll events on sidenav content
     this.scrollEvents();
     // Subscribe to login status
@@ -95,15 +92,15 @@ export class SidenavComponent implements OnInit, OnDestroy {
   // ---------------------------------------------------------------------------
 
   // Constructor methods
-  private sideNavContentChange(sidenavService: SidenavService) {
-    sidenavService.sidenavContent$.subscribe(sidenavPassedContent => {
+  private sideNavContentChange() {
+    this.sidenavService.sidenavContent$.subscribe(sidenavPassedContent => {
       this.sidenavContent = sidenavPassedContent;
       this.changeDetectorRef.detectChanges();
     });
   }
 
-  private toggleSidenav(sidenavService: SidenavService) {
-    sidenavService.sidenavToggle$.subscribe(sidenavToggle => {
+  private toggleSidenav() {
+    this.sidenavService.sidenavToggle$.subscribe(sidenavToggle => {
       setTimeout(() => {
         if (sidenavToggle === 'open') {
           return this.sidenav.open();
@@ -118,8 +115,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
   }
 
-  private toggleExpansions(sidenavService: SidenavService) {
-    sidenavService.expansionToggle$.subscribe(expansionToggle => {
+  private toggleExpansions() {
+    this.sidenavService.expansionToggle$.subscribe(expansionToggle => {
       setTimeout(() => {
         this.expHomeNav.close();
         if (expansionToggle === 'open') {

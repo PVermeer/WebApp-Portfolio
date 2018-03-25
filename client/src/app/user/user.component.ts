@@ -23,9 +23,7 @@ export class UserComponent implements OnInit, AfterViewInit {
     ],
   }];
 
-  public logout() {
-    this.userService.logout();
-  }
+  public logout() { this.userService.logout(); }
 
   constructor(
     private sidenavService: SidenavService,
