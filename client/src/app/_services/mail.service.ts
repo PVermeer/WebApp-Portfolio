@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ContactFormInput } from '../_models/backend';
+import { ContactFormInput } from '../_models/mail';
 import { Observable } from 'rxjs/Observable';
 
 const httpOptions = {
@@ -8,14 +8,14 @@ const httpOptions = {
 };
 
 @Injectable()
-export class BackendService {
+export class MailService {
 
   constructor(
     private http: HttpClient,
   ) { }
 
-  public postRequest(body: ContactFormInput): Observable<any> {
-    return this.http.post('mail/contact-form', body, httpOptions);
+  public postRequest(contactForm: ContactFormInput): Observable<any> {
+    return this.http.post('mail/contact-form', contactForm, httpOptions);
   }
 
 }

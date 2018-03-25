@@ -3,14 +3,15 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 
 import { ContactDialogComponent } from './contact-dialog/contact-dialog.component';
-import { ContactFormInput } from '../../_models/backend';
-import { BackendService } from '../../_services/backend.service';
+import { ContactFormInput } from '../../_models/mail';
+import { MailService } from '../../_services/mail.service';
+import { SnackbarComponent } from '../../_components/snackbar/snackbar.component';
 
 @Component({
   selector: 'app-contact-form',
   templateUrl: './contact-form.component.html',
   styleUrls: ['./contact-form.component.css'],
-  providers: [BackendService],
+  providers: [MailService],
 })
 export class ContactFormComponent {
 
@@ -56,34 +57,29 @@ export class ContactFormComponent {
     }
   ];
 
-  // Post form to back-end
+  // Methods
   public postForm(formInput) {
     this.progressBar = true;
-    this.postBackendService.postRequest(formInput).subscribe(
-      (res) => {
+    this.mailService.postRequest(formInput).subscribe((res) => {
         this.progressBar = false;
-        const dialog = this.matDialog.open(ContactDialogComponent, {
-          data: res
-        });
+        this.snackbarComponent.snackbarSucces(res.success);
+        const dialog = this.matDialog.open(ContactDialogComponent, { data: { res, formInput }});
       },
       (error) => {
         this.progressBar = false;
-        const dialog = this.matDialog.open(ContactDialogComponent, {
-          data: error
-        });
+        const dialog = this.matDialog.open(ContactDialogComponent, { data: { error, formInput }});
       }
     );
   }
 
   constructor(
     private formBuilder: FormBuilder,
-    private postBackendService: BackendService,
+    private mailService: MailService,
     public matDialog: MatDialog,
+    private snackbarComponent: SnackbarComponent,
   ) {
     // Form validation
     this.contactForm = this.validateContactForm();
-
-
   }
 
   // -----------------Constructor methods------------------------

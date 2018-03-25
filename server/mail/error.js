@@ -15,19 +15,17 @@ function flagTimeOut() {
 }
 
 exports.sendErrorMail = (error) => {
-  if (!timeoutFlag) {
-    flagTimeOut();
+  if (timeoutFlag) return;
+  flagTimeOut();
 
-    // Create the transporter object for nodeMailer
-    const transporter = nodeMailer.createTransport(config.gmailConfig);
-    const errorMail = {
-      from: '"Portfolio WebApp" <noreply@portfolio.nl>',
-      to: 'pimwebsites@gmail.com',
-      subject: 'Portfolio ERROR',
-      html: ` <b> Date: </b>${new Date()}<br>
+  const transporter = nodeMailer.createTransport(config.gmailConfig);
+  const errorMail = {
+    from: '"Portfolio WebApp" <noreply@portfolio.nl>',
+    to: 'pimwebsites@gmail.com',
+    subject: 'Portfolio ERROR',
+    html: ` <b> Date: </b>${new Date()}<br>
           <b> Error: </b><br>${JSON.stringify(error, null, '\t')}`,
-    };
+  };
 
-    transporter.sendMail(errorMail);
-  }
+  transporter.sendMail(errorMail);
 };

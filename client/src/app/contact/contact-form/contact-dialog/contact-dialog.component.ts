@@ -16,32 +16,32 @@ export class ContactDialogComponent {
   public button: string;
 
   // Custom messages
-  private succesMsg = 'Bedankt voor je bericht. Ik zal spoedig contact met je opnemen via:';
-  private errorMsg = 'Oeps... er is iets fout gegaan... Je kunt contact opnemen via:';
-  private errorMail = 'Some email or link'; // This is send to the client so watchout for spam.
+  private succesMsg = 'Thanks for the message. I\'ll contact you soon via:';
+  private errorMsg = 'Oops... something went wrong... You can contact me via:';
+  private errorMail = 'Some email or link'; // This is send to the client so watch out for spam.
 
   constructor(
     private dialogRef: MatDialogRef<ContactDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    if (data.status === 'succes') {
-      this.title = data.status;
-      this.name = 'Beste ' + data.name + ',';
+    if (data.res.success) {
+      this.title = 'Succes!';
+      this.name = 'Yoww ' + data.formInput.name + ',';
       this.body = this.succesMsg;
-      this.email = data.email;
+      this.email = data.formInput.email;
       this.button = 'Cool!';
       return;
     }
-    if (data.status === 'failure') {
-      this.title = data.status;
-      this.name = 'Beste ' + data.name + ',';
+    if (data.res.error) {
+      this.title = 'Something went wrong :(';
+      this.name = 'Yoww ' + data.formInput.name + ',';
       this.body = this.errorMsg;
       this.email = this.errorMail;
       this.button = 'Ok...';
       return;
     }
     this.title = data.statusText;
-    this.name = data.status;
+    this.name = data.formInput.status;
     this.body = this.errorMsg;
     this.email = this.errorMail;
     this.button = 'Ok...';
