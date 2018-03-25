@@ -38,7 +38,7 @@ export class LoginComponent {
     this.userDialogComponent.progressBar = true;
 
     // Login user
-    this.userService.login(loginForm).subscribe(response => {
+    this.userService.loginUser(loginForm).subscribe(response => {
       this.userDialogComponent.progressBar = false;
 
       if (response.error) {

@@ -49,14 +49,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   public getState(outlet) { return outlet.activatedRouteData.state; }
 
-  public login() {
-    const loginDialog = this.matDialog.open(UserDialogComponent);
-    loginDialog.afterClosed().subscribe(success => {
-      if (success) { this.isLoggedIn = true; }
-    });
-  }
+  public login() { this.userService.login(); }
 
-  public logout() { this.userService.logout(); this.isLoggedIn = false; }
+  public logout() { this.userService.logout(); }
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -80,6 +75,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
     // Sends out scroll events on sidenav content
     this.scrollEvents();
+    // Subscribe to login status
+    this.toggleIsLoggedIn();
   }
 
   ngOnInit() {
@@ -147,6 +144,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
       Observable.fromEvent(document.getElementById('sidenav-content'), 'scroll').subscribe(event =>
         this.sidenavService.passScrollEvent(event));
     }, 100);
+  }
+  private toggleIsLoggedIn() {
+    this.userService.isLoggedIn$.subscribe(isLoggedIn => {
+      this.isLoggedIn = isLoggedIn;
+    });
   }
 
 }

@@ -65,7 +65,7 @@ export class ConfirmDialogComponent implements OnInit {
   public confirm(loginForm) {
     this.progressBar = true;
 
-    this.userService.login(loginForm).subscribe(response => {
+    this.userService.loginUser(loginForm).subscribe(response => {
       this.progressBar = false;
 
       if (response.error) {
