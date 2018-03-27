@@ -1,23 +1,24 @@
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+
+import { UserService } from '../_services/user.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private http: HttpClient,
+    private userService: UserService,
   ) { }
 
-  canActivate(): Observable<boolean> {
-    return this.http.get('/users/auth', { observe: 'response' }).map(response => {
-      if (response.status === 200) {
-        return true;
-      }
-      return false;
-    });
+  async canActivate(): Promise<boolean> {
+    const isLoggedIn = await this.userService.checkLogin();
+    if (isLoggedIn) { return true; }
+
+    const login = await this.userService.login();
+    if (login) { return true; }
+
+    return false;
   }
 
 }

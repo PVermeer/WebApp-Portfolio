@@ -15,7 +15,7 @@ import { SnackbarComponent } from '../snackbar/snackbar.component';
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.css'],
-  providers: [MediaMatcher, UserService],
+  providers: [MediaMatcher],
   animations: [routerTransition()]
 })
 export class SidenavComponent implements OnInit, OnDestroy {
@@ -78,11 +78,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Check if user still has valid tokens
-    this.userService.loginCheck().subscribe(response => {
-      if (response.error) { return this.isLoggedIn = false; }
-      this.isLoggedIn = true;
-      this.snackbarComponent.snackbarSucces(response.success);
-    });
+    this.userService.checkLogin();
   }
 
   ngOnDestroy(): void {
@@ -142,9 +138,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
         this.sidenavService.passScrollEvent(event));
     }, 100);
   }
+
   private toggleIsLoggedIn() {
     this.userService.isLoggedIn$.subscribe(isLoggedIn => {
-      this.isLoggedIn = isLoggedIn;
+        this.isLoggedIn = isLoggedIn;
     });
   }
 

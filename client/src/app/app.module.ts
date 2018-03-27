@@ -24,6 +24,8 @@ import { RegisterComponent } from './_components/user-dialog/register/register.c
 import { UserDetailsComponent } from './user/user-details/user-details.component';
 import { ErrorInterceptorProvider } from './_authentication/error.interceptor';
 import { ConfirmDialogComponent } from './user/user-details/confirm-dialog/confirm-dialog.component';
+import { UserService } from './_services/user.service';
+import { SidenavService } from './_services/sidenav.service';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,7 @@ import { ConfirmDialogComponent } from './user/user-details/confirm-dialog/confi
     HttpClientModule,
   ],
   entryComponents: [ContactDialogComponent, UserDialogComponent, ConfirmDialogComponent],
-  providers: [AuthGuard, JwtInterceptorProvider, ErrorInterceptorProvider, SnackbarComponent],
+  providers: [AuthGuard, JwtInterceptorProvider, ErrorInterceptorProvider, SnackbarComponent, UserService, SidenavService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

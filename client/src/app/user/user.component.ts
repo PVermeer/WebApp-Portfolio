@@ -8,7 +8,7 @@ import { SidenavService } from '../_services/sidenav.service';
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
-  providers: [UserService],
+  providers: [],
 })
 export class UserComponent implements OnInit, AfterViewInit {
 
