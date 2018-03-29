@@ -1,0 +1,19 @@
+.mat-table {
+  max-height: 300px;
+  overflow: auto;
+}
+
+#user-table {
+  display: flex;
+  flex-direction: column;
+  min-width: 800px;
+}
+
+/* Colums */
+.mat-column-type {
+  max-width: 70px;
+}
+
+.mat-column-created_at {
+  max-width: 85px;
+}

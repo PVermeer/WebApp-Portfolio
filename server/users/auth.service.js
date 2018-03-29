@@ -43,6 +43,13 @@ exports.findUserById = (_id, fetch) => new Promise((resolve, reject) => {
   });
 });
 
+exports.findAllUsers = () => new Promise((resolve, reject) => {
+  User.find({}, { hash: 0, usernameIndex: 0 }, { lean: true }, (error, result) => {
+    if (error) reject(error);
+    resolve(result);
+  });
+});
+
 // Save temp user
 exports.saveTempUser = userForm => new Promise(async (resolve, reject) => {
   const user = userForm;
@@ -157,7 +164,11 @@ exports.requiresUserAuth = async (req, res, next) => {
   if (!token) return res.status(401).send(authError);
 
   const verifiedToken = await exports.verifyToken(token);
-  if (verifiedToken) { req.userId = verifiedToken.user; return next(); }
+  if (verifiedToken) {
+    req.userId = verifiedToken.user;
+    req.userType = verifiedToken.type;
+    return next();
+  }
 
   const refreshToken = req.headers['x-refresh-token'];
   if (!refreshToken) return res.status(401).send(authError);
@@ -166,26 +177,6 @@ exports.requiresUserAuth = async (req, res, next) => {
   if (!newTokens) return res.status(401).send(authError);
 
   req.UserId = newTokens.userId;
-  res.set('x-token', newTokens.token);
-  res.set('x-refresh-token', newTokens.refreshToken);
-
-  return next();
-};
-
-// Admin authentication
-exports.requiresAdminAuth = async (req, res, next) => {
-  const token = req.headers['x-token'];
-  if (!token) return res.status(401).send();
-
-  const verifiedToken = await exports.verifyToken(token);
-  if (verifiedToken.type === 'admin') return next();
-
-  const refreshToken = req.headers['x-refresh-token'];
-  if (!refreshToken) return res.status(401).send();
-
-  const newTokens = await exports.refreshTokens(refreshToken);
-  if (!newTokens) return res.status(401).send();
-
   res.set('x-token', newTokens.token);
   res.set('x-refresh-token', newTokens.refreshToken);
 

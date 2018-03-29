@@ -42,3 +42,9 @@ exports.userUpdate = (req, res) => {
     .then((response) => { res.json(response); })
     .catch((err) => { res.status(400).send(err); });
 };
+
+exports.userGetAll = (req, res) => {
+  userService.userGetAll(req)
+    .then((response) => { res.json(response); })
+    .catch((err) => { res.status(400).send(err); });
+};

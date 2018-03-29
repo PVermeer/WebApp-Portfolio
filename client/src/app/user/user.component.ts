@@ -12,9 +12,13 @@ import { SidenavService } from '../_services/sidenav.service';
 })
 export class UserComponent implements OnInit, AfterViewInit {
 
+  // Variables
+  public isAdmin = false;
+
   // Sidenav config
   private sidenavToggle: MatToggle = 'open';
   private expansionToggle: MatToggleExp = 'open';
+
   // Sidenav content
   private sidenavContent: SidenavContent[] = [{
     title: 'User page',
@@ -28,7 +32,10 @@ export class UserComponent implements OnInit, AfterViewInit {
   constructor(
     private sidenavService: SidenavService,
     private userService: UserService,
-  ) { }
+  ) {
+    // User type
+    this.getUsertype();
+  }
 
   ngOnInit() {
     // Sidenav config
@@ -39,6 +46,19 @@ export class UserComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     // Sidenav config
     this.sidenavService.passSidenavToggle(this.sidenavToggle);
+  }
+
+  // ---------------------------------------------------------------------------
+
+  // Constructor methods
+  private getUsertype() {
+    this.userService.userType$.subscribe(response => {
+      if (response === 'admin') {
+        this.sidenavContent[0].items.unshift({ label: 'Admin panel', path: 'admin' });
+        this.isAdmin = true;
+      }
+    });
+    this.userService.passUserType();
   }
 
 }

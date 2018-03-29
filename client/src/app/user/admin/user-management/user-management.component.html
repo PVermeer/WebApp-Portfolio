@@ -1,0 +1,38 @@
+<button mat-raised-button (click)="getAllUsers()">Get users</button>
+<br>
+<mat-table id="user-table" [dataSource]=userArray>
+
+  <ng-container matColumnDef="userName">
+    <mat-header-cell *matHeaderCellDef> Username </mat-header-cell>
+    <mat-cell *matCellDef="let user"> {{user.username}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="firstName">
+    <mat-header-cell *matHeaderCellDef> First name </mat-header-cell>
+    <mat-cell *matCellDef="let user"> {{user.firstName}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="lastName">
+    <mat-header-cell *matHeaderCellDef> Last name </mat-header-cell>
+    <mat-cell *matCellDef="let user"> {{user.lastName}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="type" id="column-type">
+    <mat-header-cell *matHeaderCellDef> User type </mat-header-cell>
+    <mat-cell *matCellDef="let user"> {{user.type}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <mat-header-cell *matHeaderCellDef> Email address </mat-header-cell>
+    <mat-cell *matCellDef="let user"> {{user.email}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="created_at">
+    <mat-header-cell *matHeaderCellDef> Created at </mat-header-cell>
+    <mat-cell *matCellDef="let user"> {{user.created_at | date}} </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+  <mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></mat-row>
+
+</mat-table>

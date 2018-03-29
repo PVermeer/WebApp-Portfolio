@@ -1,6 +1,10 @@
 <section>
   <div class="container">
-    <app-user-details id="userDetails"></app-user-details>
+    <div class="flex-row">
+      <app-admin id="admin" *ngIf="isAdmin"></app-admin>
+      <app-user-details id="userDetails"></app-user-details>
+    </div>
+
     <br>
     <br>
     <button mat-raised-button color="primary" (click)="logout()">Log out</button>

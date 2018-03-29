@@ -2,13 +2,10 @@
 const {
   createTokens, comparePasswords, hashPassword, findUserByEmail,
   findUserByUsername, saveTempUser, saveUser, updateUser, verifyToken, refreshTokens,
-  deleteTempUserByEmail, findUserById,
+  deleteTempUserByEmail, findUserById, findAllUsers,
 } = require('./auth.service');
 
 const { userVerificationMail } = require('../mail/mail.service');
-
-// Exports
-const userService = {};
 
 // User types
 const userTypes = {
@@ -23,6 +20,7 @@ const saveUserError = 'Could not save user to the database';
 const verifyError = 'Verification has expired, this means you\'re already verified or you waited too long...';
 const verificationMailError = 'Oh ow... Could not send verification mail';
 const mailVerifyError = 'Your e-mail has not been verified, please check your inbox or spambox.';
+const adminError = 'You\'re not an administor!';
 
 // Error messages (status 200)
 const loginError = { error: 'Oh, ow.. Username or password is incorrect' };
@@ -40,7 +38,7 @@ const verifySuccess = { success: 'E-mail verified!' };
 // --------------functions--------------
 
 // Check for duplicates
-async function checkDuplicate(query) {
+exports.checkDuplicate = async (query) => {
   if (query.username) {
     const user = await findUserByUsername(query.username, { username: 1, _id: 0 });
     if (!user) return null;
@@ -52,10 +50,10 @@ async function checkDuplicate(query) {
     if (user) return user.email;
   }
   return Promise.reject(checkDuplicateError);
-}
+};
 
 // Login
-async function logIn(loginForm, res) {
+exports.logIn = async (loginForm, res) => {
   const user = await findUserByEmail(loginForm.email, { hash: 1, username: 1, type: 1 });
   if (!user) return loginError;
 
@@ -71,16 +69,16 @@ async function logIn(loginForm, res) {
   res.set('x-refresh-token', tokens.refreshToken);
 
   return loginSuccess;
-}
+};
 
 // Register user
-async function register(req) {
+exports.register = async (req) => {
   const user = req.body;
   const { origin } = req.headers;
 
   const exists = await Promise.all([
-    checkDuplicate({ username: user.username }),
-    checkDuplicate({ email: user.email }),
+    exports.checkDuplicate({ username: user.username }),
+    exports.checkDuplicate({ email: user.email }),
   ]);
 
   if (exists.some(x => x !== null)) { return duplicateError; }
@@ -96,10 +94,10 @@ async function register(req) {
   if (!sendVerificationMail) return Promise.reject(verificationMailError);
 
   return registrationSuccess;
-}
+};
 
 // Verify email
-async function verifyEmail(req) {
+exports.verifyEmail = async (req) => {
   const token = req.query.user;
 
   const verifiedToken = await verifyToken(token);
@@ -117,10 +115,10 @@ async function verifyEmail(req) {
   await deleteTempUserByEmail(userTemp.email);
 
   return verifySuccess;
-}
+};
 
 // Login check
-async function loginCheck(req, res) {
+exports.loginCheck = async (req, res) => {
   const token = req.headers['x-token'];
   if (!token) return loginCheckError;
 
@@ -138,17 +136,21 @@ async function loginCheck(req, res) {
   res.set('x-refresh-token', newTokens.refreshToken);
 
   return loginCheckSuccess;
-}
+};
 
 // Update user
-async function userUpdate(req) {
+exports.userUpdate = async (req) => {
   const updateForm = req.body;
   Object.keys(updateForm).forEach((key => (updateForm[key] === null || '') && delete updateForm[key]));
   const { userId } = req;
 
   const exists = [];
-  if (updateForm.username) exists.push(await checkDuplicate({ username: updateForm.username }));
-  if (updateForm.email) exists.push(await checkDuplicate({ email: updateForm.email }));
+  if (updateForm.username) {
+    exists.push(await exports.checkDuplicate({ username: updateForm.username }));
+  }
+  if (updateForm.email) {
+    exists.push(await exports.checkDuplicate({ email: updateForm.email }));
+  }
 
   if (exists.some(x => x !== null)) {
     return duplicateError;
@@ -160,23 +162,24 @@ async function userUpdate(req) {
   const result = await updateUser(updateForm, userId);
   if (!result) return saveUserError;
   return updateSuccess;
-}
+};
 
-function userInfo(req) {
+// User queries
+exports.userInfo = async (req) => {
   const { userId } = req;
 
   const user = findUserById(userId, { _id: 0, hash: 0, usernameIndex: 0 });
   if (!user) return findUserError;
 
   return user;
-}
+};
 
-userService.checkDuplicate = checkDuplicate;
-userService.logIn = logIn;
-userService.register = register;
-userService.verifyEmail = verifyEmail;
-userService.loginCheck = loginCheck;
-userService.userUpdate = userUpdate;
-userService.userInfo = userInfo;
+exports.userGetAll = async (req) => {
+  const { userType } = req;
+  if (userType !== 'admin') return adminError;
 
-module.exports = userService;
+  const user = await findAllUsers();
+  if (user.length === 0) return findUserError;
+
+  return user;
+};

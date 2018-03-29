@@ -1,7 +1,7 @@
 const express = require('express');
 
 const controller = require('./users.controller');
-const { requiresUserAuth, requiresAdminAuth } = require('./auth.service');
+const { requiresUserAuth } = require('./auth.service');
 const { DbConnectionError } = require('../database/connection');
 
 const router = express.Router();
@@ -18,13 +18,17 @@ router.get('/check', controller.checkDuplicate);
 router.get('/logincheck', controller.loginCheck);
 router.get('/verify', controller.verifyEmail);
 
-// User authentication (authenticates then adds "userId" key to request)
-router.get('/userinfo', requiresUserAuth, controller.userInfo);
-router.put('/update', requiresUserAuth, controller.userUpdate);
+// User authentication (authenticates then adds "userId" and "usertype" keys to request)
+router.use(requiresUserAuth);
 
-// Admin authentication
-router.get('/admin', requiresAdminAuth, (req, res) => { res.send('something'); }); // Temp
+// User
+router.get('/userinfo', controller.userInfo);
+router.put('/update', controller.userUpdate);
 
+// Admin
+router.get('/getall', controller.userGetAll);
+
+// Catch all
 router.use('*', (req, res) => {
   res.status(400).send('What are you asking for?');
 });

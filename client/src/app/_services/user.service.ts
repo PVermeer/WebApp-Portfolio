@@ -18,7 +18,10 @@ export class UserService {
 
   // Variables
   private isLoggedInSource = new Subject<boolean>();
+  private userTypeSource = new Subject<string>();
+
   public isLoggedIn$ = this.isLoggedInSource.asObservable();
+  public userType$ = this.userTypeSource.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -57,8 +60,15 @@ export class UserService {
     });
   })
 
-  public passLoginStatus(isLoggedIn: boolean) {
-    this.isLoggedInSource.next(isLoggedIn);
+  public passLoginStatus(isLoggedIn: boolean) { this.isLoggedInSource.next(isLoggedIn); }
+
+  public passUserType() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) { return null; }
+
+    const userType = currentUser.payload.type;
+
+    this.userTypeSource.next(userType);
   }
 
   // Backend
@@ -85,6 +95,9 @@ export class UserService {
   }
   public userInfo(): Observable<any> {
     return this.http.get('/users/userinfo', httpOptions);
+  }
+  public getAllUsers(): Observable<any> {
+    return this.http.get('/users/getall', httpOptions);
   }
 
 }

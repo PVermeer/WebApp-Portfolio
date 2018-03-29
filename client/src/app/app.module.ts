@@ -27,6 +27,9 @@ import { ConfirmDialogComponent } from './user/user-details/confirm-dialog/confi
 import { UserService } from './_services/user.service';
 import { SidenavService } from './_services/sidenav.service';
 import { DialogComponent } from './_components/dialog/dialog.component';
+import { AdminComponent } from './user/admin/admin.component';
+import { UserManagementComponent } from './user/admin/user-management/user-management.component';
+import { ContentManagementComponent } from './user/admin/content-management/content-management.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +49,9 @@ import { DialogComponent } from './_components/dialog/dialog.component';
     UserDetailsComponent,
     ConfirmDialogComponent,
     DialogComponent,
+    AdminComponent,
+    UserManagementComponent,
+    ContentManagementComponent,
   ],
   imports: [
     BrowserModule,

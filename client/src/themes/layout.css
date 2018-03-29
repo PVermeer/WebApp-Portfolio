@@ -41,15 +41,15 @@ section {
 }
 
 .flex-row>* {
-  flex-basis: 45%;
   min-width: 340px;
+  margin-bottom: 10px;
 }
 
 .flex-row>*>* {
   height: 100%;
 }
 
-/* Column */
+/* ----------Columns---------- */
 
 .columnblock {
   display: block;
@@ -71,13 +71,20 @@ section {
   page-break-inside: avoid;
 }
 
-/* Block */
+/* --------------Block------------- */
 
 .block {
   display: block;
   width: 100%;
   margin: 0 auto 20px auto;
 }
+
+/* ----------Material design---------- */
+
+mat-card {
+  margin: 10px;
+}
+
 
 /* Control */
 
