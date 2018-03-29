@@ -1,14 +1,5 @@
-/* Material card */
 .mat-dialog-container {
   padding: 0 !important;
-}
-
-mat-card {
-  max-width: 500px;
-}
-
-mat-card-header {
-  flex-direction: column;
 }
 
 #progress-wrapper {

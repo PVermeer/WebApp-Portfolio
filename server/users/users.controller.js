@@ -8,13 +8,21 @@ exports.logIn = (req, res) => {
 };
 
 exports.register = (req, res) => {
-  userService.register(req.body)
+  userService.register(req)
     .then((response) => { res.json(response); })
     .catch((err) => { res.status(400).send(err); });
 };
 
-exports.authenticate = (req, res) => {
-  res.status(200).send();
+exports.verifyEmail = (req, res) => {
+  userService.verifyEmail(req)
+    .then(() => { res.redirect('/user'); })
+    .catch((err) => { res.status(400).send(err); });
+};
+
+exports.loginCheck = (req, res) => {
+  userService.loginCheck(req, res)
+    .then((response) => { res.json(response); })
+    .catch((err) => { res.status(400).send(err); });
 };
 
 exports.checkDuplicate = (req, res) => {

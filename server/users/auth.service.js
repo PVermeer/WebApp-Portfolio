@@ -1,30 +1,54 @@
 const jwt = require('jsonwebtoken');
 const { compare, hash } = require('bcryptjs');
 
-const { User } = require('../database/models/user');
-const { secret, secret2 } = require('../config.json');
+const { User, UserTemp } = require('../database/models/user');
+const {
+  secret, secret2, tokenExpires, refreshTokenExpires,
+  verificationTokenExpires,
+} = require('../config.json');
 
 
 // -------------User functions--------------
 
 // Find user
 exports.findUserByEmail = (email, fetch) => new Promise((resolve, reject) => {
-  User.findOne({ email }, fetch, (error, result) => {
-    if (error) reject(error);
-    resolve(result);
+  User.findOne({ email }, fetch, { lean: true }, (error, result) => {
+    if (error) return reject(error);
+    if (result) return resolve(result);
+
+    return UserTemp.findOne({ email }, fetch, { lean: true }, (error2, result2) => {
+      if (error2) return reject(error2);
+      return resolve(result2);
+    });
   });
 });
 
 exports.findUserByUsername = (username, fetch) => new Promise((resolve, reject) => {
   const usernameIndex = username.toLowerCase().trim();
-  User.findOne({ usernameIndex }, fetch, (error, result) => {
+  User.findOne({ usernameIndex }, fetch, { lean: true }, (error, result) => {
+    if (error) return reject(error);
+    if (result) return resolve(result);
+
+    return UserTemp.findOne({ usernameIndex }, { lean: true }, fetch, (error2, result2) => {
+      if (error2) return reject(error2);
+      return resolve(result2);
+    });
+  });
+});
+
+exports.findUserById = (_id, fetch) => new Promise((resolve, reject) => {
+  User.findOne({ _id }, fetch, { lean: true }, (error, result) => {
     if (error) reject(error);
     resolve(result);
   });
 });
 
-exports.findUserById = (_id, fetch) => new Promise((resolve, reject) => {
-  User.findOne({ _id }, fetch, (error, result) => {
+// Save temp user
+exports.saveTempUser = userForm => new Promise(async (resolve, reject) => {
+  const user = userForm;
+  user.verificationToken = await exports.createVerificationToken(userForm.email);
+
+  UserTemp(userForm).save((error, result) => {
     if (error) reject(error);
     resolve(result);
   });
@@ -46,6 +70,14 @@ exports.updateUser = (updateForm, id) => new Promise((resolve, reject) => {
   });
 });
 
+// Delete temp user
+exports.deleteTempUserByEmail = email => new Promise((resolve, reject) => {
+  UserTemp.deleteOne({ email }, (error, result) => {
+    if (error) reject(error);
+    resolve(result);
+  });
+});
+
 // Password
 exports.hashPassword = password => new Promise((resolve, reject) => {
   hash(password, 10, (error, result) => {
@@ -61,10 +93,18 @@ exports.comparePasswords = (password, hashPassword) => new Promise((resolve, rej
   });
 });
 
-// ----------------------Tokens--------------------
+// Tokens
+exports.createVerificationToken = email => new Promise((resolve) => {
+  const token = jwt.sign({ user: email }, secret, { expiresIn: verificationTokenExpires });
+  resolve(token);
+});
+
 exports.createTokens = (id, type, hashPassword) => new Promise((resolve) => {
-  const token = jwt.sign({ user: id, type }, secret, { expiresIn: '30m' });
-  const refreshToken = jwt.sign({ user: id, type }, secret2 + hashPassword, { expiresIn: '7d' });
+  const token = jwt.sign({ user: id, type }, secret, { expiresIn: tokenExpires });
+  const refreshToken = jwt.sign(
+    { user: id, type },
+    secret2 + hashPassword, { expiresIn: refreshTokenExpires },
+  );
 
   Promise.all([token, refreshToken]).then(() => {
     const tokens = { token, refreshToken };

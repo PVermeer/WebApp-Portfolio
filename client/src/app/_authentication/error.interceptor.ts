@@ -7,6 +7,7 @@ import 'rxjs/add/operator/catch';
 
 import { UserDialogComponent } from '../_components/user-dialog/user-dialog.component';
 import { SnackbarComponent } from '../_components/snackbar/snackbar.component';
+import { DialogComponent } from '../_components/dialog/dialog.component';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -22,6 +23,16 @@ export class ErrorInterceptor implements HttpInterceptor {
         const status = responseError.status;
 
         if (status === 401) { this.matDialog.open(UserDialogComponent); }
+        if (status === 403) {
+          this.matDialog.open(DialogComponent,
+            {
+              data: {
+                title: responseError.status + ' ' + responseError.statusText,
+                body: responseError.error,
+                button: 'Okay'
+              }
+            });
+        }
 
       }
       if (typeof responseError.error === 'string' || responseError.error instanceof String) {

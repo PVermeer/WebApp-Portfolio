@@ -1,29 +1,41 @@
 // Auth services
 const {
   createTokens, comparePasswords, hashPassword, findUserByEmail,
-  findUserByUsername, saveUser, updateUser,
+  findUserByUsername, saveTempUser, saveUser, updateUser, verifyToken, refreshTokens,
+  deleteTempUserByEmail, findUserById,
 } = require('./auth.service');
 
-// Models
-const { User } = require('../database/models/user');
+const { userVerificationMail } = require('../mail/mail.service');
 
 // Exports
 const userService = {};
 
+// User types
+const userTypes = {
+  temp: 'usertemp',
+  saved: 'user',
+};
+
 // Reject error messages (status !200)
 const checkDuplicateError = 'Whoops, not a matching query string... :(';
 const tokenError = 'Whoops, couldn\'t create tokens';
+const saveUserError = 'Could not save user to the database';
+const verifyError = 'Verification has expired, this means you\'re already verified or you waited too long...';
+const verificationMailError = 'Oh ow... Could not send verification mail';
+const mailVerifyError = 'Your e-mail has not been verified, please check your inbox or spambox.';
 
 // Error messages (status 200)
 const loginError = { error: 'Oh, ow.. Username or password is incorrect' };
 const duplicateError = { error: 'Username / Email already exists' };
-const saveUserError = { error: 'Could not save user to the database' };
+const loginCheckError = { error: 'Not logged in' };
+const findUserError = { error: 'User not found' };
 
 // Success messages
 const registrationSuccess = { success: 'Whoopie, registration successful!' };
 const loginSuccess = { success: 'Whoopie, login successful!' };
 const updateSuccess = { success: 'Whoopie, update successful!' };
-
+const loginCheckSuccess = { success: 'Logged in' };
+const verifySuccess = { success: 'E-mail verified!' };
 
 // --------------functions--------------
 
@@ -50,6 +62,8 @@ async function logIn(loginForm, res) {
   const password = await comparePasswords(loginForm.password, user.hash);
   if (!password) return loginError;
 
+  if (user.type === userTypes.temp) return res.status(403).send(mailVerifyError);
+
   const tokens = await createTokens(user._id, user.type, user.hash);
   if (!tokens) return Promise.reject(tokenError);
 
@@ -60,23 +74,70 @@ async function logIn(loginForm, res) {
 }
 
 // Register user
-async function register(userForm) {
-  const user = userForm;
+async function register(req) {
+  const user = req.body;
+  const { origin } = req.headers;
 
   const exists = await Promise.all([
-    checkDuplicate({ username: userForm.username }),
-    checkDuplicate({ email: userForm.email }),
+    checkDuplicate({ username: user.username }),
+    checkDuplicate({ email: user.email }),
   ]);
 
   if (exists.some(x => x !== null)) { return duplicateError; }
 
   user.usernameIndex = user.username.toLowerCase().trim();
-  user.hash = await hashPassword(userForm.password);
+  user.hash = await hashPassword(user.password);
+  user.type = userTypes.temp;
 
-  const savedUser = await saveUser(user);
-  if (!savedUser) return saveUserError;
+  const savedTempUser = await saveTempUser(user);
+  if (!savedTempUser) return Promise.reject(saveUserError);
+
+  const sendVerificationMail = await userVerificationMail(savedTempUser, origin);
+  if (!sendVerificationMail) return Promise.reject(verificationMailError);
 
   return registrationSuccess;
+}
+
+// Verify email
+async function verifyEmail(req) {
+  const token = req.query.user;
+
+  const verifiedToken = await verifyToken(token);
+  if (!verifiedToken) return Promise.reject(verifyError);
+
+  const userTemp = await findUserByEmail(verifiedToken.user);
+  if (!userTemp) return Promise.reject(verifyError);
+  if (userTemp.type === userTypes.saved) return verifySuccess;
+
+  userTemp.type = userTypes.saved;
+
+  const user = await saveUser(userTemp);
+  if (!user) return Promise.reject(saveUserError);
+
+  await deleteTempUserByEmail(userTemp.email);
+
+  return verifySuccess;
+}
+
+// Login check
+async function loginCheck(req, res) {
+  const token = req.headers['x-token'];
+  if (!token) return loginCheckError;
+
+  const verifiedToken = await verifyToken(token);
+  if (verifiedToken) { req.userId = verifiedToken.user; return loginCheckSuccess; }
+
+  const refreshToken = req.headers['x-refresh-token'];
+  if (!refreshToken) return loginCheckError;
+
+  const newTokens = await refreshTokens(refreshToken);
+  if (!newTokens) return loginCheckError;
+
+  req.UserId = newTokens.userId;
+  res.set('x-token', newTokens.token);
+  res.set('x-refresh-token', newTokens.refreshToken);
+
+  return loginCheckSuccess;
 }
 
 // Update user
@@ -103,19 +164,18 @@ async function userUpdate(req) {
 
 function userInfo(req) {
   const { userId } = req;
-  return User.findOne(
-    { _id: userId },
-    { _id: 0, hash: 0, usernameIndex: 0 },
-    (error, user) => {
-      if (error) return error;
-      return user;
-    },
-  );
+
+  const user = findUserById(userId, { _id: 0, hash: 0, usernameIndex: 0 });
+  if (!user) return findUserError;
+
+  return user;
 }
 
 userService.checkDuplicate = checkDuplicate;
 userService.logIn = logIn;
 userService.register = register;
+userService.verifyEmail = verifyEmail;
+userService.loginCheck = loginCheck;
 userService.userUpdate = userUpdate;
 userService.userInfo = userInfo;
 

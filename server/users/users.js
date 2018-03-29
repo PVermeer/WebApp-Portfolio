@@ -15,14 +15,18 @@ router.use(DbConnectionError);
 router.post('/login', controller.logIn);
 router.post('/register', controller.register);
 router.get('/check', controller.checkDuplicate);
+router.get('/logincheck', controller.loginCheck);
+router.get('/verify', controller.verifyEmail);
 
-// User authentication
-router.use(requiresUserAuth);
-router.get('/auth', controller.authenticate);
-router.get('/userinfo', controller.userInfo);
-router.put('/update', controller.userUpdate);
+// User authentication (authenticates then adds "userId" key to request)
+router.get('/userinfo', requiresUserAuth, controller.userInfo);
+router.put('/update', requiresUserAuth, controller.userUpdate);
 
 // Admin authentication
-router.use(requiresAdminAuth);
+router.get('/admin', requiresAdminAuth, (req, res) => { res.send('something'); }); // Temp
+
+router.use('*', (req, res) => {
+  res.status(400).send('What are you asking for?');
+});
 
 module.exports = router;

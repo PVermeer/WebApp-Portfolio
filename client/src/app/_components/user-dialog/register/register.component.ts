@@ -22,6 +22,10 @@ export class RegisterComponent {
 
   // Variables
   public registerForm: FormGroup;
+  public registerSuccess = false;
+
+  public successTitle = 'Success!';
+  public successBody = 'Check your e-mail for the validation mail to verify your account';
 
   // NgFor register input fields
   public registerFormInputfields = [
@@ -76,12 +80,16 @@ export class RegisterComponent {
       }
 
       this.snackbarComponent.snackbarSucces(response.success);
-      this.userDialogComponent.tabPage = 0;
+      this.registerSuccess = true;
       this.regForm.resetForm();
     },
       error => {
         this.userDialogComponent.progressBar = false;
       });
+  }
+
+  public closeModal() {
+    this.userDialogComponent.matDialog.close();
   }
 
   constructor(

@@ -26,6 +26,7 @@ import { ErrorInterceptorProvider } from './_authentication/error.interceptor';
 import { ConfirmDialogComponent } from './user/user-details/confirm-dialog/confirm-dialog.component';
 import { UserService } from './_services/user.service';
 import { SidenavService } from './_services/sidenav.service';
+import { DialogComponent } from './_components/dialog/dialog.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { SidenavService } from './_services/sidenav.service';
     RegisterComponent,
     UserDetailsComponent,
     ConfirmDialogComponent,
+    DialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +55,7 @@ import { SidenavService } from './_services/sidenav.service';
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  entryComponents: [ContactDialogComponent, UserDialogComponent, ConfirmDialogComponent],
+  entryComponents: [ContactDialogComponent, UserDialogComponent, ConfirmDialogComponent, DialogComponent],
   providers: [AuthGuard, JwtInterceptorProvider, ErrorInterceptorProvider, SnackbarComponent, UserService, SidenavService],
   bootstrap: [AppComponent]
 })

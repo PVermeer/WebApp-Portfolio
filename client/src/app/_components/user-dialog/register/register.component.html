@@ -1,27 +1,38 @@
-<form [formGroup]="registerForm" (ngSubmit)="register(registerForm.value)" #regForm="ngForm">
+<div *ngIf="!registerSuccess; else successful">
+  <form [formGroup]="registerForm" (ngSubmit)="register(registerForm.value)" #regForm="ngForm">
 
-  <mat-form-field *ngFor="let field of registerFormInputfields">
-    <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
-    <mat-error *ngIf="(registerForm.controls[field.formControlName].errors | json | slice:5:6) !== '0'
+    <mat-form-field *ngFor="let field of registerFormInputfields">
+      <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
+      <mat-error *ngIf="(registerForm.controls[field.formControlName].errors | json | slice:5:6) !== '0'
               && !registerForm.controls[field.formControlName].valid
               && (registerForm.controls[field.formControlName].touched || registerForm.controls[field.formControlName].dirty)">
-      {{ field.alert }}
-    </mat-error>
-    <mat-error *ngIf="(registerForm.controls[field.formControlName].errors | json | slice:5:6) === '0'
+        {{ field.alert }}
+      </mat-error>
+      <mat-error *ngIf="(registerForm.controls[field.formControlName].errors | json | slice:5:6) === '0'
               && (registerForm.controls[field.formControlName].touched || registerForm.controls[field.formControlName].dirty)">
-      {{ field.asyncAlert }}
-    </mat-error>
-  </mat-form-field>
+        {{ field.asyncAlert }}
+      </mat-error>
+    </mat-form-field>
 
-  <mat-form-field class="lname">
-    <input matInput type="text" formControlName="lname" placeholder="Last name...">
-    <mat-error *ngIf="!registerForm.controls['lname'].valid && registerForm.controls['lname'].touched">
-    </mat-error>
-  </mat-form-field>
+    <mat-form-field class="lname">
+      <input matInput type="text" formControlName="lname" placeholder="Last name...">
+      <mat-error *ngIf="!registerForm.controls['lname'].valid && registerForm.controls['lname'].touched">
+      </mat-error>
+    </mat-form-field>
 
+    <br>
+    <div class="center-container">
+      <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.valid">Register</button>
+    </div>
+
+  </form>
+</div>
+
+<ng-template #successful>
+  <h2>{{successTitle}}</h2>
+  <p>{{successBody}}</p>
   <br>
   <div class="center-container">
-    <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.valid">Register</button>
+    <button mat-raised-button color="primary" (click)="closeModal()">Cool!</button>
   </div>
-
-</form>
+</ng-template>
