@@ -99,10 +99,10 @@ exports.createVerificationToken = email => new Promise((resolve) => {
   resolve(token);
 });
 
-exports.createTokens = (id, type, hashPassword) => new Promise((resolve) => {
-  const token = jwt.sign({ user: id, type }, secret, { expiresIn: tokenExpires });
+exports.createTokens = (id, username, type, hashPassword) => new Promise((resolve) => {
+  const token = jwt.sign({ user: id, username, type }, secret, { expiresIn: tokenExpires });
   const refreshToken = jwt.sign(
-    { user: id, type },
+    { user: id, username, type },
     secret2 + hashPassword, { expiresIn: refreshTokenExpires },
   );
 
@@ -134,13 +134,13 @@ exports.decodeToken = async (token) => {
 exports.refreshTokens = async (refreshToken) => {
   const decoded = await exports.decodeToken(refreshToken);
 
-  const user = await exports.findUserById(decoded.user, { typ: 1, hash: 1 });
+  const user = await exports.findUserById(decoded.user, { typ: 1, username: 1, hash: 1 });
   if (!user) return false;
 
   const verifiedRefreshToken = await exports.verifyRefreshToken(refreshToken, user);
   if (!verifiedRefreshToken) return false;
 
-  const newTokens = await exports.createTokens(user._id, user.type, user.hash);
+  const newTokens = await exports.createTokens(user._id, user.username, user.type, user.hash);
   if (!newTokens.token || !newTokens.refreshToken) return false;
 
   newTokens.userId = user.id;

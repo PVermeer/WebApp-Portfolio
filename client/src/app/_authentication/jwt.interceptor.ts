@@ -7,22 +7,31 @@ import 'rxjs/add/operator/map';
 export class JwtInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser && currentUser.token) {
+
+    if (currentUser) {
+      const requestTokens = currentUser.tokens;
       request = request.clone({
         setHeaders: {
-          'x-token': currentUser.token,
-          'x-refresh-token': currentUser.refreshToken
+          'x-token': requestTokens.token,
+          'x-refresh-token': requestTokens.refreshToken
         }
       });
     }
+
     return next.handle(request).map((response: HttpEvent<any>) => {
       if (response instanceof HttpResponse) {
         const token = response.headers.get('x-token');
         const refreshToken = response.headers.get('x-refresh-token');
-        const tokens = { token, refreshToken };
 
-        if (tokens.token !== null && tokens.refreshToken !== null) {
-          localStorage.setItem('currentUser', JSON.stringify(tokens));
+        if (token && refreshToken) {
+          const tokens = { token, refreshToken };
+
+          const tokenSplit = token.split('.')[1];
+          const replaced = tokenSplit.replace('-', '+').replace('_', '/');
+          const payload = JSON.parse(atob(replaced));
+          const local = { tokens, payload };
+
+          localStorage.setItem('currentUser', JSON.stringify(local));
         }
       }
       return response;

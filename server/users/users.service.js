@@ -56,7 +56,7 @@ async function checkDuplicate(query) {
 
 // Login
 async function logIn(loginForm, res) {
-  const user = await findUserByEmail(loginForm.email, { hash: 1, type: 1 });
+  const user = await findUserByEmail(loginForm.email, { hash: 1, username: 1, type: 1 });
   if (!user) return loginError;
 
   const password = await comparePasswords(loginForm.password, user.hash);
@@ -64,7 +64,7 @@ async function logIn(loginForm, res) {
 
   if (user.type === userTypes.temp) return res.status(403).send(mailVerifyError);
 
-  const tokens = await createTokens(user._id, user.type, user.hash);
+  const tokens = await createTokens(user._id, user.username, user.type, user.hash);
   if (!tokens) return Promise.reject(tokenError);
 
   res.set('x-token', tokens.token);
