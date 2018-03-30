@@ -141,7 +141,7 @@ exports.decodeToken = async (token) => {
 exports.refreshTokens = async (refreshToken) => {
   const decoded = await exports.decodeToken(refreshToken);
 
-  const user = await exports.findUserById(decoded.user, { typ: 1, username: 1, hash: 1 });
+  const user = await exports.findUserById(decoded.user, { username: 1, hash: 1, type: 1 });
   if (!user) return false;
 
   const verifiedRefreshToken = await exports.verifyRefreshToken(refreshToken, user);

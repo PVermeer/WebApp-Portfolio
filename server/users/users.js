@@ -2,11 +2,13 @@ const express = require('express');
 
 const controller = require('./users.controller');
 const { requiresUserAuth } = require('./auth.service');
+const { disableCache } = require('../_services/cache-control');
 const { DbConnectionError } = require('../database/connection');
 
 const router = express.Router();
 
 // Middleware
+router.use(disableCache);
 router.use(DbConnectionError);
 
 // -----------Routes-------------------
