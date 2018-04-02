@@ -30,6 +30,7 @@ import { DialogComponent } from './_components/dialog/dialog.component';
 import { AdminComponent } from './user/admin/admin.component';
 import { UserManagementComponent } from './user/admin/user-management/user-management.component';
 import { ContentManagementComponent } from './user/admin/content-management/content-management.component';
+import { UserManyDialogComponent } from './user/admin/user-management/many-dialog/user-many-dialog.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { ContentManagementComponent } from './user/admin/content-management/cont
     AdminComponent,
     UserManagementComponent,
     ContentManagementComponent,
+    UserManyDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,7 +63,7 @@ import { ContentManagementComponent } from './user/admin/content-management/cont
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  entryComponents: [ContactDialogComponent, UserDialogComponent, ConfirmDialogComponent, DialogComponent],
+  entryComponents: [ContactDialogComponent, UserDialogComponent, ConfirmDialogComponent, DialogComponent, UserManyDialogComponent],
   providers: [AuthGuard, JwtInterceptorProvider, ErrorInterceptorProvider, SnackbarComponent, UserService, SidenavService],
   bootstrap: [AppComponent]
 })

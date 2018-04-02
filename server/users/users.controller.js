@@ -20,9 +20,7 @@ exports.verifyEmail = (req, res) => {
 };
 
 exports.loginCheck = (req, res) => {
-  userService.loginCheck(req, res)
-    .then((response) => { res.json(response); })
-    .catch((err) => { res.status(400).send(err); });
+  res.status(200).json({ success: 'User logged in' });
 };
 
 exports.checkDuplicate = (req, res) => {
@@ -43,8 +41,32 @@ exports.userUpdate = (req, res) => {
     .catch((err) => { res.status(400).send(err); });
 };
 
+exports.userDelete = (req, res) => {
+  userService.userDelete(req)
+    .then((response) => { res.json(response); })
+    .catch((err) => { res.status(400).send(err); });
+};
+
+exports.userMany = (req, res) => {
+  userService.userMany(req)
+    .then((response) => { res.json(response); })
+    .catch((err) => { res.status(400).send(err); });
+};
+
+exports.userDeleteMany = (req, res) => {
+  userService.userDeleteMany(req)
+    .then((response) => { res.json(response); })
+    .catch((err) => { res.status(400).send(err); });
+};
+
 exports.userGetAll = (req, res) => {
   userService.userGetAll(req)
+    .then((response) => { res.json(response); })
+    .catch((err) => { res.status(400).send(err); });
+};
+
+exports.mockUser = (req, res) => {
+  userService.mockUser(req)
     .then((response) => { res.json(response); })
     .catch((err) => { res.status(400).send(err); });
 };

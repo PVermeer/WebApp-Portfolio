@@ -89,4 +89,4 @@ const UserTempSchema = new Schema({
 }, { timestamps: true });
 
 UserTempSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
-exports.UserTemp = mongoose.model('tempUser', UserTempSchema);
+exports.UserTemp = mongoose.model('TempUser', UserTempSchema);

@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const { compare, hash } = require('bcryptjs');
 
 const { User, UserTemp } = require('../database/models/user');
+const { Many } = require('../database/models/many');
 const {
   secret, secret2, tokenExpires, refreshTokenExpires,
   verificationTokenExpires,
@@ -14,10 +15,22 @@ const {
 exports.findUserByEmail = (email, fetch) => new Promise((resolve, reject) => {
   User.findOne({ email }, fetch, { lean: true }, (error, result) => {
     if (error) return reject(error);
-    if (result) return resolve(result);
+
+    if (result) {
+      const user = result;
+      if (user._id) user.id = result._id.toString();
+      return resolve(user);
+    }
 
     return UserTemp.findOne({ email }, fetch, { lean: true }, (error2, result2) => {
       if (error2) return reject(error2);
+
+      if (result2) {
+        const user2 = result2;
+        if (user2._id) user2.id = result2._id.toString();
+        return resolve(user2);
+      }
+
       return resolve(result2);
     });
   });
@@ -25,21 +38,41 @@ exports.findUserByEmail = (email, fetch) => new Promise((resolve, reject) => {
 
 exports.findUserByUsername = (username, fetch) => new Promise((resolve, reject) => {
   const usernameIndex = username.toLowerCase().trim();
+
   User.findOne({ usernameIndex }, fetch, { lean: true }, (error, result) => {
     if (error) return reject(error);
-    if (result) return resolve(result);
+
+    if (result) {
+      const user = result;
+      if (user._id) user.id = result._id.toString();
+      return resolve(user);
+    }
 
     return UserTemp.findOne({ usernameIndex }, { lean: true }, fetch, (error2, result2) => {
       if (error2) return reject(error2);
+
+      if (result2) {
+        const user2 = result2;
+        if (user2._id) user2.id = result2._id.toString();
+        return resolve(user2);
+      }
+
       return resolve(result2);
     });
   });
 });
 
-exports.findUserById = (_id, fetch) => new Promise((resolve, reject) => {
-  User.findOne({ _id }, fetch, { lean: true }, (error, result) => {
-    if (error) reject(error);
-    resolve(result);
+exports.findUserById = (id, fetch) => new Promise((resolve, reject) => {
+  User.findOne({ _id: id }, fetch, { lean: true }, (error, result) => {
+    if (error) return reject(error);
+
+    if (result) {
+      const user = result;
+      if (user._id) user.id = result._id.toString();
+      return resolve(user);
+    }
+
+    return resolve(result);
   });
 });
 
@@ -77,11 +110,47 @@ exports.updateUser = (updateForm, id) => new Promise((resolve, reject) => {
   });
 });
 
-// Delete temp user
+// Delete user
+exports.deleteUser = id => new Promise((resolve, reject) => {
+  User.deleteOne({ _id: id }, (error, result) => {
+    if (error) reject(error);
+    resolve(result);
+  });
+});
+
 exports.deleteTempUserByEmail = email => new Promise((resolve, reject) => {
   UserTemp.deleteOne({ email }, (error, result) => {
     if (error) reject(error);
     resolve(result);
+  });
+});
+
+exports.findDeleteTransactions = id => new Promise((resolve, reject) => {
+  Many.findOne({ _id: id }, { id: 1 }, { lean: true }, (error, result) => {
+    if (error) return reject(error);
+    return resolve(result);
+  });
+});
+
+exports.deleteMany = transactions => new Promise((resolve, reject) => {
+  User.deleteMany({ _id: { $in: transactions } }, (error, result) => {
+    if (error) reject(error);
+    resolve(result);
+  });
+});
+
+// Save many transaction
+exports.saveMany = transactions => new Promise((resolve, reject) => {
+  const emptyArray = 'Empty array';
+  if (transactions.id.length === 0) reject(emptyArray);
+
+  Many(transactions).save((error, result) => {
+    if (error) reject(error);
+
+    if (result) {
+      return resolve({ id: result._id.toString() });
+    }
+    return resolve(result);
   });
 });
 
@@ -100,7 +169,7 @@ exports.comparePasswords = (password, hashPassword) => new Promise((resolve, rej
   });
 });
 
-// Tokens
+// Token
 exports.createVerificationToken = email => new Promise((resolve) => {
   const token = jwt.sign({ user: email }, secret, { expiresIn: verificationTokenExpires });
   resolve(token);
@@ -147,21 +216,22 @@ exports.refreshTokens = async (refreshToken) => {
   const verifiedRefreshToken = await exports.verifyRefreshToken(refreshToken, user);
   if (!verifiedRefreshToken) return false;
 
-  const newTokens = await exports.createTokens(user._id, user.username, user.type, user.hash);
+  const newTokens = await exports.createTokens(user.id, user.username, user.type, user.hash);
   if (!newTokens.token || !newTokens.refreshToken) return false;
 
   newTokens.userId = user.id;
+  newTokens.userType = user.type;
   return newTokens;
 };
 
 // ------------Authentication middleware----------------
 
 // User authentication
-exports.requiresUserAuth = async (req, res, next) => {
-  const authError = 'You\'re not logged in!';
+exports.requiresUserAuth = status => async (req, res, next) => {
+  const authError = { error: 'You\'re not logged in!' };
 
   const token = req.headers['x-token'];
-  if (!token) return res.status(401).send(authError);
+  if (!token) return res.status(status).json(authError);
 
   const verifiedToken = await exports.verifyToken(token);
   if (verifiedToken) {
@@ -171,12 +241,13 @@ exports.requiresUserAuth = async (req, res, next) => {
   }
 
   const refreshToken = req.headers['x-refresh-token'];
-  if (!refreshToken) return res.status(401).send(authError);
+  if (!refreshToken) return res.status(status).json(authError);
 
   const newTokens = await exports.refreshTokens(refreshToken);
-  if (!newTokens) return res.status(401).send(authError);
+  if (!newTokens) return res.status(status).json(authError);
 
-  req.UserId = newTokens.userId;
+  req.userId = newTokens.userId;
+  req.userType = newTokens.userType;
   res.set('x-token', newTokens.token);
   res.set('x-refresh-token', newTokens.refreshToken);
 

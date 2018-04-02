@@ -90,14 +90,26 @@ export class UserService {
   public registerUser(user: UserRegister): Observable<any> {
     return this.http.post('/users/register', user, httpOptions);
   }
+  public userInfo(): Observable<any> {
+    return this.http.get('/users/info', httpOptions);
+  }
   public updateUser(user: UserRegister): Observable<any> {
     return this.http.put('/users/update', user, httpOptions);
   }
-  public userInfo(): Observable<any> {
-    return this.http.get('/users/userinfo', httpOptions);
+  public deleteUser(userId): Observable<any> {
+    return this.http.delete('/users/delete/' + userId);
+  }
+  public UserMany(transactions): Observable<any> {
+    return this.http.post('/users/many', transactions);
+  }
+  public deleteUserMany(deleteId): Observable<any> {
+    return this.http.delete('/users/deletemany/' + deleteId);
   }
   public getAllUsers(): Observable<any> {
     return this.http.get('/users/getall', httpOptions);
+  }
+  public createMockUser(user: UserRegister): Observable<any> {
+    return this.http.post('/users/registermock', user, httpOptions);
   }
 
 }

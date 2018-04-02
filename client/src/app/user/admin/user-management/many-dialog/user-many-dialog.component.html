@@ -1,0 +1,12 @@
+<div id="progress-wrapper" >
+  <mat-progress-bar mode="indeterminate" *ngIf="progressbar"></mat-progress-bar>
+</div>
+
+<h3 mat-dialog-title>{{title}}</h3>
+<mat-dialog-content>
+  <p>{{body}}</p>
+</mat-dialog-content>
+<br>
+<mat-dialog-actions class="center-container">
+  <button mat-raised-button color="primary" (click)="execute()">{{button}}</button>
+</mat-dialog-actions>

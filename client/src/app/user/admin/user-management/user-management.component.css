@@ -1,5 +1,4 @@
 .mat-table {
-  max-height: 300px;
   overflow: auto;
 }
 
@@ -16,4 +15,18 @@
 
 .mat-column-created_at {
   max-width: 85px;
+}
+
+.mat-column-select {
+  overflow: initial;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.actions>* {
+  margin: 10px;
 }

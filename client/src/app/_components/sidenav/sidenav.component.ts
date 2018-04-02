@@ -9,7 +9,6 @@ import { SidenavService } from '../../_services/sidenav.service';
 import { routerTransition } from '../../_animations/router.animation';
 import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 import { UserService } from '../../_services/user.service';
-import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-sidenav',
@@ -59,7 +58,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private sidenavService: SidenavService,
     public matDialog: MatDialog,
     private userService: UserService,
-    private snackbarComponent: SnackbarComponent,
   ) {
     // Sidenav mobile support
     this.mobileQuery = media.matchMedia('(max-width: 600px)');

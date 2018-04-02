@@ -1,6 +1,32 @@
-<button mat-raised-button (click)="getAllUsers()">Get users</button>
-<br>
-<mat-table id="user-table" [dataSource]=userArray>
+<div class="actions">
+  <button mat-raised-button (click)="mockUsers()">Create Mock Users</button>
+  <mat-form-field>
+    <mat-select [(value)]="selectedAction" placeholder="Select an action">
+      <mat-option>-- None --</mat-option>
+      <mat-option *ngFor="let option of options" [value]="option.action">
+        {{ option.view }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="action()" [disabled]="!selectedAction || selection.selected.length === 0">Execute action</button>
+</div>
+
+<mat-table id="user-table" [dataSource]="dataSource">
+
+  <ng-container matColumnDef="select">
+    <mat-header-cell *matHeaderCellDef>
+      <mat-checkbox (change)="$event ? masterToggle() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+      </mat-checkbox>
+    </mat-header-cell>
+    <mat-cell *matCellDef="let row">
+      <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(row) : null"
+                    [checked]="selection.isSelected(row)">
+      </mat-checkbox>
+    </mat-cell>
+  </ng-container>
 
   <ng-container matColumnDef="userName">
     <mat-header-cell *matHeaderCellDef> Username </mat-header-cell>
