@@ -9,13 +9,15 @@ export class JwtInterceptor implements HttpInterceptor {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     if (currentUser) {
-      const requestTokens = currentUser.tokens;
-      request = request.clone({
-        setHeaders: {
-          'x-token': requestTokens.token,
-          'x-refresh-token': requestTokens.refreshToken
-        }
-      });
+      if (currentUser.tokens) {
+        const requestTokens = currentUser.tokens;
+        request = request.clone({
+          setHeaders: {
+            'x-token': requestTokens.token,
+            'x-refresh-token': requestTokens.refreshToken
+          }
+        });
+      }
     }
 
     return next.handle(request).map((response: HttpEvent<any>) => {
