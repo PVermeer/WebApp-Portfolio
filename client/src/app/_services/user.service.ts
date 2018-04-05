@@ -33,8 +33,8 @@ export class UserService {
   // Methods
   public login = () => new Promise((resolve) => {
     const loginDialog = this.matDialog.open(UserDialogComponent);
-    loginDialog.afterClosed().subscribe(success => {
-      if (success) {
+    loginDialog.afterClosed().subscribe(loggedIn => {
+      if (loggedIn) {
         this.passLoginStatus(true);
         return resolve(true);
       }
@@ -60,7 +60,9 @@ export class UserService {
     });
   })
 
-  public passLoginStatus(isLoggedIn: boolean) { this.isLoggedInSource.next(isLoggedIn); }
+  public passLoginStatus(isLoggedIn: boolean) {
+    this.isLoggedInSource.next(isLoggedIn);
+  }
 
   public passUserType() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -77,6 +79,9 @@ export class UserService {
   }
   public loginCheck(): Observable<any> {
     return this.http.get('/users/logincheck', httpOptions);
+  }
+  public verifyEmail(token: string): Observable<any> {
+    return this.http.get('/users/verify?token=' + token, httpOptions);
   }
   public getById(_id: string): Observable<any> {
     return this.http.get('/users/' + _id, httpOptions);
@@ -98,6 +103,12 @@ export class UserService {
   }
   public deleteUser(userId): Observable<any> {
     return this.http.delete('/users/delete/' + userId);
+  }
+  public recoverUserPassword(user: object): Observable<any> {
+    return this.http.post('/users/recoverpassword', user, httpOptions);
+  }
+  public updateUserPassword(user: object, token: string): Observable<any> {
+    return this.http.put('/users/updatepassword?token=' + token, user, httpOptions);
   }
   public UserMany(transactions): Observable<any> {
     return this.http.post('/users/many', transactions);

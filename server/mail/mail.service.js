@@ -8,6 +8,7 @@ const transporter = nodeMailer.createTransport(config.gmailConfig);
 
 // Reject error messages (status !200)
 const sendError = 'Whoops, could not send the e-mail :(';
+const sendContactError = `Whoops, could not send the e-mail :(. You can reach me via: ${config.emailTo}`;
 
 // Error messages (status 200)
 const emptyError = { error: 'Oh, ow.. Some fields are empty' };
@@ -24,6 +25,7 @@ exports.contactForm = async (req) => {
     spamHandler(transporter, 'contact form');
     return spamError;
   }
+
   delete formData.lname;
 
   const isEmpty = Object.values(formData).some(x => (x === null || x === ''));
@@ -39,7 +41,7 @@ exports.contactForm = async (req) => {
             <b> Message: </b><br>${formData.message}`,
   };
 
-  await transporter.sendMail(formMail).catch(() => Promise.reject(sendError));
+  await transporter.sendMail(formMail).catch(() => Promise.reject(sendContactError));
 
   return sendFormSuccess;
 };
@@ -51,11 +53,30 @@ exports.userVerificationMail = async (user, origin) => {
     from: `"${config.appName}" <noreply@${config.appName}.com>`,
     to: user.email,
     subject: `${config.appName}: Verifify your email`,
-    html: `<h1>Verify your email address for registration ${config.appName}</h1>
+    html: `<h1>Verify your email address for registration on ${config.appName}</h1>
             <br><p>You can verify your email address by clicking on the following link:</p>
-            <br><a href="${origin}/users/verify?user=${user.verificationToken}">Click here to verify your email address</a>
-            <br><p>Alternativly, you can copy the following link and paste it in your browser:</p>
-            <br>${origin}/users/verify?user=${user.verificationToken}`,
+            <br><a href="${origin}/user/verifyuser?user=${user.verificationToken}">Click here to verify your email address</a>
+            <br><p>Alternatively, you can copy the following link and paste it in your browser:</p>
+            <br>${origin}/user/verifyuser?user=${user.verificationToken}`,
+  };
+
+  await transporter.sendMail(formMail).catch(() => Promise.reject(sendError));
+
+  return sendFormSuccess;
+};
+
+exports.passwordRecoveryMail = async (user, origin) => {
+  if (!user) return sendError;
+
+  const formMail = {
+    from: `"${config.appName}" <noreply@${config.appName}.com>`,
+    to: user.email,
+    subject: `${config.appName}: Password recovery`,
+    html: `<h1>Verify your email address for password recovery on ${config.appName}</h1>
+            <br><p>You can verify your email address by clicking on the following link:</p>
+            <br><a href="${origin}/user/updateuser?user=${user.verificationToken}">Click here to reset your password</a>
+            <br><p>Alternatively, you can copy the following link and paste it in your browser:</p>
+            <br>${origin}/user/updateuser?user=${user.verificationToken}`,
   };
 
   await transporter.sendMail(formMail).catch(() => Promise.reject(sendError));

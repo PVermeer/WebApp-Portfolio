@@ -1,0 +1,7 @@
+@mixin login($theme) {
+  $warn: mat-color(map-get($theme, warn));
+
+  a {
+    color: $warn;
+  }
+}

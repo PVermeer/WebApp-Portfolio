@@ -21,20 +21,16 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).catch((responseError: any) => {
       if (responseError instanceof HttpErrorResponse) {
         const status = responseError.status;
+        const dialogData = {
+          title: responseError.status + ' ' + responseError.statusText,
+          body: responseError.error,
+          button: 'Okay'
+        };
 
         if (status === 401) { this.matDialog.open(UserDialogComponent); }
-        if (status === 403) {
-          this.matDialog.open(DialogComponent,
-            {
-              data: {
-                title: responseError.status + ' ' + responseError.statusText,
-                body: responseError.error,
-                button: 'Okay'
-              }
-            });
-        }
-
+        if (status === 403 || status === 503) { this.matDialog.open(DialogComponent, { data: dialogData }); }
       }
+
       if (typeof responseError.error === 'string' || responseError.error instanceof String) {
         this.snackbarComponent.snackbarError(responseError.status + ' ' + responseError.error);
       } else {

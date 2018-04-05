@@ -4,6 +4,7 @@ const controller = require('./users.controller');
 const { requiresUserAuth } = require('./auth.service');
 const { disableCache } = require('../_services/cache-control');
 const { DbConnectionError } = require('../database/connection');
+const { userTypes } = require('../database/models/user');
 
 const router = express.Router();
 
@@ -18,22 +19,22 @@ router.post('/login', controller.logIn);
 router.post('/register', controller.register);
 router.get('/check', controller.checkDuplicate);
 router.get('/verify', controller.verifyEmail);
+router.post('/recoverpassword', controller.passwordRecovery);
+router.put('/updatepassword', controller.updatePassword);
 
 // User authentication (authenticates then adds "userId" and "userType" keys to request)
-router.get('/logincheck', requiresUserAuth(200), controller.loginCheck);
-
-router.use(requiresUserAuth(401)); // 401 response from now on
+router.get('/logincheck', requiresUserAuth(200, userTypes.user.rank), controller.loginCheck);
 
 // User
-router.get('/info', controller.userInfo);
-router.put('/update', controller.userUpdate);
-router.delete('/delete/:id', controller.userDelete);
-router.post('/many', controller.userMany);
-router.delete('/deletemany/:id', controller.userDeleteMany);
+router.get('/info', requiresUserAuth(401, userTypes.user.rank), controller.userInfo);
+router.put('/update', requiresUserAuth(401, userTypes.user.rank), controller.userUpdate);
+router.delete('/delete/:id', requiresUserAuth(401, userTypes.user.rank), controller.userDelete); // Still used?
 
 // Admin
-router.get('/getall', controller.userGetAll);
-router.post('/registermock', controller.mockUser);
+router.get('/getall', requiresUserAuth(401, userTypes.admin.rank), controller.userGetAll);
+router.post('/many', requiresUserAuth(401, userTypes.admin.rank), controller.userMany);
+router.delete('/deletemany/:id', requiresUserAuth(401, userTypes.admin.rank), controller.userDeleteMany);
+router.post('/registermock', requiresUserAuth(401, userTypes.admin.rank), controller.mockUser);
 
 // Catch all
 router.use('*', (req, res) => {

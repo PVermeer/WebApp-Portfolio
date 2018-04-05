@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 // Mongoose post delete transaction
 const ManyTransactionSchema = new Schema({
-  id: {
+  data: {
     type: [String],
     required: true,
   },

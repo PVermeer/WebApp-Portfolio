@@ -138,7 +138,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private toggleIsLoggedIn() {
-    this.userService.isLoggedIn$.subscribe(isLoggedIn => {
+      this.userService.isLoggedIn$.subscribe(isLoggedIn => {
         this.isLoggedIn = isLoggedIn;
     });
   }

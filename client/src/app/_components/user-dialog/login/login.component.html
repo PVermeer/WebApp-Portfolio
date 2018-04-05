@@ -22,6 +22,9 @@
   <br>
   <div class="center-container">
     <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">Login</button>
+    <br>
+    <br>
+    <button type="button" mat-button color="warn" (click)="recoverPassword(loginForm.value)">Recover password</button>
   </div>
 
 </form>

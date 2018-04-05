@@ -33,7 +33,7 @@ export class LoginComponent {
     },
   ];
 
-  // Events
+  // Methods
   public login(loginForm) {
     this.userDialogComponent.progressBar = true;
 
@@ -46,7 +46,27 @@ export class LoginComponent {
       }
 
       this.snackbarComponent.snackbarSucces(response.success);
-      this.userDialogComponent.matDialog.close(response.success);
+      this.userDialogComponent.matDialog.close(true);
+    },
+      error => {
+        this.userDialogComponent.progressBar = false;
+      });
+  }
+
+  public recoverPassword(loginForm) {
+    this.userDialogComponent.progressBar = true;
+    const user = { email: loginForm.email };
+
+    // Login user
+    this.userService.recoverUserPassword(user).subscribe(response => {
+      this.userDialogComponent.progressBar = false;
+
+      if (response.error) {
+        return this.snackbarComponent.snackbarError(response.error);
+      }
+
+      this.snackbarComponent.snackbarSucces(response.success);
+      this.userDialogComponent.matDialog.close(false);
     },
       error => {
         this.userDialogComponent.progressBar = false;
@@ -68,7 +88,7 @@ export class LoginComponent {
   // Validations
   private validateLogin() {
     return this.formBuilder.group({
-      email: ['henkie@henk.nl', [
+      email: ['asd@asd', [
         Validators.required,
         Validators.email,
       ]],

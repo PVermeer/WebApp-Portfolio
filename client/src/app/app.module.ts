@@ -31,6 +31,11 @@ import { AdminComponent } from './user/admin/admin.component';
 import { UserManagementComponent } from './user/admin/user-management/user-management.component';
 import { ContentManagementComponent } from './user/admin/content-management/content-management.component';
 import { UserManyDialogComponent } from './user/admin/user-management/many-dialog/user-many-dialog.component';
+import { UpdatePasswordComponent } from './_components/user-dialog/password-recovery/update-password.component';
+import {
+  PasswordRecoveryDialogComponent
+} from './_components/user-dialog/password-recovery/password-recovery-dialog/password-recovery-dialog.component';
+import { VerifyUserComponent } from './_components/user-dialog/verify-user/verify-user.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +59,9 @@ import { UserManyDialogComponent } from './user/admin/user-management/many-dialo
     UserManagementComponent,
     ContentManagementComponent,
     UserManyDialogComponent,
+    PasswordRecoveryDialogComponent,
+    UpdatePasswordComponent,
+    VerifyUserComponent,
   ],
   imports: [
     BrowserModule,
@@ -63,8 +71,14 @@ import { UserManyDialogComponent } from './user/admin/user-management/many-dialo
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  entryComponents: [ContactDialogComponent, UserDialogComponent, ConfirmDialogComponent, DialogComponent, UserManyDialogComponent],
-  providers: [AuthGuard, JwtInterceptorProvider, ErrorInterceptorProvider, SnackbarComponent, UserService, SidenavService],
+  entryComponents: [
+    ContactDialogComponent, UserDialogComponent, ConfirmDialogComponent, DialogComponent,
+    UserManyDialogComponent, PasswordRecoveryDialogComponent,
+  ],
+  providers: [
+    AuthGuard, JwtInterceptorProvider, ErrorInterceptorProvider, SnackbarComponent,
+    UserService, SidenavService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

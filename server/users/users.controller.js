@@ -15,12 +15,24 @@ exports.register = (req, res) => {
 
 exports.verifyEmail = (req, res) => {
   userService.verifyEmail(req)
-    .then(() => { res.redirect('/user'); })
+    .then((response) => { res.json(response); })
     .catch((err) => { res.status(400).send(err); });
 };
 
 exports.loginCheck = (req, res) => {
   res.status(200).json({ success: 'User logged in' });
+};
+
+exports.passwordRecovery = (req, res) => {
+  userService.passwordRecovery(req)
+    .then((response) => { res.json(response); })
+    .catch((err) => { res.status(400).send(err); });
+};
+
+exports.updatePassword = (req, res) => {
+  userService.updatePassword(req)
+    .then((response) => { res.json(response); })
+    .catch((err) => { res.status(400).send(err); });
 };
 
 exports.checkDuplicate = (req, res) => {

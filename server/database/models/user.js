@@ -2,6 +2,14 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
+// User types
+exports.userTypes = {
+  temp: { rank: 0, value: 'temp' },
+  user: { rank: 1, value: 'user' },
+  admin: { rank: 2, value: 'admin' },
+  superAdmin: { rank: 3, value: 'superAdmin' },
+};
+
 // Mongoose user schema
 const UserSchema = new Schema({
   firstName: {
