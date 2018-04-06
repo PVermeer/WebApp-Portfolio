@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { SidenavService } from './_services/sidenav.service';
+import { SidenavService } from './sidenav/sidenav.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [SidenavService],
 })
 export class AppComponent {
 

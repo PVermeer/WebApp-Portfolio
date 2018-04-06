@@ -3,11 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
-import { ContactComponent } from './contact/contact.component';
-import { UserComponent } from './user/user.component';
-import { AuthGuard } from './_authentication/auth.guard';
-import { UpdatePasswordComponent } from './_components/user-dialog/password-recovery/update-password.component';
-import { VerifyUserComponent } from './_components/user-dialog/verify-user/verify-user.component';
+import { ContactComponent } from './_modules/contact/contact.component';
+import { UserComponent } from './_modules/users/user.component';
+import { AuthGuard } from './_modules/users/auth.guard';
+import { UpdatePasswordComponent } from './_modules/users/user-dialog/password-recovery/update-password.component';
+import { VerifyUserComponent } from './_modules/users/user-dialog/verify-user/verify-user.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' }, // Default route

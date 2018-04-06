@@ -6,9 +6,8 @@
 @import '~animate.css/animate.css';
 
 // Import custom component theme files
-@import '../app/_components/sidenav/sidenav.theme';
-@import '../app/_components/snackbar/snackbar.theme';
-@import '../app/_components/user-dialog/login/login.theme';
+@import '../app/sidenav/sidenav.theme';
+@import '../app/_modules/_shared/snackbar/snackbar.theme';
 
 // Include mat-core (only once)
 @include mat-core();
@@ -31,7 +30,6 @@ $secondary-theme:   mat-dark-theme($secondary-theme-primary, $secondary-theme-ac
 @mixin custom-theme($theme) {
   @include sidenav($theme);
   @include snackbar($theme);
-  @include login($theme);
 }
 
 // Default theme (no class applied)

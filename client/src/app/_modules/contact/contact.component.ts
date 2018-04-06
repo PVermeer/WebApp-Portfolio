@@ -1,24 +1,26 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { MatToggle, MatToggleExp, SidenavContent } from '../sidenav/sidenav.model';
-import { SidenavService } from '../sidenav/sidenav.service';
 
+import { MatToggle, MatToggleExp, SidenavContent } from '../../sidenav/sidenav.model';
+import { SidenavService } from '../../sidenav/sidenav.service';
 
 @Component({
-  selector: 'app-about',
-  templateUrl: './about.component.html',
-  styleUrls: ['./about.component.css']
+  selector: 'app-contact',
+  templateUrl: './contact.component.html',
+  styleUrls: ['./contact.component.css']
 })
-export class AboutComponent implements OnInit, AfterViewInit {
+export class ContactComponent implements OnInit, AfterViewInit {
+
+  public title = 'Neem contact op!';
 
   // Sidenav config
-  private sidenavToggle: MatToggle = 'open';
+  private sidenavToggle: MatToggle = 'close';
   private expansionToggle: MatToggleExp = 'open';
 
   // Sidenav content
   private sidenavContent: SidenavContent[] = [{
-    title: 'About',
+    title: 'Contact',
     items: [
-      { label: 'Something', path: 'about' },
+      { label: 'ContactSomething', path: 'contact' },
     ],
   }];
 

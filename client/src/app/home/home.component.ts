@@ -1,14 +1,13 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 
-import { SidenavService } from '../_services/sidenav.service';
-import { SidenavContent, MatToggle, MatToggleExp } from '../_models/sidenav.model';
-import { CssAnimateInviewService } from '../_services/css-animate-inview.service';
+import { SidenavService } from '../sidenav/sidenav.service';
+import { SidenavContent, MatToggle, MatToggleExp } from '../sidenav/sidenav.model';
+import { CssAnimateInviewService } from '../_modules/_shared/css-animate-inview.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  providers: [CssAnimateInviewService],
 })
 export class HomeComponent implements OnInit, AfterViewInit {
 
