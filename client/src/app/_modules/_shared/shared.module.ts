@@ -1,28 +1,27 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 import { MaterialModule } from './material.module';
-import { ReactiveFormsModule } from '@angular/forms';
 import { SnackbarComponent } from './snackbar/snackbar.component';
-import { DialogComponent } from './dialog/dialog.component';
 import { SidenavService } from '../../sidenav/sidenav.service';
 import { CssAnimateInviewService } from './css-animate-inview.service';
+import { DialogModule } from './dialog/dialog.module';
 
 const sharedModules = [
+  HttpClientModule,
   MaterialModule,
-  ReactiveFormsModule,
+  DialogModule,
   ];
 
 @NgModule({
   declarations: [
     SnackbarComponent,
-    DialogComponent,
   ],
   imports: sharedModules,
   exports: sharedModules,
   providers: [
     SnackbarComponent, SidenavService, CssAnimateInviewService,
     ],
-  entryComponents: [DialogComponent],
+  entryComponents: [],
 })
 export class SharedModule { }

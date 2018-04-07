@@ -1,27 +1,28 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, DialogPosition, MAT_DIALOG_DATA } from '@angular/material';
 
 import { UserService } from '../../.././user.service';
 import { SnackbarComponent } from '../../../../_shared/snackbar/snackbar.component';
+import { DialogComponent } from '../../../../_shared/dialog/dialog.component';
 
 @Component({
   selector: 'app-user-many-dialog',
   templateUrl: './user-many-dialog.component.html',
   styleUrls: ['./user-many-dialog.component.css']
 })
-export class UserManyDialogComponent implements OnInit {
+export class UserManyDialogComponent {
 
   // Variables
-  private dialogPosition: DialogPosition = { top: '160px' };
-  private manyLength = this.data.lengthTransactions;
-  private id = this.data.id;
-  private actionText = this.data.actionText;
-  private action = this.data.action;
+  private manyLength = this.dialogComponent.data.lengthTransactions;
+  private id = this.dialogComponent.data.id;
+  private actionText = this.dialogComponent.data.actionText;
+  private action = this.dialogComponent.data.action;
 
   public progressbar = false;
   public title = 'Confirmation';
   public body = `Are you sure you want to ${this.actionText} ${this.manyLength} users?`;
   public button = 'Yes, i\'m sure!';
+  public button2 = 'Cancel';
 
   // Methods
   public execute() {
@@ -35,7 +36,7 @@ export class UserManyDialogComponent implements OnInit {
             return this.snackbarComponent.snackbarError(response.error);
           }
           this.snackbarComponent.snackbarSucces(response.success);
-          this.matDialog.close(response.success);
+          this.dialogComponent.matDialog.close(response.success);
         });
         break;
 
@@ -43,16 +44,14 @@ export class UserManyDialogComponent implements OnInit {
     }
   }
 
+  public cancel() {
+    this.dialogComponent.matDialog.close();
+  }
+
   constructor(
-    private matDialog: MatDialogRef<UserManyDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    private dialogComponent: DialogComponent,
     private userService: UserService,
     private snackbarComponent: SnackbarComponent,
   ) { }
-
-  ngOnInit() {
-    // Dialog options
-    this.matDialog.updatePosition(this.dialogPosition);
-  }
 
 }

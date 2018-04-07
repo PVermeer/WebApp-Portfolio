@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 
-import { ContactDialogComponent } from './contact-dialog/contact-dialog.component';
-import { ContactFormInput } from '../mail.model';
+import { ContactFormInput } from '../contact.model';
 import { MailService } from '../../_shared/mail.service';
 import { SnackbarComponent } from '../../_shared/snackbar/snackbar.component';
+import { DialogComponent } from '../../_shared/dialog/dialog.component';
 
 @Component({
   selector: 'app-contact-form',
@@ -13,6 +13,8 @@ import { SnackbarComponent } from '../../_shared/snackbar/snackbar.component';
   styleUrls: ['./contact-form.component.css'],
 })
 export class ContactFormComponent {
+
+  @ViewChild('contactFormRef') private contactFormRef;
 
   // Variables
   public contactForm: FormGroup;
@@ -57,18 +59,27 @@ export class ContactFormComponent {
   ];
 
   // Methods
-  public postForm(formInput) {
+  public sendForm(formInput) {
     this.progressBar = true;
-    this.mailService.postRequest(formInput).subscribe((res) => {
-        this.progressBar = false;
-        this.snackbarComponent.snackbarSucces(res.success);
-        const dialog = this.matDialog.open(ContactDialogComponent, { data: { res, formInput }});
-      },
-      (error) => {
-        this.progressBar = false;
-        const dialog = this.matDialog.open(ContactDialogComponent, { data: { error, formInput }});
-      }
-    );
+    const dialogData = {
+      title: 'Success!',
+      body: `Hey ${formInput.name}!<br><br> Thanks for the message.<br><br> I\'ll contact you soon via: <br><br><b>${formInput.email}</b>`,
+      button: 'Cool!',
+    };
+
+    this.mailService.sendContactForm(formInput).subscribe((response) => {
+      this.progressBar = false;
+
+      this.snackbarComponent.snackbarSucces(response.success);
+
+      const dialog = this.matDialog.open(DialogComponent, { data: { dialogData } });
+
+      dialog.afterClosed().subscribe(() => {
+        this.contactFormRef.resetForm();
+      });
+
+    }, (error) => { this.progressBar = false; }
+  );
   }
 
   constructor(

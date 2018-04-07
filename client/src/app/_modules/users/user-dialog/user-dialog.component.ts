@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MatDialogRef, DialogPosition } from '@angular/material';
+import { DialogComponent } from '../../_shared/dialog/dialog.component';
 
 @Component({
   selector: 'app-user-dialog',
@@ -12,15 +13,16 @@ export class UserDialogComponent implements OnInit {
   public title = 'Login';
   public tabPage = 0;
   public progressBar = false;
-  private dialogPosition: DialogPosition = { top: '150px' };
+  public registerIsDisabled = false;
 
   constructor(
-    public matDialog: MatDialogRef<UserDialogComponent>,
+    private dialogComponent: DialogComponent,
   ) { }
 
-  ngOnInit() {
-    // Dialog options
-    this.matDialog.updatePosition(this.dialogPosition);
+  ngOnInit () {
+    if (this.dialogComponent.data.registerDisable) {
+      this.registerIsDisabled = true;
+    }
   }
 
 }

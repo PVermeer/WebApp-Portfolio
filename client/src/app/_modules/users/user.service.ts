@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 
 import { UserRegister, UserLogin } from './_models/user.model';
 import { SnackbarComponent } from '../_shared/snackbar/snackbar.component';
+import { DialogComponent } from '../_shared/dialog/dialog.component';
 import { UserDialogComponent } from './user-dialog/user-dialog.component';
 
 const httpOptions = {
@@ -31,14 +32,19 @@ export class UserService {
   ) { }
 
   // Methods
-  public login = () => new Promise((resolve) => {
-    const loginDialog = this.matDialog.open(UserDialogComponent);
+  public login = (disableRegister?: boolean) => new Promise((resolve) => {
+    let registerDisable = false;
+    if (disableRegister) { registerDisable = true; }
+
+    const loginDialog = this.matDialog.open(DialogComponent, { data: { component: UserDialogComponent, registerDisable } });
+
     loginDialog.afterClosed().subscribe(loggedIn => {
       if (loggedIn) {
         this.passLoginStatus(true);
         return resolve(true);
       }
-      this.passLoginStatus(false); return resolve(false);
+      const user = localStorage.getItem('currentUser');
+      if (!user) { this.passLoginStatus(false); return resolve(false); }
     });
   })
 

@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 
+import { SharedModule } from '../_shared/shared.module';
 import { LoginComponent } from './user-dialog/login/login.component';
 import { RegisterComponent } from './user-dialog/register/register.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
-import { SharedModule } from '../_shared/shared.module';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { ContentManagementComponent } from './admin/content-management/content-management.component';
 import { UserManyDialogComponent } from './admin/user-management/many-dialog/user-many-dialog.component';
@@ -27,7 +27,7 @@ import { JwtInterceptorProvider } from './jwt.interceptor';
   imports: [
     CommonModule,
     SharedModule,
-    HttpClientModule,
+    ReactiveFormsModule
   ],
   declarations: [
     LoginComponent,

@@ -76,7 +76,7 @@ exports.findTransactions = id => new Promise((resolve, reject) => {
  * */
 exports.saveTempUser = newUser => new Promise(async (resolve, reject) => {
   const user = newUser;
-  const payload = { user: user.email };
+  const payload = exports.payloadUserEmail(user);
 
   user.verificationToken = await exports.createToken(payload, verificationTokenExpires);
   user.usernameIndex = user.username.toLowerCase().trim();
@@ -195,6 +195,18 @@ exports.comparePasswords = (password, hashPassword) => new Promise((resolve, rej
 
 // ------------Tokens-------------------------
 
+/** Create a login payload.
+ * @param {{id: string, username: string, type: string}} user User document.
+ * @returns {{user: string, username: string, type: string}} Payload object.
+ * */
+exports.payloadLogin = user => ({ user: user.id, username: user.username, type: user.type });
+
+/** Create an email payload.
+ * @param {{email: string}} user User email document.
+ * @returns {{user: string}} Payload object.
+ * */
+exports.payloadUserEmail = user => ({ user: user.email });
+
 /** Create a new JWT.
  * @param {{any}} payload Included data.
  * @param {string} expires 10m, 1d, ...
@@ -251,13 +263,14 @@ exports.decodeToken = token => jwt.decode(token);
 exports.refreshTokens = async (refreshToken) => {
   const decoded = await exports.decodeToken(refreshToken);
 
-  const user = await exports.findUserById(decoded.user, { username: 1, hash: 1, type: 1 });
+  const user = await exports.findUser({ _id: decoded.user }, { username: 1, hash: 1, type: 1 });
   if (!user) return false;
 
   const verifiedRefreshToken = await exports.verifyToken(refreshToken, user.hash);
   if (!verifiedRefreshToken) return false;
 
-  const newTokens = await exports.createLoginTokens(user.id, user.username, user.type, user.hash);
+  const payload = exports.payloadLogin(user);
+  const newTokens = exports.createLoginTokens(payload, user.hash);
   if (!newTokens.token || !newTokens.refreshToken) return false;
 
   newTokens.userId = user.id;

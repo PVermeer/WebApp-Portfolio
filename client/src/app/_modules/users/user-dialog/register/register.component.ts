@@ -5,6 +5,7 @@ import { UserDialogComponent } from '../user-dialog.component';
 import { UserService } from '../.././user.service';
 import { SnackbarComponent } from '../../../_shared/snackbar/snackbar.component';
 import { usernameValidator, usernameAsyncValidator, emailAsyncValidator, passwordValidator, matchValidator } from '../../validators';
+import { DialogComponent } from '../../../_shared/dialog/dialog.component';
 
 @Component({
   selector: 'app-register',
@@ -85,7 +86,7 @@ export class RegisterComponent {
   }
 
   public closeModal() {
-    this.userDialogComponent.matDialog.close();
+    this.dialogComponent.matDialog.close();
   }
 
   constructor(
@@ -93,6 +94,7 @@ export class RegisterComponent {
     private userService: UserService,
     private snackbarComponent: SnackbarComponent,
     private userDialogComponent: UserDialogComponent,
+    private dialogComponent: DialogComponent,
   ) {
     // Form validation
     this.registerForm = this.validateRegister();

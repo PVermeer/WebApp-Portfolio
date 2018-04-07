@@ -1,1 +1,14 @@
-<!-- <ng-container *ngComponentOutlet="data.component"></ng-container> -->
+<div *ngIf="isComponent; else isDialogData">
+  <ng-container *ngComponentOutlet="data.component"></ng-container>
+</div>
+
+<ng-template #isDialogData>
+  <h3 mat-dialog-title>{{title}}</h3>
+  <mat-dialog-content>
+    <p [innerHTML]="body"></p>
+  </mat-dialog-content>
+  <br>
+  <mat-dialog-actions class="center-container">
+    <button mat-raised-button color="primary" mat-dialog-close>{{button}}</button>
+  </mat-dialog-actions>
+</ng-template>

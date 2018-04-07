@@ -12,16 +12,22 @@ export class DialogComponent implements OnInit {
   public title: string;
   public body: string;
   public button: string;
+  public isComponent = false;
   private dialogPosition: DialogPosition = { top: '160px' };
 
   constructor(
     public matDialog: MatDialogRef<DialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
-    this.title = data.title;
-    this.body = data.body;
-    this.button = data.button;
-   }
+    if (data.dialogData) {
+      this.title = data.dialogData.title;
+      this.body = data.dialogData.body;
+      this.button = data.dialogData.button;
+    }
+    if (data.component) {
+      this.isComponent = true;
+    }
+  }
 
   ngOnInit() {
     // Dialog options

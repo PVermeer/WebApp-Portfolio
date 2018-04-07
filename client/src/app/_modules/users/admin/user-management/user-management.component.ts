@@ -5,6 +5,7 @@ import { MatDialog, MatTableDataSource } from '@angular/material';
 import { UserService } from '../.././user.service';
 import { UserManyDialogComponent } from './many-dialog/user-many-dialog.component';
 import { SnackbarComponent } from '../../../_shared/snackbar/snackbar.component';
+import { DialogComponent } from '../../../_shared/dialog/dialog.component';
 
 @Component({
   selector: 'app-user-management',
@@ -63,14 +64,12 @@ export class UserManagementComponent {
     }
 
     this.userService.UserMany(transactions).subscribe(response => {
-      const dialog = this.matDialog.open(
-
-        UserManyDialogComponent, {
-          data: {
-            id: response.id, lengthTransactions: transactions.length, actionText, action: this.selectedAction,
-          }
+      const dialog = this.matDialog.open(DialogComponent, {
+        data: {
+          component: UserManyDialogComponent,
+          id: response.id, lengthTransactions: transactions.length, actionText, action: this.selectedAction
         }
-      );
+      });
 
       dialog.afterClosed().subscribe((success) => {
         if (success) { this.selection.clear(); this.getUsers(); }
@@ -83,7 +82,7 @@ export class UserManagementComponent {
       return new Promise((resolve) => {
         this.userService.createMockUser(user).subscribe(response => {
           if (response.error) {
-            return this.snackbarComponent.snackbarError(response.error); // Change this!
+            return this.snackbarComponent.snackbarError(response.error);
           }
           resolve();
         });

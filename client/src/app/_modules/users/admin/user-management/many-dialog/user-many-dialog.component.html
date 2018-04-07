@@ -7,6 +7,7 @@
   <p>{{body}}</p>
 </mat-dialog-content>
 <br>
-<mat-dialog-actions class="center-container">
+<mat-dialog-actions class="flex-row">
+  <button mat-raised-button color="warn" (click)="cancel()">{{button2}}</button>
   <button mat-raised-button color="primary" (click)="execute()">{{button}}</button>
 </mat-dialog-actions>

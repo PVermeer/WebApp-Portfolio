@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { UserService } from '../.././user.service';
-import { UserDialogComponent } from '../user-dialog.component';
 import { SnackbarComponent } from '../../../_shared/snackbar/snackbar.component';
+import { DialogComponent } from '../../../_shared/dialog/dialog.component';
+import { UserDialogComponent } from '../user-dialog.component';
 
 @Component({
   selector: 'app-login',
@@ -45,7 +46,7 @@ export class LoginComponent {
       }
 
       this.snackbarComponent.snackbarSucces(response.success);
-      this.userDialogComponent.matDialog.close(true);
+      this.dialogComponent.matDialog.close(true);
     },
       error => {
         this.userDialogComponent.progressBar = false;
@@ -65,7 +66,7 @@ export class LoginComponent {
       }
 
       this.snackbarComponent.snackbarSucces(response.success);
-      this.userDialogComponent.matDialog.close(false);
+      this.dialogComponent.matDialog.close(false);
     },
       error => {
         this.userDialogComponent.progressBar = false;
@@ -76,6 +77,7 @@ export class LoginComponent {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private snackbarComponent: SnackbarComponent,
+    private dialogComponent: DialogComponent,
     private userDialogComponent: UserDialogComponent,
   ) {
     // Form validation

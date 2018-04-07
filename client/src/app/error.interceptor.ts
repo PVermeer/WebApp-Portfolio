@@ -1,7 +1,7 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { Injectable, Component, Inject } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
@@ -12,6 +12,9 @@ import { DialogComponent } from './_modules/_shared/dialog/dialog.component';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
+
+  // Variables
+  public dialogData: {};
 
   constructor(
     private matDialog: MatDialog,
@@ -28,8 +31,10 @@ export class ErrorInterceptor implements HttpInterceptor {
           button: 'Okay'
         };
 
-        if (status === 401) { this.matDialog.open(UserDialogComponent); }
-        if (status === 403 || status === 503) { this.matDialog.open(DialogComponent, { data: dialogData }); }
+        const x = status;
+        if (x === 401) { this.matDialog.open(UserDialogComponent); }
+        if (x === 403 || x === 503) { this.matDialog.open(DialogComponent, { data: { dialogData } });
+        }
       }
 
       if (typeof responseError.error === 'string' || responseError.error instanceof String) {
@@ -42,7 +47,6 @@ export class ErrorInterceptor implements HttpInterceptor {
   }
 
 }
-
 export const ErrorInterceptorProvider = {
   provide: HTTP_INTERCEPTORS,
   useClass: ErrorInterceptor,

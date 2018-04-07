@@ -1,11 +1,11 @@
 <mat-card>
   <mat-progress-bar mode="indeterminate" *ngIf="progressBar"></mat-progress-bar>
   <mat-card-header>
-    <h3>Contactformulier</h3>
+    <h3>Contact form</h3>
   </mat-card-header>
   <mat-card-content>
 
-    <form [formGroup]="contactForm" (ngSubmit)="postForm(contactForm.value)">
+    <form [formGroup]="contactForm" (ngSubmit)="sendForm(contactForm.value)" #contactFormRef="ngForm">
 
       <mat-form-field *ngFor="let field of contactFormInputfields">
         <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">

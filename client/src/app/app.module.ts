@@ -11,7 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { UsersModule } from './_modules/users/users.module';
 import { ContactModule } from './_modules/contact/contact.module';
 import { SharedModule } from './_modules/_shared/shared.module';
-import { ErrorInterceptor } from './error.interceptor';
+import { ErrorInterceptorProvider } from './error.interceptor';
 import { SidenavService } from './sidenav/sidenav.service';
 
 @NgModule({
@@ -29,7 +29,7 @@ import { SidenavService } from './sidenav/sidenav.service';
     ContactModule,
     UsersModule,
   ],
-  providers: [ErrorInterceptor, SidenavService],
+  providers: [ErrorInterceptorProvider, SidenavService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

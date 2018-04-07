@@ -8,7 +8,9 @@ const transporter = nodeMailer.createTransport(config.gmailConfig);
 
 // Reject error messages (status !200)
 const sendError = 'Whoops, could not send the e-mail :(';
-const sendContactError = `Whoops, could not send the e-mail :(. You can reach me via: ${config.emailTo}`;
+const sendContactError = `Whoops, could not send the e-mail :(. <br>
+  You can reach me via:<br><br>
+  <b>${config.emailTo}</b>`;
 
 // Error messages (status 200)
 const emptyError = { error: 'Oh, ow.. Some fields are empty' };
@@ -17,7 +19,8 @@ const spamError = { success: 'Thanks for sending me a message!' };
 // Success messages
 const sendFormSuccess = { success: 'Whoopie, form send successfully!' };
 
-// Contact form
+
+// ----------Functions------------
 exports.contactForm = async (req) => {
   const formData = req.body;
 

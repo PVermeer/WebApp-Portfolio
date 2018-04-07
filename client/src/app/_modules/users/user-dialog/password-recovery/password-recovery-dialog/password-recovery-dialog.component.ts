@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../.././user.service';
 import { SnackbarComponent } from '../../../../_shared/snackbar/snackbar.component';
 import { passwordValidator, matchValidator } from '../../../validators';
+import { DialogComponent } from '../../../../_shared/dialog/dialog.component';
 
 
 @Component({
@@ -17,7 +18,6 @@ import { passwordValidator, matchValidator } from '../../../validators';
 export class PasswordRecoveryDialogComponent implements OnInit {
 
   // Variables
-  private dialogPosition: DialogPosition = { top: '160px' };
   private token: string;
   public title = 'Enter new password';
   public progressBar = false;
@@ -52,31 +52,27 @@ export class PasswordRecoveryDialogComponent implements OnInit {
       }
 
       this.snackbarComponent.snackbarSucces(response.success);
-      this.matDialog.close();
+      this.dialogComponenet.matDialog.close();
       this.router.navigate(['/user']);
     },
       error => {
-        this.progressBar = false; // Snackbar, also in other components
+        this.progressBar = false;
       });
   }
 
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
-    public matDialog: MatDialogRef<PasswordRecoveryDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
     private snackbarComponent: SnackbarComponent,
     private router: Router,
+    private dialogComponenet: DialogComponent,
   ) {
     this.userForm = this.validateForm();
-    this.token = data.token;
+    this.token = dialogComponenet.data.token;
   }
 
   // Lifecycle
   ngOnInit() {
-    // Dialog options
-    this.matDialog.updatePosition(this.dialogPosition);
-
     // Empty form validator
     this.userForm.valueChanges.subscribe(value => {
       if (Object.values(value).every(x => (x === null || x === ''))) { return this.userFormEmpty = true; }

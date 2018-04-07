@@ -37,7 +37,7 @@ export class VerifyUserComponent {
         this.snackbarComponent.snackbarSucces(response.success);
       }
 
-      const verifyDialog = this.matDialog.open(DialogComponent, { disableClose: true, data: dialogData });
+      const verifyDialog = this.matDialog.open(DialogComponent, { disableClose: true, data: { dialogData }});
       verifyDialog.afterClosed().subscribe(() => {
         this.router.navigate(['/user']);
       });

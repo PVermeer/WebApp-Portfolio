@@ -9,7 +9,9 @@ import {
   usernameValidator, usernameAsyncValidator, emailAsyncValidator,
   passwordValidator, matchValidator, emailValidator,
 } from '../validators';
+import { DialogComponent } from '../../_shared/dialog/dialog.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { SnackbarComponent } from '../../_shared/snackbar/snackbar.component';
 
 @Component({
   selector: 'app-user-details',
@@ -32,36 +34,7 @@ export class UserDetailsComponent implements OnInit {
   public userFormEmpty = true;
 
   // Methods
-  public toggleDisabled(disableEdit) {
-    if (disableEdit) { this.userForm.enable(); this.disableButton = false; }
-    if (!disableEdit) { this.userForm.disable(); this.disableButton = true; }
-  }
-
-  public confirmUpdate() {
-    this.matDialog.open(ConfirmDialogComponent, {
-      data: {
-        userFormFields: this.userFormFields,
-        userForm: this.userForm
-      }
-    });
-    this.slideToggle.toggle();
-  }
-
-  public logout() {
-    this.userService.logout();
-  }
-
-  constructor(
-    private userService: UserService,
-    private formBuilder: FormBuilder,
-    private matDialog: MatDialog,
-  ) {
-    this.userForm = this.validateForm();
-    this.userForm.disable();
-  }
-
-  // Lifecycle
-  ngOnInit() {
+  private getUserInfo = () => {
     // NgFor input fields (async)
     this.userService.userInfo().subscribe((response) => {
       this.userFormFields = Observable.of([
@@ -74,21 +47,21 @@ export class UserDetailsComponent implements OnInit {
           asyncAlert: '',
         }, {
           label: 'Last name',
-          placeholder:  response.lastName,
+          placeholder: response.lastName,
           formControlName: 'lastName',
           type: 'text',
           alert: '1 - 50 Characters, pretty please.',
           asyncAlert: '',
         }, {
           label: 'Username',
-          placeholder:  response.username,
+          placeholder: response.username,
           formControlName: 'username',
           type: 'text',
           alert: '3 - 50 Characters and no special characters, thanks!',
           asyncAlert: 'Username is already taken :(',
         }, {
           label: 'Email',
-          placeholder:  response.email,
+          placeholder: response.email,
           formControlName: 'email',
           type: 'text',
           alert: 'Not a valid e-mail address',
@@ -110,6 +83,50 @@ export class UserDetailsComponent implements OnInit {
         },
       ]);
     });
+  }
+
+  public toggleDisabled(disableEdit) {
+    if (disableEdit) { this.userForm.enable(); this.disableButton = false; }
+    if (!disableEdit) { this.userForm.disable(); this.disableButton = true; }
+  }
+
+  public confirmUpdate() {
+    this.userService.login(true).then((isLoggedIn) => {
+      if (!isLoggedIn) {
+        this.slideToggle.toggle();
+        return this.snackbarComponent.snackbarError('You\'re not who you say you are!');
+      }
+      const dialog = this.matDialog.open(DialogComponent, {
+        data: {
+          component: ConfirmDialogComponent,
+          userFormFields: this.userFormFields,
+          userForm: this.userForm
+        }
+      });
+      dialog.afterClosed().subscribe((response) => {
+        if (response === 'success') { this.getUserInfo(); }
+      });
+      this.slideToggle.toggle();
+    });
+  }
+
+  public logout() {
+    this.userService.logout();
+  }
+
+  constructor(
+    private userService: UserService,
+    private formBuilder: FormBuilder,
+    private matDialog: MatDialog,
+    private snackbarComponent: SnackbarComponent,
+  ) {
+    this.userForm = this.validateForm();
+    this.userForm.disable();
+  }
+
+  // Lifecycle
+  ngOnInit() {
+    this.getUserInfo();
 
     // Empty form validator
     this.userForm.valueChanges.subscribe(value => {

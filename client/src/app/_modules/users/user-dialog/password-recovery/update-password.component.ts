@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { PasswordRecoveryDialogComponent } from './password-recovery-dialog/password-recovery-dialog.component';
 import { ActivatedRoute } from '@angular/router';
+
+import { DialogComponent } from '../../../_shared/dialog/dialog.component';
+import { PasswordRecoveryDialogComponent } from './password-recovery-dialog/password-recovery-dialog.component';
+
 
 @Component({
   selector: 'app-update-password',
@@ -23,7 +26,11 @@ export class UpdatePasswordComponent {
     });
 
     // Open update password dialog
-    matdialog.open(PasswordRecoveryDialogComponent, { disableClose: true, data: { token: this.token }});
+    matdialog.open(DialogComponent, {
+      disableClose: true, data: {
+        component: PasswordRecoveryDialogComponent, token: this.token
+      }
+    });
   }
 
 }

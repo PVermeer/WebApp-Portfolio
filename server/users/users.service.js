@@ -2,7 +2,7 @@
 const {
   findUser, hashPassword, saveTempUser, comparePasswords, createLoginTokens, createToken,
   verifyToken, decodeToken, saveUser, deleteTempUser, updateUser, deleteUser, saveTransactions,
-  findTransactions, deleteMany, findAllUsers,
+  findTransactions, deleteMany, findAllUsers, payloadLogin, payloadUserEmail,
 } = require('./auth.service');
 const { passwordRecoveryTokenExpires } = require('../config.json');
 const { userVerificationMail, passwordRecoveryMail } = require('../mail/mail.service');
@@ -52,7 +52,7 @@ exports.logIn = async (loginForm, res) => {
 
   if (user.type === userTypes.temp.value) return res.status(403).send(mailVerifyError);
 
-  const payload = { user: user.id, username: user.username, type: user.type };
+  const payload = payloadLogin(user);
   const tokens = await createLoginTokens(payload, user.hash);
   if (!tokens) return Promise.reject(tokenError);
 
@@ -70,7 +70,7 @@ exports.passwordRecovery = async (req) => {
   const user = await findUser({ email }, { _id: 0 });
   if (!user) return userFindError;
 
-  const payload = { user: user.email };
+  const payload = payloadUserEmail(user);
   const verificationToken = await createToken(payload, passwordRecoveryTokenExpires, user.hash);
   if (!verificationToken) return Promise.reject(tokenError);
 
