@@ -13,7 +13,7 @@ export class AppComponent {
   constructor(
     private sidenavService: SidenavService,
   ) {
-    sidenavService.themeToggle$.subscribe((themeToggle) => {
+    this.sidenavService.themeToggle$.subscribe((themeToggle) => {
         this.secondaryTheme = themeToggle;
     });
   }

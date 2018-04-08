@@ -1,6 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, DialogPosition, MAT_DIALOG_DATA } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -55,7 +53,7 @@ export class PasswordRecoveryDialogComponent implements OnInit {
       this.dialogComponenet.matDialog.close();
       this.router.navigate(['/user']);
     },
-      error => {
+      () => {
         this.progressBar = false;
       });
   }

@@ -1,5 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { MatDialogRef, DialogPosition } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
 import { DialogComponent } from '../../_shared/dialog/dialog.component';
 
 @Component({

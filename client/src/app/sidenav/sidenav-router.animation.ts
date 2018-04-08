@@ -1,4 +1,4 @@
-import { trigger, animate, style, group, query, transition, state } from '@angular/animations';
+import { trigger, animate, style, group, query, transition } from '@angular/animations';
 
 export function routerTransition() {
   return fadeAnimation();

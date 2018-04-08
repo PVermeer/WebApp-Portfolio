@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.sidenavService.passSidenavToggle(this.sidenavToggle);
 
     // Subscribe to scroll events and add class when in view
-    this.sidenavService.scrollEvent$.subscribe(scrollEvent => {
+    this.sidenavService.scrollEvent$.subscribe(() => {
       this.cssAnimateInviewService.elementInView();
     });
     // Run the service once AfterViewInit

@@ -27,7 +27,6 @@ export class UserDetailsComponent implements OnInit {
   public userTitle = 'User details';
   public progressBar = false;
   public userForm: FormGroup;
-  private user = {};
   public disableEdit: boolean;
   public userFormFields: Observable<Array<any>>;
   public disableButton = true;

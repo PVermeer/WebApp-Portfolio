@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 import { UserService } from '../.././user.service';
 import { SnackbarComponent } from '../../../_shared/snackbar/snackbar.component';
@@ -34,7 +34,7 @@ export class ConfirmDialogComponent implements OnInit {
       this.userForm.reset();
       this.dialogComponent.matDialog.close('success');
     },
-      error => {
+      () => {
         this.progressBar = false;
       });
   }
@@ -44,7 +44,6 @@ export class ConfirmDialogComponent implements OnInit {
   }
 
   constructor(
-    private formBuilder: FormBuilder,
     private userService: UserService,
     private snackbarComponent: SnackbarComponent,
     private dialogComponent: DialogComponent,

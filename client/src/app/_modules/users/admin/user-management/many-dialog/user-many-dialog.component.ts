@@ -1,5 +1,4 @@
-import { Component, Inject } from '@angular/core';
-import { MatDialogRef, DialogPosition, MAT_DIALOG_DATA } from '@angular/material';
+import { Component } from '@angular/core';
 
 import { UserService } from '../../.././user.service';
 import { SnackbarComponent } from '../../../../_shared/snackbar/snackbar.component';

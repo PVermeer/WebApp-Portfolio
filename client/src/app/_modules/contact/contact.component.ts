@@ -10,7 +10,7 @@ import { SidenavService } from '../../sidenav/sidenav.service';
 })
 export class ContactComponent implements OnInit, AfterViewInit {
 
-  public title = 'Neem contact op!';
+  public title = 'Contact me!';
 
   // Sidenav config
   private sidenavToggle: MatToggle = 'close';

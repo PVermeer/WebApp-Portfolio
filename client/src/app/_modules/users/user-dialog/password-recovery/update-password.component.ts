@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
@@ -26,7 +26,7 @@ export class UpdatePasswordComponent {
     });
 
     // Open update password dialog
-    matdialog.open(DialogComponent, {
+    this.matdialog.open(DialogComponent, {
       disableClose: true, data: {
         component: PasswordRecoveryDialogComponent, token: this.token
       }

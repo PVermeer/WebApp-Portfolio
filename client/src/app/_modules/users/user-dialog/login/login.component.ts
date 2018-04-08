@@ -48,7 +48,7 @@ export class LoginComponent {
       this.snackbarComponent.snackbarSucces(response.success);
       this.dialogComponent.matDialog.close(true);
     },
-      error => {
+      () => {
         this.userDialogComponent.progressBar = false;
       });
   }
@@ -68,7 +68,7 @@ export class LoginComponent {
       this.snackbarComponent.snackbarSucces(response.success);
       this.dialogComponent.matDialog.close(false);
     },
-      error => {
+      () => {
         this.userDialogComponent.progressBar = false;
       });
   }

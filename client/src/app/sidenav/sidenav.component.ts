@@ -59,7 +59,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private userService: UserService,
   ) {
     // Sidenav mobile support
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this.mobileQuery = this.media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
     // Change sidenav contents based on route

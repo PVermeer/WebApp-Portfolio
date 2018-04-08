@@ -80,7 +80,7 @@ export class RegisterComponent {
       this.registerSuccess = true;
       this.regForm.resetForm();
     },
-      error => {
+      () => {
         this.userDialogComponent.progressBar = false;
       });
   }

@@ -78,7 +78,7 @@ export class ContactFormComponent {
         this.contactFormRef.resetForm();
       });
 
-    }, (error) => { this.progressBar = false; }
+    }, () => { this.progressBar = false; }
   );
   }
 

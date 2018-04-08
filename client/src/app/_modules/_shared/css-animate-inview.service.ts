@@ -19,7 +19,7 @@ export class CssAnimateInviewService {
       const scrollDivBottom = scrollDiv.scrollTop + scrollDiv.offsetHeight;
       const scrollDivHeight = scrollDiv.offsetHeight;
       const elementHeight = element.offsetHeight;
-      const elementBottom = element.offsetTop + element.offsetHeight;
+      const elementBottom = element.offsetTop + elementHeight;
 
       // Add .hide class to element
       if (element.className.indexOf('animated') < 0 ) {

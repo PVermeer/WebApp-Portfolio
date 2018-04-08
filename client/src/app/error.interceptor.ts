@@ -1,13 +1,13 @@
-﻿import { Injectable, Component, Inject } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
 import { SnackbarComponent } from './_modules/_shared/snackbar/snackbar.component';
-import { UserDialogComponent } from './_modules/users/user-dialog/user-dialog.component';
 import { DialogComponent } from './_modules/_shared/dialog/dialog.component';
+import { UserService } from './_modules/users/user.service';
 
 
 @Injectable()
@@ -19,6 +19,7 @@ export class ErrorInterceptor implements HttpInterceptor {
   constructor(
     private matDialog: MatDialog,
     private snackbarComponent: SnackbarComponent,
+    private userService: UserService,
   ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -32,7 +33,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         };
 
         const x = status;
-        if (x === 401) { this.matDialog.open(UserDialogComponent); }
+        if (x === 401) { this.userService.login(); }
         if (x === 403 || x === 503) { this.matDialog.open(DialogComponent, { data: { dialogData } });
         }
       }
