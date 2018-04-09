@@ -34,6 +34,7 @@ router.delete('/delete/:id', requiresUserAuth(401, userTypes.user.rank), control
 router.get('/getall', requiresUserAuth(401, userTypes.admin.rank), controller.userGetAll);
 router.post('/many', requiresUserAuth(401, userTypes.admin.rank), controller.userMany);
 router.delete('/deletemany/:id', requiresUserAuth(401, userTypes.admin.rank), controller.userDeleteMany);
+router.post('/resetpasswordmany/:id', requiresUserAuth(401, userTypes.admin.rank), controller.userResetPasswordMany);
 router.post('/registermock', requiresUserAuth(401, userTypes.admin.rank), controller.mockUser);
 
 // Catch all

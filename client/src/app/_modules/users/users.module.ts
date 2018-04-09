@@ -9,6 +9,7 @@ import { UserDetailsComponent } from './user-details/user-details.component';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { ContentManagementComponent } from './admin/content-management/content-management.component';
 import { UserManyDialogComponent } from './admin/user-management/many-dialog/user-many-dialog.component';
+import { UserManyErrorDialogComponent } from './admin/user-management/many-dialog/user-many-error-dialog/user-many-error-dialog.component';
 import {
   PasswordRecoveryDialogComponent
 } from './user-dialog/password-recovery/password-recovery-dialog/password-recovery-dialog.component';
@@ -36,6 +37,7 @@ import { JwtInterceptorProvider } from './jwt.interceptor';
     UserManagementComponent,
     ContentManagementComponent,
     UserManyDialogComponent,
+    UserManyErrorDialogComponent,
     PasswordRecoveryDialogComponent,
     UpdatePasswordComponent,
     VerifyUserComponent,

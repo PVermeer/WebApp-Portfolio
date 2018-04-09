@@ -71,6 +71,12 @@ exports.userDeleteMany = (req, res) => {
     .catch((err) => { res.status(400).send(err); });
 };
 
+exports.userResetPasswordMany = (req, res) => {
+  userService.userResetPasswordMany(req)
+    .then((response) => { res.json(response); })
+    .catch((err) => { res.status(400).send(err); });
+};
+
 exports.userGetAll = (req, res) => {
   userService.userGetAll(req)
     .then((response) => { res.json(response); })

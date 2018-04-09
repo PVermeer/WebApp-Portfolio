@@ -1,0 +1,25 @@
+<h3 mat-dialog-title>{{title}}</h3>
+<mat-dialog-content>
+
+  <mat-table id="user-table" [dataSource]="report">
+
+    <ng-container matColumnDef="email">
+      <mat-header-cell *matHeaderCellDef> Email address </mat-header-cell>
+      <mat-cell *matCellDef="let user"> {{user.email}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="error">
+      <mat-header-cell *matHeaderCellDef> Created at </mat-header-cell>
+      <mat-cell *matCellDef="let user"> {{user.error}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+    <mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></mat-row>
+
+  </mat-table>
+
+</mat-dialog-content>
+<br>
+<mat-dialog-actions class="flex-row">
+  <button mat-raised-button color="primary" mat-dialog-close>{{button}}</button>
+</mat-dialog-actions>

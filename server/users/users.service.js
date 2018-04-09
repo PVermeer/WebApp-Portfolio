@@ -29,8 +29,7 @@ const loginSuccess = { success: 'Whoopie, login successful!' };
 const updateSuccess = { success: 'Whoopie, update successful!' };
 const verifySuccess = { success: 'E-mail verified!' };
 const verifyDone = { success: 'E-mail already verified!' };
-const deleteSuccess = { success: 'Delete successful' };
-const passwordResetEmailSuccess = { success: 'Password reset mail send!' };
+const actionSuccess = { success: 'Action successful' };
 
 // --------------functions--------------
 
@@ -64,21 +63,22 @@ exports.logIn = async (loginForm, res) => {
 
 // User password recovery
 exports.passwordRecovery = async (req) => {
-  const { email } = req.body;
+  const query = {};
+  if (req.body.email) query.email = req.body.email;
+  if (req.body.id) query._id = req.body.id;
   const { origin } = req.headers;
 
-  const user = await findUser({ email }, { _id: 0 });
+  const user = await findUser(query, { _id: 0 });
   if (!user) return userFindError;
 
   const payload = payloadUserEmail(user);
   const verificationToken = await createToken(payload, passwordRecoveryTokenExpires, user.hash);
   if (!verificationToken) return Promise.reject(tokenError);
 
-  user.verificationToken = verificationToken;
-  const sendPasswordRecoveryMail = await passwordRecoveryMail(user, origin);
+  const sendPasswordRecoveryMail = await passwordRecoveryMail(user, origin, verificationToken);
   if (!sendPasswordRecoveryMail) return Promise.reject(mailError);
 
-  return passwordResetEmailSuccess;
+  return sendPasswordRecoveryMail;
 };
 
 exports.updatePassword = async (req) => {
@@ -184,7 +184,7 @@ exports.userDelete = async (req) => {
 
   const result = await deleteUser({ _id: userId });
   if (result.n === 0) return Promise.reject(deleteError);
-  return deleteSuccess;
+  return actionSuccess;
 };
 
 exports.userMany = async (req) => {
@@ -208,11 +208,28 @@ exports.userDeleteMany = async (req) => {
   const result = await deleteMany(transactions);
 
   if (result.n !== transactionsLength) return { error: result };
-  return deleteSuccess;
+  return actionSuccess;
+};
+
+exports.userResetPasswordMany = async (req) => {
+  const resetPasswordManyId = req.params.id;
+
+  const transactionDocument = await findTransactions(resetPasswordManyId);
+  if (!transactionDocument) return findError;
+
+  const transactions = transactionDocument.data;
+
+  const result = await Promise.all(transactions.map(async (id) => {
+    const user = { body: { id }, headers: req.headers };
+    const response = await exports.passwordRecovery(user);
+    return { id, response };
+  }));
+
+  return result;
 };
 
 exports.userGetAll = async () => {
-  const users = await findAllUsers();
+  const users = await findAllUsers({ hash: 0 });
   if (users.length === 0) return findError;
 
   return users;

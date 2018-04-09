@@ -32,7 +32,7 @@ export class UserManagementComponent {
       firstName: 'Mock ' + this.counter,
       lastName: 'User' + this.counter,
       username: 'mockUser' + this.counter,
-      email: 'mock' + this.counter + '@user.nl',
+      email: 'mock' + this.counter,
       password: 'mockuser',
     };
   });
@@ -67,12 +67,15 @@ export class UserManagementComponent {
       const dialog = this.matDialog.open(DialogComponent, {
         data: {
           component: UserManyDialogComponent,
-          id: response.id, lengthTransactions: transactions.length, actionText, action: this.selectedAction
+          id: response.id,
+          lengthTransactions: transactions.length,
+          actionText, action: this.selectedAction,
+          selected: this.selection.selected,
         }
       });
 
-      dialog.afterClosed().subscribe((success) => {
-        if (success) { this.selection.clear(); this.getUsers(); }
+      dialog.afterClosed().subscribe((reset) => {
+        if (reset) { this.selection.clear(); this.getUsers(); }
       });
     });
   }

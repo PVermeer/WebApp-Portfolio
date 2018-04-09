@@ -119,8 +119,11 @@ export class UserService {
   public UserMany(transactions): Observable<any> {
     return this.http.post('/users/many', transactions);
   }
-  public deleteUserMany(deleteId): Observable<any> {
-    return this.http.delete('/users/deletemany/' + deleteId);
+  public deleteUserMany(id): Observable<any> {
+    return this.http.delete('/users/deletemany/' + id);
+  }
+  public resetPasswordUserMany(id): Observable<any> {
+    return this.http.post('/users/resetpasswordmany/' + id, '', httpOptions);
   }
   public getAllUsers(): Observable<any> {
     return this.http.get('/users/getall', httpOptions);
