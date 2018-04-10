@@ -2,8 +2,6 @@
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { MatDialog } from '@angular/material';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
 
 import { SnackbarComponent } from './_modules/_shared/snackbar/snackbar.component';
 import { DialogComponent } from './_modules/_shared/dialog/dialog.component';

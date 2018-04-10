@@ -47,9 +47,5 @@ import { JwtInterceptorProvider } from './jwt.interceptor';
     AdminComponent,
   ],
   providers: [UserService, AuthGuard, JwtInterceptorProvider],
-  entryComponents: [
-    UserDialogComponent, ConfirmDialogComponent,
-    UserManyDialogComponent, PasswordRecoveryDialogComponent,
-  ]
 })
 export class UsersModule { }

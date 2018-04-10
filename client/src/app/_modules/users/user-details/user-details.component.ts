@@ -1,7 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
 import { MatDialog } from '@angular/material';
 
 import { UserService } from '.././user.service';

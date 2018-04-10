@@ -1,7 +1,5 @@
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/timer';
-import 'rxjs/add/operator/switchMap';
 
 export interface EmailAsyncValidatorOptions {
   debounceTime: number;

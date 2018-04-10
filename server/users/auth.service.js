@@ -20,6 +20,8 @@ const {
  * @returns {Promise<{any}>} User object set by fetch values.
  * */
 exports.findUser = (query, fetch) => new Promise((resolve, reject) => {
+  if (Object.keys(query).length === 0) { resolve(null); return; }
+
   User.findOne(query, fetch, { lean: true }, (error, result) => {
     if (error) return reject(error);
 
@@ -68,6 +70,7 @@ exports.findTransactions = id => new Promise((resolve, reject) => {
   });
 });
 
+
 // Save user(s)
 
 /** Save user in the temporary collection.
@@ -106,15 +109,17 @@ exports.saveUser = userForm => new Promise((resolve, reject) => {
  * @returns {Promise<{n: number, nModified: number, ok: number}>} Status report.
  * */
 exports.updateUser = (query, updateForm) => new Promise((resolve, reject) => {
+  if (Object.keys(query).length === 0) { resolve(null); return; }
+
   User.update(query, { $set: updateForm }, { runValidators: true }, (error, result) => {
     if (error) reject(error);
     resolve(result);
   });
 });
 
-/** Save temporary transactions document. // Verificate @returns!
+/** Save temporary transactions document.
  * @param {array} transactions Array of data to temporary store.
- * @returns {Promise<{n: number, ok: number}>} Status report.
+ * @returns {Promise<{n: number, nModified: number, ok: number}>} Status report.
  * */
 exports.saveTransactions = transactions => new Promise((resolve, reject) => {
   const emptyArray = 'Empty array';
@@ -134,31 +139,35 @@ exports.saveTransactions = transactions => new Promise((resolve, reject) => {
 
 // Delete user(s)
 
-/** Delete a single user. // Verificate @returns!
+/** Delete a single user.
  * @param {{any: any}} query Object search key + value.
- * @returns {Promise<{n: number, ok: number}>} Status report.
+ * @returns {Promise<{n: number, nModified: number, ok: number}>} Status report.
  * */
 exports.deleteUser = query => new Promise((resolve, reject) => {
+  if (Object.keys(query).length === 0) { resolve(null); return; }
+
   User.deleteOne(query, (error, result) => {
     if (error) reject(error);
     resolve(result);
   });
 });
 
-/** Delete a single temporary user. // Verificate @returns!
+/** Delete a single temporary user.
  * @param {{any: any}} query Object search key + value.
- * @returns {Promise<{n: number, ok: number}>} Status report.
+ * @returns {Promise<{n: number, nModified: number, ok: number}>} Status report.
  * */
 exports.deleteTempUser = query => new Promise((resolve, reject) => {
+  if (Object.keys(query).length === 0) { resolve(null); return; }
+
   UserTemp.deleteOne(query, (error, result) => {
     if (error) reject(error);
     resolve(result);
   });
 });
 
-/** Delete multiple users. // Verificate @returns!
+/** Delete multiple users.
  * @param {array} transactions Array of id's to delete.
- * @returns {Promise<{n: number, ok: number}>} Status report.
+ * @returns {Promise<{n: number, nModified: number, ok: number}>} Status report.
  * */
 exports.deleteMany = transactions => new Promise((resolve, reject) => {
   User.deleteMany({ _id: { $in: transactions } }, (error, result) => {
@@ -166,6 +175,7 @@ exports.deleteMany = transactions => new Promise((resolve, reject) => {
     resolve(result);
   });
 });
+
 
 // Passwords
 

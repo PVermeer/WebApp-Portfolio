@@ -44,7 +44,6 @@ export class LoginComponent {
       if (response.error) {
         return this.snackbarComponent.snackbarError(response.error);
       }
-
       this.snackbarComponent.snackbarSucces(response.success);
       this.dialogComponent.matDialog.close(true);
     },
@@ -57,7 +56,6 @@ export class LoginComponent {
     this.userDialogComponent.progressBar = true;
     const user = { email: loginForm.email };
 
-    // Login user
     this.userService.recoverUserPassword(user).subscribe(response => {
       this.userDialogComponent.progressBar = false;
 

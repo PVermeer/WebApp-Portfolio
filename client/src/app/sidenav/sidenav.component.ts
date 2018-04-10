@@ -2,7 +2,6 @@ import { Component, ChangeDetectorRef, OnDestroy, ViewChild, ViewChildren, Query
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MatSidenav, MatExpansionPanel, MatDialog } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
 
 import { SidenavContent } from './sidenav.model';
 import { SidenavService } from './sidenav.service';
