@@ -52,8 +52,8 @@ export class UserComponent implements OnInit, AfterViewInit {
 
   // Constructor methods
   private getUsertype() {
-    this.userService.userType$.subscribe(response => {
-      if (response === 'admin') {
+    this.userService.userType$.subscribe(type => {
+      if (type.rank > 1) {
         this.sidenavContent[0].items.unshift({ label: 'Admin panel', path: 'admin' });
         this.isAdmin = true;
       }

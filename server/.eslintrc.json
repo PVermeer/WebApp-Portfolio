@@ -1,27 +1,14 @@
 {
-    "extends": "airbnb-base",
-    "env": {
-        "browser": true,
-        "node": true,
-        "jquery": true
-      },
-      "globals": {
-        "callApi": true,
-        "clickFlag": true,
-        "convertText": true,
-        "debounce": true,
-        "throttle": true,
-        "mobileDetect": true,
-        "scrollDetect": true,
-        "movielist": true,
-        "tvshowlist": true,
-        "ytchannellist": true,
-        "gamelist": true
-    
-      },
-      "rules": {
-        "no-plusplus": [2, {"allowForLoopAfterthoughts": true}],
-        "no-underscore-dangle": [2, { "allow": ["_id"]}]
-      }
+  "extends": "airbnb-base",
+  "env": {
+      "browser": true,
+      "node": true
+    },
+    "globals": {
+    },
+    "rules": {
+      "no-plusplus": [2, {"allowForLoopAfterthoughts": true}],
+      "no-underscore-dangle": [2, { "allow": ["_id"]}]
     }
-    
+  }
+  

@@ -11,9 +11,12 @@ export class AuthGuard implements CanActivate {
   ) { }
 
   async canActivate(): Promise<boolean> {
+
+    // Check login with the backend
     const isLoggedIn = await this.userService.checkLogin();
     if (isLoggedIn) { return true; }
 
+    // Open login and await the result
     const login = await this.userService.login();
     if (login) { return true; }
 

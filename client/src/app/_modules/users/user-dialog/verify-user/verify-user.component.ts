@@ -2,9 +2,8 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { DialogComponent } from '../../../_shared/dialog/dialog.component';
+import { DialogComponent, DialogContent } from '../../../_shared/dialog/dialog.component';
 import { UserService } from '../../user.service';
-import { SnackbarComponent } from '../../../_shared/snackbar/snackbar.component';
 
 
 @Component({
@@ -19,28 +18,25 @@ export class VerifyUserComponent {
 
   // Methods
   public verifyEmail() {
+
+    // Verify e-mail with token
     this.userService.verifyEmail(this.token).subscribe(response => {
-      const dialogData = {
-        title: '',
-        body: '',
-        button: '',
-      };
 
-      if (response.error) {
-        dialogData.title = response.error;
-        dialogData.button = 'Hmmmm...';
-        this.snackbarComponent.snackbarError(response.error);
-      }
-      if (response.success) {
-        dialogData.title = response.success;
-        dialogData.button = 'Cool!';
-        this.snackbarComponent.snackbarSucces(response.success);
-      }
+      // Open the dialog
+      const data: DialogContent = { dialogData: { title: response, body: '', button: 'Cool!' }};
+      const verifyDialog = this.matDialog.open(DialogComponent, { data, disableClose: true, });
 
-      const verifyDialog = this.matDialog.open(DialogComponent, { disableClose: true, data: { dialogData }});
-      verifyDialog.afterClosed().subscribe(() => {
-        this.router.navigate(['/user']);
-      });
+      // Redirect
+      verifyDialog.afterClosed().subscribe(() => { this.router.navigate(['/user']); });
+
+      // Catch errors
+    }, (error) => {
+      // Open the dialog
+      const data: DialogContent = { dialogData: { title: 'Something went wrong', body: error.message, button: 'Hmmmm...', }};
+      const verifyDialog = this.matDialog.open(DialogComponent, { data, disableClose: true });
+
+      // Redirect
+      verifyDialog.afterClosed().subscribe(() => { this.router.navigate(['/home']); });
     });
   }
 
@@ -49,9 +45,8 @@ export class VerifyUserComponent {
     private router: Router,
     private userService: UserService,
     private route: ActivatedRoute,
-    private snackbarComponent: SnackbarComponent,
   ) {
-    // Query params
+    // Get token from url
     this.route.queryParamMap.subscribe(params => {
       this.token = params.get('user');
     });

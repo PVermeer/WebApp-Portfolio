@@ -1,5 +1,9 @@
+<div id="progress-wrapper" >
+    <mat-progress-bar mode="indeterminate" *ngIf="progressBar"></mat-progress-bar>
+  </div>
+  
 <div class="actions">
-  <button mat-raised-button (click)="mockUsers()">Create Mock Users</button>
+  <button mat-raised-button (click)="mockUsers()" [(disabled)]="disableButtons">Create Mock Users</button>
   <mat-form-field>
     <mat-select [(value)]="selectedAction" placeholder="Select an action">
       <mat-option>-- None --</mat-option>
@@ -8,7 +12,7 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-raised-button color="primary" (click)="action()" [disabled]="!selectedAction || selection.selected.length === 0">Execute action</button>
+  <button mat-raised-button color="primary" (click)="action()" [(disabled)]="!selectedAction || selection.selected.length === 0 || disableButtons">Execute action</button>
 </div>
 
 <mat-table id="user-table" [dataSource]="dataSource">

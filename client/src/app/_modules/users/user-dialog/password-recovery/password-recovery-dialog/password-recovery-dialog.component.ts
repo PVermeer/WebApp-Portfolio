@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 import { UserService } from '../../.././user.service';
 import { SnackbarComponent } from '../../../../_shared/snackbar/snackbar.component';
 import { passwordValidator, matchValidator } from '../../../validators';
-import { DialogComponent } from '../../../../_shared/dialog/dialog.component';
+import { DialogComponent, DialogContent } from '../../../../_shared/dialog/dialog.component';
+import { MatDialog } from '@angular/material';
 
 
 @Component({
@@ -21,6 +22,8 @@ export class PasswordRecoveryDialogComponent implements OnInit {
   public progressBar = false;
   public userForm: FormGroup;
   public userFormEmpty = true;
+
+  // NgFor fields
   public userFormFields = [
     {
       label: 'New password',
@@ -42,20 +45,23 @@ export class PasswordRecoveryDialogComponent implements OnInit {
   // Methods
   public updatePassword(userForm) {
     this.progressBar = true;
+
+    // Update the password with token
     this.userService.updateUserPassword(userForm, this.token).subscribe(response => {
       this.progressBar = false;
 
-      if (response.error) {
-        return this.snackbarComponent.snackbarError(response.error);
-      }
-
-      this.snackbarComponent.snackbarSucces(response.success);
-      this.dialogComponenet.matDialog.close();
+      this.snackbarComponent.snackbarSuccess(response);
+      this.dialogComponent.matDialog.close();
       this.router.navigate(['/user']);
-    },
-      () => {
-        this.progressBar = false;
-      });
+
+      // Catch errors
+    }, (error) => {
+      this.progressBar = false;
+
+      // Open error dialog
+      const data: DialogContent = { dialogData: { title: 'Oops..', body: error, button: 'Okay', }, };
+      this.matDialog.open(DialogComponent, { data });
+    });
   }
 
   constructor(
@@ -63,18 +69,21 @@ export class PasswordRecoveryDialogComponent implements OnInit {
     private formBuilder: FormBuilder,
     private snackbarComponent: SnackbarComponent,
     private router: Router,
-    private dialogComponenet: DialogComponent,
+    private dialogComponent: DialogComponent,
+    private matDialog: MatDialog,
   ) {
+    // Form validation
     this.userForm = this.validateForm();
-    this.token = dialogComponenet.data.token;
+
+    // Get token from parent
+    this.token = dialogComponent.data.token;
   }
 
-  // Lifecycle
   ngOnInit() {
     // Empty form validator
     this.userForm.valueChanges.subscribe(value => {
       if (Object.values(value).every(x => (x === null || x === ''))) { return this.userFormEmpty = true; }
-      this.userFormEmpty = false;
+      return this.userFormEmpty = false;
     });
   }
 

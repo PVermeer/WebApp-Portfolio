@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
-import { DialogComponent } from './dialog.component';
+
 import { MaterialModule } from '../material.module';
+import { DialogComponent } from './dialog.component';
+
 import { UserDialogComponent } from '../../users/user-dialog/user-dialog.component';
 import {
   UserManyErrorDialogComponent
@@ -12,6 +13,7 @@ import { ConfirmDialogComponent } from '../../users/user-details/confirm-dialog/
 import {
   PasswordRecoveryDialogComponent
 } from '../../users/user-dialog/password-recovery/password-recovery-dialog/password-recovery-dialog.component';
+
 
 @NgModule({
   declarations: [

@@ -22,7 +22,7 @@
 
     <br>
     <div class="center-container">
-      <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.valid">Register</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.valid || disableButtons">Register</button>
     </div>
 
   </form>
@@ -33,6 +33,6 @@
   <p>{{successBody}}</p>
   <br>
   <div class="center-container">
-    <button mat-raised-button color="primary" (click)="closeModal()">Cool!</button>
+    <button mat-raised-button color="primary" (click)="closeDialog()">Cool!</button>
   </div>
 </ng-template>

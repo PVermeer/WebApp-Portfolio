@@ -1,57 +1,61 @@
-const mongoose = require('mongoose');
-
-const config = require('../config');
+import { connect, connection } from 'mongoose';
+import { mongoDb } from '../config';
+import { NextFunction, Request, Response } from 'express';
+import { ErrorMessage } from '../types/types';
 
 let connectionFlag = true;
 const options = {
-  reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
-  reconnectInterval: 500, // Reconnect every 500ms
+  reconnectTries: Number.MAX_VALUE,
+  reconnectInterval: 2000, // Reconnect every 2s
+  bufferMaxEntries: 0
 };
 
-/* eslint-disable no-console */
+const error: ErrorMessage = { status: 503, message: 'Database is not up' };
+
+// tslint:disable no-console
 
 const connectWithRetry = () => {
-  mongoose.connect(config.mongoDb, options).then(
+  connect(mongoDb, options).then(
     () => {
       connectionFlag = true;
       console.log('Mongoose default connection ready to use.');
-    },
-    (error) => {
+    }, error => {
       connectionFlag = false;
       console.log(`\nWhoops, cannot connect to MongoDb at server start:\n\n${error}\n\nWill try again in 5 seconds!\n`);
       setTimeout(() => {
         connectWithRetry();
       }, 5000);
-    },
+    }
   );
 };
 connectWithRetry();
 
-mongoose.connection.on('connected', () => {
+connection.on('connected', () => {
   connectionFlag = true;
   console.log('Mongoose default connection open');
 });
 
-mongoose.connection.on('error', (err) => {
+connection.on('error', err => {
   connectionFlag = false;
   console.log(`Mongoose default connection error: ${err}`);
 });
 
-mongoose.connection.on('disconnected', () => {
+connection.on('disconnected', () => {
   connectionFlag = false;
   console.log('Mongoose default connection disconnected');
 });
 
 process.on('SIGINT', () => {
-  mongoose.connection.close(() => {
+  connection.close(() => {
     connectionFlag = false;
     console.log('Mongoose default connection disconnected through app termination');
     process.exit(0);
   });
 });
 
-// Middleware connection error catcher
-exports.DbConnectionError = (req, res, next) => {
-  if (!connectionFlag) return res.status(500).send('Database is not up');
+export function DbConnectionError(_req: Request, res: Response, next: NextFunction): void | Response {
+
+  if (!connectionFlag) return res.status(error.status).send(error);
+
   return next();
-};
+}

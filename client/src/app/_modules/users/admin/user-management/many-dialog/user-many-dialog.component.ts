@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material';
 
 import { UserService } from '../../.././user.service';
 import { SnackbarComponent } from '../../../../_shared/snackbar/snackbar.component';
-import { DialogComponent } from '../../../../_shared/dialog/dialog.component';
+import { DialogComponent, DialogContent } from '../../../../_shared/dialog/dialog.component';
 import { UserManyErrorDialogComponent } from './user-many-error-dialog/user-many-error-dialog.component';
 
 @Component({
@@ -20,49 +20,58 @@ export class UserManyDialogComponent {
   private action = this.dialogComponent.data.action;
   private selected = this.dialogComponent.data.selected;
 
-  public progressbar = false;
+  public progressBar = false;
+  public disableButtons = false;
   public title = 'Confirmation';
   public body = `Are you sure you want to ${this.actionText} ${this.manyLength} users?`;
   public button = 'Yes, i\'m sure!';
   public button2 = 'Cancel';
-  private success = 'All operations successful';
+  // private success = 'All operations successful';
 
   // Methods
   public async execute() {
-    this.progressbar = true;
-    let response: any;
+    this.disableButtons = true;
+    let error: any;
+    this.progressBar = true;
+    let response: any[];
+    let data: DialogContent;
 
+    // Define the action action
     switch (this.action) {
-      case 'deleteUser': response = await this.userService.deleteUserMany(this.id).first().toPromise(); break;
-      case 'resetPassword': response = await this.userService.resetPasswordUserMany(this.id).first().toPromise(); break;
-      default: this.progressbar = false; throw new Error('Not matching any case');
+
+      case 'deleteUser':
+        response = await this.userService.deleteUserMany(this.id).first().toPromise()
+          .catch((err) => {
+            error = err;
+            data = { dialogData: { title: 'Some errors were detected', body: 'You can refresh the page and try again', button: 'Ok...' } };
+          });
+        break;
+
+      case 'resetPassword':
+        response = await this.userService.resetPasswordUserMany(this.id).first().toPromise()
+          .catch((err) => {
+            error = err;
+            data = { component: UserManyErrorDialogComponent, error, selected: this.selected };
+          });
+        break;
+
+      default: this.progressBar = false; throw new Error('Not matching any case');
     }
 
-    this.progressbar = false;
-
-    let errorCheck = [];
-    response.forEach(x => errorCheck = [...errorCheck, ...Object.keys(x.response)]);
-
-    const isError = errorCheck.some(x => x === 'error');
-
-    if (isError) {
-      this.dialogComponent.matDialog.close(true);
-      return this.matDialog.open(DialogComponent, {
-        data: {
-          component: UserManyErrorDialogComponent,
-          response,
-          selected: this.selected,
-        }
-      });
-    }
-
-    this.snackbarComponent.snackbarSucces(this.success);
+    this.progressBar = false;
     this.dialogComponent.matDialog.close(true);
+
+    if (error) {
+      const dialog = this.matDialog.open(DialogComponent, { data });
+      return dialog.afterClosed().subscribe(() => { this.disableButtons = false; });
+    }
+
+    // If no errors
+    this.snackbarComponent.snackbarSuccess(response);
+    this.disableButtons = false;
   }
 
-  public cancel() {
-    this.dialogComponent.matDialog.close();
-  }
+  public cancel() { this.dialogComponent.matDialog.close(); }
 
   constructor(
     private dialogComponent: DialogComponent,

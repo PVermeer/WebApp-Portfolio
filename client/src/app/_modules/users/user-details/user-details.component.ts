@@ -8,7 +8,7 @@ import {
   usernameValidator, usernameAsyncValidator, emailAsyncValidator,
   passwordValidator, matchValidator, emailValidator,
 } from '../validators';
-import { DialogComponent } from '../../_shared/dialog/dialog.component';
+import { DialogComponent, DialogContent } from '../../_shared/dialog/dialog.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { SnackbarComponent } from '../../_shared/snackbar/snackbar.component';
 
@@ -33,7 +33,8 @@ export class UserDetailsComponent implements OnInit {
 
   // Methods
   private getUserInfo = () => {
-    // NgFor input fields (async)
+
+    // NgFor input fields (async) with current values
     this.userService.userInfo().subscribe((response) => {
       this.userFormFields = Observable.of([
         {
@@ -80,37 +81,42 @@ export class UserDetailsComponent implements OnInit {
           asyncAlert: '',
         },
       ]);
-    });
+    }, () => { }
+    );
   }
 
   public toggleDisabled(disableEdit) {
+
+    // Toggle access to the form
     if (disableEdit) { this.userForm.enable(); this.disableButton = false; }
     if (!disableEdit) { this.userForm.disable(); this.disableButton = true; }
   }
 
-  public confirmUpdate() {
-    this.userService.login(true).then((isLoggedIn) => {
-      if (!isLoggedIn) {
-        this.slideToggle.toggle();
-        return this.snackbarComponent.snackbarError('You\'re not who you say you are!');
-      }
-      const dialog = this.matDialog.open(DialogComponent, {
-        data: {
-          component: ConfirmDialogComponent,
-          userFormFields: this.userFormFields,
-          userForm: this.userForm
-        }
-      });
-      dialog.afterClosed().subscribe((response) => {
-        if (response === 'success') { this.getUserInfo(); }
-      });
+  public async confirmUpdate() {
+
+    // User must login again
+    const isLoggedIn = await this.userService.login(true);
+
+    // Stop if not logged in
+    if (!isLoggedIn) {
+      this.slideToggle.toggle();
+      return this.snackbarComponent.snackbarError('You\'re not logged in');
+    }
+
+    // On success open dialog to confirm the form
+    const data: DialogContent = {
+      component: ConfirmDialogComponent, userFormFields: this.userFormFields, userForm: this.userForm
+    };
+    const dialog = this.matDialog.open(DialogComponent, { data });
+
+    // On success close dialog and get new user details
+    dialog.afterClosed().subscribe((response) => {
+      if (response === 'success') { this.getUserInfo(); }
       this.slideToggle.toggle();
     });
   }
 
-  public logout() {
-    this.userService.logout();
-  }
+  public logout() { this.userService.logout(); }
 
   constructor(
     private userService: UserService,
@@ -118,12 +124,15 @@ export class UserDetailsComponent implements OnInit {
     private matDialog: MatDialog,
     private snackbarComponent: SnackbarComponent,
   ) {
+    // Form validation
     this.userForm = this.validateForm();
+
+    // Disable form at start
     this.userForm.disable();
   }
 
-  // Lifecycle
   ngOnInit() {
+    // Get user info at start
     this.getUserInfo();
 
     // Empty form validator

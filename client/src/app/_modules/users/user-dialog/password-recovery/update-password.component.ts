@@ -20,17 +20,14 @@ export class UpdatePasswordComponent {
     private matdialog: MatDialog,
     private route: ActivatedRoute,
   ) {
-    // Query params
+    // Get token from url
     this.route.queryParamMap.subscribe(params => {
       this.token = params.get('user');
     });
 
     // Open update password dialog
-    this.matdialog.open(DialogComponent, {
-      disableClose: true, data: {
-        component: PasswordRecoveryDialogComponent, token: this.token
-      }
-    });
+    const component = PasswordRecoveryDialogComponent;
+    this.matdialog.open(DialogComponent, { disableClose: true, data: { component, token: this.token }});
   }
 
 }

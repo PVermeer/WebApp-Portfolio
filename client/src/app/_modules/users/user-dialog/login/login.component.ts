@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material';
 
 import { UserService } from '../.././user.service';
 import { SnackbarComponent } from '../../../_shared/snackbar/snackbar.component';
-import { DialogComponent } from '../../../_shared/dialog/dialog.component';
+import { DialogComponent, DialogContent } from '../../../_shared/dialog/dialog.component';
 import { UserDialogComponent } from '../user-dialog.component';
 
 @Component({
@@ -41,34 +42,37 @@ export class LoginComponent {
     this.userService.loginUser(loginForm).subscribe(response => {
       this.userDialogComponent.progressBar = false;
 
-      if (response.error) {
-        return this.snackbarComponent.snackbarError(response.error);
-      }
-      this.snackbarComponent.snackbarSucces(response.success);
+      this.snackbarComponent.snackbarSuccess(response);
       this.dialogComponent.matDialog.close(true);
-    },
-      () => {
-        this.userDialogComponent.progressBar = false;
-      });
+
+      // Catch errors
+    }, (error) => {
+      this.userDialogComponent.progressBar = false;
+
+      // If e-mail is not verified open dialog to notify user
+      if (error.status === 403) {
+        const data: DialogContent = {
+          dialogData: {
+            title: 'Something\'s wrong...', body: error.message, button: 'Okay'
+          }
+        }; this.matDialog.open(DialogComponent, { data });
+      }
+    });
   }
 
   public recoverPassword(loginForm) {
     this.userDialogComponent.progressBar = true;
     const user = { email: loginForm.email };
 
+    // Password recovery request
     this.userService.recoverUserPassword(user).subscribe(response => {
       this.userDialogComponent.progressBar = false;
 
-      if (response.error) {
-        return this.snackbarComponent.snackbarError(response.error);
-      }
-
-      this.snackbarComponent.snackbarSucces(response.success);
+      this.snackbarComponent.snackbarSuccess(response);
       this.dialogComponent.matDialog.close(false);
-    },
-      () => {
-        this.userDialogComponent.progressBar = false;
-      });
+
+      // Catch errors
+    }, () => this.userDialogComponent.progressBar = false);
   }
 
   constructor(
@@ -77,6 +81,7 @@ export class LoginComponent {
     private snackbarComponent: SnackbarComponent,
     private dialogComponent: DialogComponent,
     private userDialogComponent: UserDialogComponent,
+    private matDialog: MatDialog,
   ) {
     // Form validation
     this.loginForm = this.validateLogin();

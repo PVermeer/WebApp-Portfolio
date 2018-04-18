@@ -1,8 +1,11 @@
 import { trigger, animate, style, group, query, transition } from '@angular/animations';
 
+// Current used router animation
 export function routerTransition() {
   return fadeAnimation();
 }
+
+// Animations
 
 export function fadeAnimation() {
   return trigger('routerTransition', [

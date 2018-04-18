@@ -1,14 +1,14 @@
-const mongoose = require('mongoose');
+import { model, Schema } from 'mongoose';
 
-const { Schema } = mongoose;
+// tslint:disable:variable-name
 
 // Mongoose post delete transaction
 const ManyTransactionSchema = new Schema({
   data: {
     type: [String],
-    required: true,
-  },
+    required: true
+  }
 }, { timestamps: true });
 
 ManyTransactionSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
-exports.Many = mongoose.model('Many', ManyTransactionSchema);
+export const Many = model('Many', ManyTransactionSchema);

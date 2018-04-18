@@ -8,11 +8,13 @@ import { SidenavService } from './sidenav/sidenav.service';
 })
 export class AppComponent {
 
+  // Variables
   public secondaryTheme: boolean;
 
   constructor(
     private sidenavService: SidenavService,
   ) {
+    // Toggle theme for the entire app
     this.sidenavService.themeToggle$.subscribe((themeToggle) => {
         this.secondaryTheme = themeToggle;
     });

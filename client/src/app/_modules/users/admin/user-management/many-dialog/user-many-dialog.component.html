@@ -1,5 +1,5 @@
 <div id="progress-wrapper" >
-  <mat-progress-bar mode="indeterminate" *ngIf="progressbar"></mat-progress-bar>
+  <mat-progress-bar mode="indeterminate" *ngIf="progressBar"></mat-progress-bar>
 </div>
 
 <h3 mat-dialog-title>{{title}}</h3>
@@ -8,6 +8,6 @@
 </mat-dialog-content>
 <br>
 <mat-dialog-actions class="flex-row">
-  <button mat-raised-button color="warn" (click)="cancel()">{{button2}}</button>
-  <button mat-raised-button color="primary" (click)="execute()">{{button}}</button>
+  <button mat-raised-button color="warn" (click)="cancel()" [(disabled)]="disableButtons">{{button2}}</button>
+  <button mat-raised-button color="primary" (click)="execute()" [(disabled)]="disableButtons">{{button}}</button>
 </mat-dialog-actions>

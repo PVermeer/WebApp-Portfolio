@@ -19,6 +19,7 @@ export class UserDialogComponent implements OnInit {
   ) { }
 
   ngOnInit () {
+    // Check if the register tab must be disabled
     if (this.dialogComponent.data.registerDisable) {
       this.registerIsDisabled = true;
     }

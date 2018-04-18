@@ -9,7 +9,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 export class SnackbarComponent {
 
   // Config
-  private configSucces: MatSnackBarConfig = {
+  private configSuccess: MatSnackBarConfig = {
     politeness: null,
     announcementMessage: null,
     viewContainerRef: null,
@@ -34,8 +34,8 @@ export class SnackbarComponent {
   };
 
   // Methods
-  public snackbarSucces(message) {
-    this.snackBar.open(message, 'CLOSE', this.configSucces);
+  public snackbarSuccess(message) {
+    this.snackBar.open(message, 'CLOSE', this.configSuccess);
   }
 
   public snackbarError(message) {

@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material';
 import { ContactFormInput } from '../contact.model';
 import { MailService } from '../../_shared/mail.service';
 import { SnackbarComponent } from '../../_shared/snackbar/snackbar.component';
-import { DialogComponent } from '../../_shared/dialog/dialog.component';
+import { DialogComponent, DialogContent } from '../../_shared/dialog/dialog.component';
 
 @Component({
   selector: 'app-contact-form',
@@ -14,6 +14,7 @@ import { DialogComponent } from '../../_shared/dialog/dialog.component';
 })
 export class ContactFormComponent {
 
+  // Get elements
   @ViewChild('contactFormRef') private contactFormRef;
 
   // Variables
@@ -61,25 +62,28 @@ export class ContactFormComponent {
   // Methods
   public sendForm(formInput) {
     this.progressBar = true;
-    const dialogData = {
-      title: 'Success!',
-      body: `Hey ${formInput.name}!<br><br> Thanks for the message.<br><br> I\'ll contact you soon via: <br><br><b>${formInput.email}</b>`,
-      button: 'Cool!',
-    };
 
+    // Send the mail request
     this.mailService.sendContactForm(formInput).subscribe((response) => {
       this.progressBar = false;
+      this.snackbarComponent.snackbarSuccess(response);
 
-      this.snackbarComponent.snackbarSucces(response.success);
+      // Open thanks dialog
+      const data: DialogContent = {
+        dialogData: {
+          title: 'Success!',
+          body: `Hey ${formInput.name}!<br><br> Thanks for the message.
+          <br><br> I\'ll contact you soon via: <br><br><b>${formInput.email}</b>`,
+          button: 'Cool!',
+        }
+      };
+      const dialog = this.matDialog.open(DialogComponent, { data });
 
-      const dialog = this.matDialog.open(DialogComponent, { data: { dialogData } });
+      // Reset the form after success
+      dialog.afterClosed().subscribe(() => { this.contactFormRef.resetForm(); });
 
-      dialog.afterClosed().subscribe(() => {
-        this.contactFormRef.resetForm();
-      });
-
-    }, () => { this.progressBar = false; }
-  );
+      // On error
+    }, () => this.progressBar = false);
   }
 
   constructor(

@@ -1,8 +1,9 @@
 <div *ngIf="isComponent; else isDialogData">
-  <ng-container *ngComponentOutlet="data.component"></ng-container>
+  <ng-container *ngComponentOutlet="component"></ng-container>
 </div>
 
 <ng-template #isDialogData>
+  <mat-progress-bar *ngIf="progressBar"></mat-progress-bar>
   <h3 mat-dialog-title>{{title}}</h3>
   <mat-dialog-content>
     <p [innerHTML]="body"></p>
@@ -10,5 +11,6 @@
   <br>
   <mat-dialog-actions class="center-container">
     <button mat-raised-button color="primary" mat-dialog-close>{{button}}</button>
+    <br>
   </mat-dialog-actions>
 </ng-template>

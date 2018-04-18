@@ -5,7 +5,7 @@ import { MatDialog, MatTableDataSource } from '@angular/material';
 import { UserService } from '../.././user.service';
 import { UserManyDialogComponent } from './many-dialog/user-many-dialog.component';
 import { SnackbarComponent } from '../../../_shared/snackbar/snackbar.component';
-import { DialogComponent } from '../../../_shared/dialog/dialog.component';
+import { DialogComponent, DialogContent } from '../../../_shared/dialog/dialog.component';
 
 @Component({
   selector: 'app-user-management',
@@ -18,6 +18,8 @@ export class UserManagementComponent {
   public dataSource = new MatTableDataSource<any[]>();
   public selection = new SelectionModel<any>(true, []);
   public selectedAction: string;
+  public progressBar = false;
+  public disableButtons = false;
 
   public columnsToDisplay = ['select', 'userName', 'firstName', 'lastName', 'type', 'email', 'created_at'];
   public options = [
@@ -32,68 +34,104 @@ export class UserManagementComponent {
       firstName: 'Mock ' + this.counter,
       lastName: 'User' + this.counter,
       username: 'mockUser' + this.counter,
-      email: 'mock' + this.counter,
+      email: 'mock@mock' + this.counter,
       password: 'mockuser',
     };
   });
 
   // Methods
-  private getUsers() { this.userService.getAllUsers().subscribe(res => { this.dataSource.data = res; }); }
+  private getUsers() {
+    this.progressBar = true;
+
+    // Get all users from db
+    this.userService.getAllUsers().subscribe(res => {
+
+      // On success
+      this.dataSource.data = res;
+      this.progressBar = false;
+
+      // Catch errors
+    }, (error) => {
+      this.progressBar = false;
+      this.snackbarComponent.snackbarError(error);
+    });
+  }
 
   public isAllSelected() {
+
+    // Check if all are selected
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
     return numSelected === numRows;
   }
 
   public masterToggle() {
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
+
+    // Checkbox control
+    if (this.isAllSelected()) { return this.selection.clear(); }
+    this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
   public action() {
+    this.progressBar = true;
+    this.disableButtons = true;
+
+    // Create a id array from selection
     const transactions = [];
     this.selection.selected.forEach(selected => transactions.push(selected._id));
 
-    let actionText;
+    // Define the selected action
+    let actionText: string;
     switch (this.selectedAction) {
       case 'deleteUser': actionText = 'delete'; break;
       case 'resetPassword': actionText = 'reset the password of'; break;
       default: throw new Error('Not matching any action');
     }
 
+    // Create a temporary many action document in the db
     this.userService.UserMany(transactions).subscribe(response => {
-      const dialog = this.matDialog.open(DialogComponent, {
-        data: {
-          component: UserManyDialogComponent,
-          id: response.id,
-          lengthTransactions: transactions.length,
-          actionText, action: this.selectedAction,
-          selected: this.selection.selected,
-        }
-      });
+      this.progressBar = false;
 
+      // Open confirm dialog
+      const data: DialogContent = {
+        component: UserManyDialogComponent,
+        id: response.id,
+        lengthTransactions: transactions.length,
+        actionText, action: this.selectedAction,
+        selected: this.selection.selected,
+      };
+      const dialog = this.matDialog.open(DialogComponent, { data });
+
+      // Reset the table on success
       dialog.afterClosed().subscribe((reset) => {
         if (reset) { this.selection.clear(); this.getUsers(); }
+        this.disableButtons = false;
       });
+
+      // Catch errors
+    }, (error) => {
+      this.progressBar = true;
+      this.disableButtons = false;
+      this.snackbarComponent.snackbarError(error);
     });
   }
 
-  public mockUsers = async () => { // Refactor
+  public mockUsers = async () => { // Testing purposes
+    this.progressBar = true;
+
     const requests = this.users.map(user => {
       return new Promise((resolve) => {
         this.userService.createMockUser(user).subscribe(response => {
-          if (response.error) {
-            return this.snackbarComponent.snackbarError(response.error);
-          }
-          resolve();
-        });
+          resolve(response);
+
+          // On error
+        }, () => { });
       });
     });
-    await Promise.all(requests);
+    await Promise.all(requests).catch(error => this.snackbarComponent.snackbarError(error));
 
-    this.snackbarComponent.snackbarSucces('Mock user(s) created');
+    this.progressBar = false;
+    this.snackbarComponent.snackbarSuccess('Mock user(s) created');
     this.getUsers();
   }
 

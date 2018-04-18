@@ -10,31 +10,41 @@ import { DialogComponent } from '../../../../../_shared/dialog/dialog.component'
 export class UserManyErrorDialogComponent {
 
   // Variables
-  private response = this.dialogComponent.data.response;
+  private response = this.dialogComponent.data.error;
   private selected = this.dialogComponent.data.selected;
-  public title = 'There were some errors detected';
+  public title = 'Errors detected';
+  public body = this.dialogComponent.data.error.message;
   public button = 'Ok';
+  public buildTable = false;
   public report = [];
   public columnsToDisplay = ['email', 'error'];
 
   // Methods
   private errorReport() {
-    this.response.forEach(x => {
-      const key = Object.keys(x.response);
 
-      if (key[0] === 'error') {
-        const { id } = x;
-        const user = this.selected.find((y) => y._id === id);
+    if (this.response.result) {
+      this.buildTable = true;
 
-        const errorObject = { email: user.email, error: x.response.error };
-        this.report.push(errorObject);
-      }
-    });
+    // Construct a table
+      this.response.result.forEach(x => {
+        const keys = Object.keys(x);
+        const isError = keys.some(key => key === 'error');
+
+        if (isError) {
+          const { id } = x;
+          const user = this.selected.find(y => y._id === id);
+
+          const errorObject = { email: user.email, error: x.error };
+          this.report.push(errorObject);
+        }
+      });
+    }
   }
 
   constructor(
     private dialogComponent: DialogComponent,
   ) {
+    // Run error report
     this.errorReport();
   }
 

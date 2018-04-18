@@ -34,8 +34,10 @@ export class EmailAsyncValidator {
       return Promise.resolve(null);
     }
     return Observable.timer(this.options.debounceTime).switchMap(() => {
-      const input = value.toLowerCase().trim();
-      return this.options.service.checkEmail(input);
+      return this.options.service.checkEmail(value).map((response) => {
+        if (response) { return 'true'; }
+        return null;
+      }).catch(error => error);
     });
   }
 }

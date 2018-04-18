@@ -4,10 +4,6 @@
   align-items: center;
 }
 
-#spinner {
-  min-height: 130px;
-}
-
 #progress-wrapper {
   height: 2px;
 }

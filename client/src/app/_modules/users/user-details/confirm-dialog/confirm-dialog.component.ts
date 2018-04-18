@@ -23,25 +23,22 @@ export class ConfirmDialogComponent implements OnInit {
   public updateUser(userForm) {
     this.progressBar = true;
 
+    // Send update request
     this.userService.updateUser(userForm).subscribe(response => {
       this.progressBar = false;
 
-      if (response.error) {
-        return this.snackbarComponent.snackbarError(response.error);
-      }
-
-      this.snackbarComponent.snackbarSucces(response.success);
+      this.snackbarComponent.snackbarSuccess(response);
       this.userForm.reset();
       this.dialogComponent.matDialog.close('success');
-    },
-      () => {
-        this.progressBar = false;
-      });
+
+      // Catch errors
+    }, (error) => {
+      this.snackbarComponent.snackbarError(error);
+      this.progressBar = false;
+    });
   }
 
-  public closeDialog() {
-    this.dialogComponent.matDialog.close();
-  }
+  public closeDialog() { this.dialogComponent.matDialog.close(); }
 
   constructor(
     private userService: UserService,
@@ -49,7 +46,6 @@ export class ConfirmDialogComponent implements OnInit {
     private dialogComponent: DialogComponent,
   ) { }
 
-  // Lifecycle
   ngOnInit() {
     this.userForm.disable();
   }

@@ -22,7 +22,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   @ViewChild('expHomeNav') private expHomeNav: MatExpansionPanel;
   @ViewChildren('expRouteNav') private expRoutedNav: QueryList<MatExpansionPanel>;
 
-  // App sidenav config
+  // Sidenav content
   public title = 'app';
   public pageNav: SidenavContent[] = [{
     title: 'Navigation',
@@ -61,13 +61,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.mobileQuery = this.media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-    // Change sidenav contents based on route
+
+    // Change sidenav content based on route
     this.sideNavContentChange();
-    // Toggle materials based on route
+
+    // Toggle sidenav based on route
     this.toggleSidenav();
     this.toggleExpansions();
+
     // Sends out scroll events on sidenav content
     this.scrollEvents();
+
     // Subscribe to login status
     this.toggleIsLoggedIn();
   }

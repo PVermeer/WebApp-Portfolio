@@ -4,7 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 import './rxjs.module';
 import { MaterialModule } from './material.module';
 import { SnackbarComponent } from './snackbar/snackbar.component';
-import { SidenavService } from '../../sidenav/sidenav.service';
 import { CssAnimateInviewService } from './css-animate-inview.service';
 import { DialogModule } from './dialog/dialog.module';
 
@@ -21,7 +20,7 @@ const sharedModules = [
   imports: sharedModules,
   exports: sharedModules,
   providers: [
-    SnackbarComponent, SidenavService, CssAnimateInviewService,
+    SnackbarComponent, CssAnimateInviewService,
     ],
 })
 export class SharedModule { }

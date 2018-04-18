@@ -14,12 +14,14 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
+interface UserType { rank: number; value: string; }
+
 @Injectable()
 export class UserService {
 
   // Variables
   private isLoggedInSource = new Subject<boolean>();
-  private userTypeSource = new Subject<string>();
+  private userTypeSource = new Subject<UserType>();
 
   public isLoggedIn$ = this.isLoggedInSource.asObservable();
   public userType$ = this.userTypeSource.asObservable();
@@ -33,18 +35,23 @@ export class UserService {
 
   // Methods
   public login = (disableRegister?: boolean) => new Promise((resolve) => {
+
+    // Check if register tab must be disabled
     let registerDisable = false;
     if (disableRegister) { registerDisable = true; }
 
-    const loginDialog = this.matDialog.open(DialogComponent, { data: { component: UserDialogComponent, registerDisable } });
+    // Open dialog
+    const component = UserDialogComponent;
+    const loginDialog = this.matDialog.open(DialogComponent, { data: { component, registerDisable } });
 
     loginDialog.afterClosed().subscribe(loggedIn => {
-      if (loggedIn) {
-        this.passLoginStatus(true);
-        return resolve(true);
-      }
-      const user = localStorage.getItem('currentUser');
-      if (!user) { this.passLoginStatus(false); return resolve(false); }
+
+      // Let the app know that login was successful
+      if (loggedIn) { this.passLoginStatus(true); return resolve(true); }
+
+      // Otherwise return a failed login
+      this.passLoginStatus(false);
+      return resolve(false);
     });
   })
 
@@ -52,34 +59,33 @@ export class UserService {
     localStorage.removeItem('currentUser');
     this.passLoginStatus(false);
     this.router.navigate(['/home']);
-    this.snackbarComponent.snackbarSucces('Logged out');
+    this.snackbarComponent.snackbarSuccess('Logged out');
   }
 
   public checkLogin = () => new Promise((resolve) => {
-    this.loginCheck().subscribe(response => {
-      if (response.error) {
-        this.passLoginStatus(false);
-        return resolve(false);
-      }
+    this.loginCheck().subscribe(() => {
+
       this.passLoginStatus(true);
       return resolve(true);
+
+      // On error
+    }, () => {
+      this.passLoginStatus(false);
+      return resolve(false);
     });
   })
 
-  public passLoginStatus(isLoggedIn: boolean) {
-    this.isLoggedInSource.next(isLoggedIn);
-  }
+  public passLoginStatus(isLoggedIn: boolean) { this.isLoggedInSource.next(isLoggedIn); }
 
   public passUserType() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) { return null; }
 
     const userType = currentUser.payload.type;
-
     this.userTypeSource.next(userType);
   }
 
-  // Backend
+  // Backend http requests
   public loginUser(loginForm: UserLogin): Observable<any> {
     return this.http.post<any>('/users/login', loginForm, httpOptions);
   }

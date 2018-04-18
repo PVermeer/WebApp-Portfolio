@@ -20,6 +20,7 @@ export class RegisterComponent {
   // Variables
   public registerForm: FormGroup;
   public registerSuccess = false;
+  public disableButtons = false;
 
   public successTitle = 'Success!';
   public successBody = 'Check your e-mail for the validation mail to verify your account';
@@ -68,26 +69,25 @@ export class RegisterComponent {
   // Methods
   public register(registerForm) {
     this.userDialogComponent.progressBar = true;
+    this.disableButtons = true;
 
+    // Save user to the db
     this.userService.registerUser(registerForm).subscribe(response => {
       this.userDialogComponent.progressBar = false;
+      this.disableButtons = false;
 
-      if (response.error) {
-        return this.snackbarComponent.snackbarError(response.error);
-      }
-
-      this.snackbarComponent.snackbarSucces(response.success);
+      this.snackbarComponent.snackbarSuccess(response);
       this.registerSuccess = true;
       this.regForm.resetForm();
-    },
-      () => {
-        this.userDialogComponent.progressBar = false;
-      });
+
+      // Catch errors
+    }, () => {
+      this.userDialogComponent.progressBar = false;
+      this.disableButtons = false;
+    });
   }
 
-  public closeModal() {
-    this.dialogComponent.matDialog.close();
-  }
+  public closeDialog() { this.dialogComponent.matDialog.close(); }
 
   constructor(
     private formBuilder: FormBuilder,

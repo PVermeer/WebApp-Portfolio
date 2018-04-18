@@ -36,7 +36,10 @@ export class UsernameAsyncValidator {
       });
     }
     return Observable.timer(this.options.debounceTime).switchMap(() => {
-      return this.options.service.checkUsername(value);
+      return this.options.service.checkUsername(value).map((response) => {
+        if (response) { return 'true'; }
+        return null;
+      }).catch(error => error);
     });
   }
 }
