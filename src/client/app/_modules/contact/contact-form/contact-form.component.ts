@@ -2,10 +2,10 @@ import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, NgForm } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 
-import { MailService } from '../../_shared/mail.service';
-import { SnackbarComponent } from '../../_shared/snackbar/snackbar.component';
-import { DialogComponent, DialogContent } from '../../_shared/dialog/dialog.component';
-import { ContactForm } from '../../../../../server/types/types';
+import { MailService } from '../../_shared/services/mail.service';
+import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
+import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
+import { ContactForm } from '../../../../../server/routes/mail/mail.types';
 
 @Component({
   selector: 'app-contact-form',
@@ -64,7 +64,7 @@ export class ContactFormComponent {
     this.progressBar = true;
 
     // Send the mail request
-    this.mailService.sendContactForm(formInput).subscribe((response) => {
+    this.mailService.sendContactForm(formInput).subscribe((response: string) => {
       this.progressBar = false;
       this.snackbarComponent.snackbarSuccess(response);
 
@@ -83,7 +83,19 @@ export class ContactFormComponent {
       dialog.afterClosed().subscribe(() => { this.contactFormRef.resetForm(); });
 
       // On error
-    }, () => this.progressBar = false);
+    }, (error) => {
+      this.progressBar = false;
+
+      // Open dialog with contact details
+      const data: DialogContent = {
+        dialogData: {
+          title: 'Whoops something went wrong',
+          body: error.message,
+          button: 'Okay...',
+        }
+      };
+      this.matDialog.open(DialogComponent, { data });
+    });
   }
 
   constructor(

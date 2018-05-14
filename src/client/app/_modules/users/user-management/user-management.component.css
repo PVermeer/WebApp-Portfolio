@@ -1,0 +1,54 @@
+.mat-table {
+  overflow: auto;
+}
+
+#user-table {
+  display: flex;
+  flex-direction: column;
+  min-width: 800px;
+}
+
+/* Colums */
+.mat-column-select {
+  max-width: 50px;
+}
+
+.mat-column-type {
+  max-width: 80px;
+}
+
+.mat-column-created_at {
+  max-width: 95px;
+}
+
+.mat-column-select {
+  overflow: initial;
+}
+
+/* Cells */
+.mat-cell, .mat-header-cell {
+  padding: 0 5px;
+}
+
+/* Headers */
+#progress-wrapper {
+  height: 2px;
+}
+
+mat-progress-bar {
+  position: relative;
+  top: -10px;
+  left: 0;
+  right: 0;
+}
+
+/* Search box */
+#header {
+  min-height: 64px;
+  padding: 8px 24px 0;
+}
+
+#search {
+  font-size: 14px;
+  width: 100%;
+}

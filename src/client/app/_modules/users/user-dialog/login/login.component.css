@@ -12,8 +12,3 @@ mat-form-field {
   display: none;
 }
 
-.center-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}

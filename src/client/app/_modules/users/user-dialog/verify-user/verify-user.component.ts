@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { DialogComponent, DialogContent } from '../../../_shared/dialog/dialog.component';
+import { DialogComponent, DialogContent } from '../../../_shared/components/dialog/dialog.component';
 import { UserService } from '../../user.service';
 
 

@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Create new page</h2>
+
+<mat-dialog-content>
+
+  <p>Enter the title of the new page</p>
+
+  <br>
+  <form class="form">
+    <mat-form-field>
+      <input matInput placeholder="Title" [(ngModel)]="pageTitle" [ngModelOptions]="{standalone: true}" required>
+    </mat-form-field>
+  </form>
+
+</mat-dialog-content>
+<br>
+<mat-dialog-actions class="center-container-around">
+  <button mat-raised-button color="warn" mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="create()" [disabled]="!pageTitle" >Create</button>
+</mat-dialog-actions>

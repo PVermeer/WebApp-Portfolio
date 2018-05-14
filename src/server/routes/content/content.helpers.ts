@@ -1,0 +1,67 @@
+import { uploadFiles, deleteFileDb } from './content.database';
+import { GridFsDocument, ContentPageDocumentLean } from '../../database/models/content/content.types';
+import { ContentImageSubmit } from './content.types';
+
+export function compareSortObject(a: object, b: object) {
+
+  const nameA = Object.values(a)[0];
+  const nameB = Object.values(b)[0];
+
+  if (nameA < nameB) { return -1; }
+  if (nameA > nameB) { return 1; }
+  return 0;
+}
+
+export async function uploadImageHandler(images: Express.Multer.File[], imagesArray: ContentImageSubmit[]) {
+
+  if (images.length === 0) { return null; }
+
+  const fileArray: GridFsDocument[] = await uploadFiles(images);
+
+  // Compare and update file id
+  await Promise.all(fileArray.map(x => new Promise(async (resolve) => {
+
+    if (!x) { return resolve(); } // Catch from uploadFiles()
+
+    await Promise.all(imagesArray.map((y, i: number) => new Promise(async (resolve2) => {
+
+      if (x.filename === y._id) {
+
+        if (y.image) { await deleteFileDb(y.image as string); }
+        imagesArray[i].image = x._id;
+
+        return resolve2();
+      } else { return resolve2(); }
+    })));
+
+    resolve();
+  })));
+
+  return fileArray;
+}
+
+export function deleteOldFromDb(pageDocument: ContentPageDocumentLean, imagesArray: ContentImageSubmit[]) {
+
+  Promise.all(pageDocument.images.map(x => new Promise(async resolve => {
+
+    const exists = imagesArray.some(y => y._id === x._id.toString());
+
+    if (!exists && x.image) { await deleteFileDb(x.image as string); }
+    resolve();
+  })));
+}
+
+export async function updateContentErrorHandler(fileArray: GridFsDocument[], error: any) {
+
+  if (fileArray) {
+
+    await Promise.all(fileArray.map(x => new Promise(async (resolve) => {
+
+      if (x === null) { return resolve(); } // Catch from uploadFiles()
+
+      await deleteFileDb(x._id.toString());
+      resolve();
+    })));
+  }
+  throw error;
+}

@@ -1,4 +1,4 @@
-<form [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)">
+<form [formGroup]="loginForm" (ngSubmit)="login()">
 
   <mat-form-field *ngFor="let field of loginFormInputfields">
     <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
@@ -20,11 +20,11 @@
   </mat-form-field>
 
   <br>
-  <div class="center-container">
-    <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">Login</button>
+  <div class="flex-column-around">
+    <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid || disableButtons">Login</button>
     <br>
     <br>
-    <button type="button" mat-button color="warn" (click)="recoverPassword(loginForm.value)">Recover password</button>
+    <button type="button" mat-button color="warn" (click)="recoverPassword(loginForm.value)" [disabled]="disableButtons">Recover password</button>
   </div>
 
 </form>

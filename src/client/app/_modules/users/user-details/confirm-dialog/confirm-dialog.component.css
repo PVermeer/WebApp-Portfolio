@@ -8,13 +8,6 @@ mat-form-field {
   flex: 1;
 }
 
-.center-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-}
-
 /* Material card */
 .mat-dialog-container {
   padding: 0 !important;

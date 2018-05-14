@@ -1,0 +1,15 @@
+<section>
+  <div class="container">
+    <div class="flex-row-left">
+      <mat-card *ngIf="isAdmin" class="admin-tab">
+        <app-admin id="admin"></app-admin>
+      </mat-card>
+      <mat-card>
+        <app-user-details id="userDetails"></app-user-details>
+      </mat-card>
+    </div>
+    <br>
+    <br>
+    <button mat-raised-button color="primary" (click)="logout()">Log out</button>
+  </div>
+</section>

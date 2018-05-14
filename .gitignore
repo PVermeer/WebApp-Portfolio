@@ -1,5 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+// ------ Angular
+
 # compiled output
 /dist
 /dist-server
@@ -43,5 +45,8 @@ testem.log
 .DS_Store
 Thumbs.db
 
+// ------ Custom
 WebApp-MeanTemplate.code-workspace
 .vscode/
+config.json
+_temp/

@@ -2,12 +2,28 @@
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
+import { UserDocumentLean } from '../../../../server/database/models/users/user.types';
+
+export interface CurrentUser {
+  payload: {
+    exp: number;
+    iat: number;
+    type: UserDocumentLean['type'];
+    username: UserDocumentLean['username'];
+    _id: UserDocumentLean['_id'];
+  };
+  tokens: {
+    token: string;
+    refreshToken: string;
+  };
+}
+
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     // Outgoing request
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const currentUser: CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     if (currentUser) {
       if (currentUser.tokens) {
@@ -38,9 +54,9 @@ export class JwtInterceptor implements HttpInterceptor {
           const tokenSplit = token.split('.')[1];
           const replaced = tokenSplit.replace('-', '+').replace('_', '/');
           const payload = JSON.parse(atob(replaced));
-          const local = { tokens, payload };
+          const user: CurrentUser = { tokens, payload };
 
-          localStorage.setItem('currentUser', JSON.stringify(local));
+          localStorage.setItem('currentUser', JSON.stringify(user));
         }
       }
       return response;

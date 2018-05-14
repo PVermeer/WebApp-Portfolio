@@ -1,12 +1,15 @@
 <div class="toolbar-container" [class.is-mobile]="mobileQuery.matches">
   <mat-toolbar color="primary" class="toolbar">
+
     <button mat-icon-button (click)="sidenav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
+
     <h1 class="app-name">{{title}}</h1>
     <span class="toolbar-spacer"></span>
+
     <nav mat-tab-nav-bar backgroundColor="primary" [style.display]="mobileQuery.matches ? 'none' : 'initial'">
-      <a mat-tab-link *ngFor="let link of pageNav[0].items" [routerLink]="link.path" routerLinkActive
+      <a mat-tab-link (click)="tabChange()" *ngFor="let link of pageNav[0].items" [routerLink]="link.path" routerLinkActive
         #rla="routerLinkActive" [active]="rla.isActive">
         {{link.label}}
       </a>
@@ -28,7 +31,9 @@
   <mat-sidenav-container [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
     <mat-sidenav #sidenav class="mat-elevation-z1" [mode]="mobileQuery.matches ? 'over' : 'side'"
       [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
+
       <mat-accordion displayMode="flat" multi="true">
+
         <!-- Home nav -->
         <mat-expansion-panel #expHomeNav>
           <mat-expansion-panel-header collapsedHeight="35px" expandedHeight="35px">
@@ -43,6 +48,7 @@
             </a>
           </mat-nav-list>
         </mat-expansion-panel>
+
         <!-- Routed nav -->
         <mat-expansion-panel #expRouteNav *ngFor="let content of sidenavContent">
           <mat-expansion-panel-header collapsedHeight="35px" expandedHeight="35px">
@@ -57,7 +63,9 @@
             </a>
           </mat-nav-list>
         </mat-expansion-panel>
+
       </mat-accordion>
+
       <!-- Bottom cards -->
       <mat-card>
         <mat-list>
@@ -81,6 +89,7 @@
 
         </mat-list>
       </mat-card>
+
     </mat-sidenav>
 
     <mat-sidenav-content id="sidenav-content">
@@ -89,5 +98,6 @@
         <router-outlet #o="outlet"></router-outlet>
       </main>
     </mat-sidenav-content>
+
   </mat-sidenav-container>
 </div>

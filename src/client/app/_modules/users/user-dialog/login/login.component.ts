@@ -1,22 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 
 import { UserService } from '../.././user.service';
-import { SnackbarComponent } from '../../../_shared/snackbar/snackbar.component';
-import { DialogComponent, DialogContent } from '../../../_shared/dialog/dialog.component';
+import { SnackbarComponent } from '../../../_shared/components/snackbar/snackbar.component';
+import { DialogComponent, DialogContent } from '../../../_shared/components/dialog/dialog.component';
 import { UserDialogComponent } from '../user-dialog.component';
-import { UserLogin, UserRegister } from '../../_models/user.model';
+import { UserLogin } from '../../../../../../server/database/models/users/user.types';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   // Variables
   public loginForm: FormGroup;
+  private username = 'asd@asd'; // Dev setting
+  public usernameDisable = false;
+  public disableButtons = false;
 
   // NgFor login input fields
   public loginFormInputfields = [
@@ -36,32 +39,76 @@ export class LoginComponent {
   ];
 
   // Methods
-  public login(loginForm: UserLogin) {
+  public login() {
     this.userDialogComponent.progressBar = true;
+    this.disableButtons = true;
 
     // Login user
-    this.userService.loginUser(loginForm).subscribe(response => {
+    this.userService.loginUser(this.loginForm.getRawValue()).subscribe(response => {
       this.userDialogComponent.progressBar = false;
+      this.disableButtons = false;
 
       this.snackbarComponent.snackbarSuccess(response);
       this.dialogComponent.matDialog.close(true);
 
       // Catch errors
     }, (error) => {
-      this.userDialogComponent.progressBar = false;
-
-      // If e-mail is not verified open dialog to notify user
-      if (error.status === 403) {
-        const data: DialogContent = {
-          dialogData: {
-            title: 'Something\'s wrong...', body: error.message, button: 'Okay'
-          }
-        }; this.matDialog.open(DialogComponent, { data });
-      }
+      this.errorHandler(error);
     });
   }
 
-  public recoverPassword(loginForm: UserRegister) {
+  private errorHandler(error: any) {
+    this.userDialogComponent.progressBar = false;
+    this.disableButtons = false;
+
+    // If e-mail is not verified open dialog to notify user
+    if (error.status === 403) {
+      const data: DialogContent = {
+        dialogData: {
+          title: 'Something\'s wrong...',
+          body: error.message,
+          button: 'Okay',
+          button2: 'Resend verification mail'
+        }
+      };
+      const dialog = this.matDialog.open(DialogComponent, { data, disableClose: true });
+
+      dialog.afterClosed().subscribe(response => {
+        // User pressed ok
+        if (response) { return; }
+
+        // User presses resend verificationmail
+        this.userDialogComponent.progressBar = true;
+        this.disableButtons = true;
+
+        this.userService.resendVerificationMail(this.loginForm.value).subscribe(res => {
+          this.userDialogComponent.progressBar = false;
+          this.disableButtons = false;
+
+          this.snackbarComponent.snackbarSuccess(res);
+
+          // Catch errors
+        }, () => {
+          this.userDialogComponent.progressBar = false;
+          this.disableButtons = false;
+        });
+      });
+    }
+    // If user is blocked open dialog to notify user
+    if (error.status === 401) {
+      const data: DialogContent = {
+        dialogData: {
+          title: 'Something\'s wrong...',
+          body: error.message,
+          button: 'Okay',
+        }
+      };
+      this.matDialog.closeAll();
+      this.matDialog.open(DialogComponent, { data, disableClose: true });
+    }
+  }
+
+  public recoverPassword(loginForm: UserLogin) {
     this.userDialogComponent.progressBar = true;
     const user = { email: loginForm.email };
 
@@ -73,7 +120,10 @@ export class LoginComponent {
       this.dialogComponent.matDialog.close(false);
 
       // Catch errors
-    }, () => this.userDialogComponent.progressBar = false);
+    }, (error) => {
+      this.errorHandler(error);
+    });
+
   }
 
   constructor(
@@ -85,15 +135,23 @@ export class LoginComponent {
     private matDialog: MatDialog,
   ) {
     // Form validation
+    if (this.dialogComponent.data.username) {
+      this.username = this.dialogComponent.data.username;
+      this.usernameDisable = true;
+    }
     this.loginForm = this.validateLogin();
   }
+
+  ngOnInit() {
+  }
+
 
   // -----------------Constructor methods------------------------
 
   // Validations
   private validateLogin() {
     return this.formBuilder.group({
-      email: ['asd@asd', [
+      email: [{ value: this.username, disabled: this.usernameDisable }, [
         Validators.required,
         Validators.email,
       ]],

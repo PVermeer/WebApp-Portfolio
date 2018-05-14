@@ -3,10 +3,9 @@ import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 
 import { UserDialogComponent } from '../user-dialog.component';
 import { UserService } from '../.././user.service';
-import { SnackbarComponent } from '../../../_shared/snackbar/snackbar.component';
 import { usernameValidator, usernameAsyncValidator, emailAsyncValidator, passwordValidator, matchValidator } from '../../validators';
-import { DialogComponent } from '../../../_shared/dialog/dialog.component';
-import { UserRegister } from '../../_models/user.model';
+import { DialogComponent } from '../../../_shared/components/dialog/dialog.component';
+import { UserRegister } from '../../../../../../server/database/models/users/user.types';
 
 @Component({
   selector: 'app-register',
@@ -24,7 +23,7 @@ export class RegisterComponent {
   public disableButtons = false;
 
   public successTitle = 'Success!';
-  public successBody = 'Check your e-mail for the validation mail to verify your account';
+  public successBody: string;
 
   // NgFor register input fields
   public registerFormInputfields = [
@@ -77,7 +76,7 @@ export class RegisterComponent {
       this.userDialogComponent.progressBar = false;
       this.disableButtons = false;
 
-      this.snackbarComponent.snackbarSuccess(response);
+      this.successBody = response;
       this.registerSuccess = true;
       this.regForm.resetForm();
 
@@ -93,7 +92,6 @@ export class RegisterComponent {
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private snackbarComponent: SnackbarComponent,
     private userDialogComponent: UserDialogComponent,
     private dialogComponent: DialogComponent,
   ) {

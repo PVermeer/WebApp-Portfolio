@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DialogComponent } from '../../_shared/dialog/dialog.component';
+import { DialogComponent } from '../../_shared/components/dialog/dialog.component';
 
 @Component({
   selector: 'app-user-dialog',
@@ -18,7 +18,7 @@ export class UserDialogComponent implements OnInit {
     private dialogComponent: DialogComponent,
   ) { }
 
-  ngOnInit () {
+  ngOnInit() {
     // Check if the register tab must be disabled
     if (this.dialogComponent.data.registerDisable) {
       this.registerIsDisabled = true;

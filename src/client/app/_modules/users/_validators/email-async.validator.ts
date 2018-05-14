@@ -38,7 +38,7 @@ export class EmailAsyncValidator {
       return this.options.service.checkEmail(value).map((response: boolean) => {
         if (response) { return 'true'; }
         return null;
-      }).catch((error: ErrorMessage) => error);
+      }).catch((error: ErrorMessage) => { throw error; });
     });
   }
 }

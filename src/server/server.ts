@@ -1,25 +1,24 @@
 import * as express from 'express';
 import * as compression from 'compression';
 import { join } from 'path';
-import { json, urlencoded } from 'body-parser';
 
 import './database/connection';
-import { mail } from './mail/mail';
-import { users } from './users/users.routes';
-import { errorHandler } from './services/error-handler';
+import { errorHandler } from './services/error-handler.service';
+import { mail } from './routes/mail/mail.routes';
+import { users } from './routes/users/users.routes';
+import { content } from './routes/content/content.routes';
 
 const app = express();
 
 // Middleware
 app.use(compression());
 app.use(express.static(join(__dirname, '../../dist/client')));
-app.use(urlencoded({ extended: false }));
-app.use(json());
 
 // -----------------Routes--------------------
 
 app.use('/mail', mail);
 app.use('/users', users);
+app.use('/content', content);
 
 app.get('*', (_req, res, next) => {
   res.sendFile(join(__dirname, '../../dist/client/index.html'), (error: Error) => {

@@ -1,20 +1,12 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
     "target": "es6",
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "removeComments": true,
     "pretty": true,
-    "noFallthroughCasesInSwitch":true,
-    "forceConsistentCasingInFileNames":true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "../../dist/server/",
-    "lib": [
-      "es2017"
-    ]
+    "outDir": "../../dist/server/"
   }
 }

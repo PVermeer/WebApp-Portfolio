@@ -25,29 +25,65 @@ section {
 
 /* Flex column */
 
-.flex-column {
+.flex-column-around {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
 }
 
 /* Flex row */
 
-.flex-row {
+.flex-row-center {
   display: flex;
+  width: 100%;
   flex-flow: row wrap;
-  justify-content: space-around;
+  align-items: flex-start;
+  justify-content: center;
+}
+.flex-row-left {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: left;
 }
 
-.flex-row>* {
+.flex-row-center mat-card,
+.flex-row-left mat-card {
   min-width: 340px;
-  margin-bottom: 10px;
+  margin-bottom: 10px !important;
 }
 
-.flex-row>*>* {
-  height: 100%;
+/* Center container */
+
+.center-container-around {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-flow: row wrap;
+  padding: 10px;
 }
+
+.center-container-between {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-flow: row wrap;
+  padding: 10px;
+}
+
+/* Right container */
+.right-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+.right-container>* {
+  margin: 10px !important;
+}
+
 
 /* ----------Columns---------- */
 
@@ -81,10 +117,32 @@ section {
 
 /* ----------Material design---------- */
 
+/* Card */
 mat-card {
   margin: 10px;
 }
 
+/* Form */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-form-field {
+  flex: 1;
+}
+
+.lname {
+  display: none;
+}
+
+/* Cursor settings */
+.mat-slide-toggle-label,
+.mat-slide-toggle-thumb-container,
+.mat-icon-button,
+.mat-checkbox {
+  cursor: default !important;
+}
 
 /* Control */
 

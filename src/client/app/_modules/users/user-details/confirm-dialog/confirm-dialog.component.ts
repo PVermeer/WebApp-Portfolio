@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { UserService } from '../.././user.service';
-import { SnackbarComponent } from '../../../_shared/snackbar/snackbar.component';
-import { DialogComponent } from '../../../_shared/dialog/dialog.component';
-import { UserRegister } from '../../_models/user.model';
+import { SnackbarComponent } from '../../../_shared/components/snackbar/snackbar.component';
+import { DialogComponent, DialogContent } from '../../../_shared/components/dialog/dialog.component';
+import { UserRegister } from '../../../../../../server/database/models/users/user.types';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -32,9 +33,19 @@ export class ConfirmDialogComponent implements OnInit {
       this.userForm.reset();
       this.dialogComponent.matDialog.close('success');
 
+      if (userForm.email) {
+        const data: DialogContent = {
+          dialogData: {
+            title: 'E-mail update',
+            body: 'Check your inbox of your new e-mail to verify your new e-mail address',
+            button: 'Ok!',
+          }
+        };
+        this.matDialog.open(DialogComponent, { data });
+      }
+
       // Catch errors
-    }, (error) => {
-      this.snackbarComponent.snackbarError(error);
+    }, () => {
       this.progressBar = false;
     });
   }
@@ -45,10 +56,11 @@ export class ConfirmDialogComponent implements OnInit {
     private userService: UserService,
     private snackbarComponent: SnackbarComponent,
     private dialogComponent: DialogComponent,
+    private matDialog: MatDialog,
   ) { }
 
   ngOnInit() {
-    this.userForm.disable();
+    // this.userForm.disable();
   }
 
 }

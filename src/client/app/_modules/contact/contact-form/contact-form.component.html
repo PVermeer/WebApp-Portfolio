@@ -1,4 +1,3 @@
-<mat-card>
   <mat-progress-bar mode="indeterminate" *ngIf="progressBar"></mat-progress-bar>
   <mat-card-header>
     <h3>Contact form</h3>
@@ -41,9 +40,8 @@
       </mat-form-field>
 
       <br>
-      <div id="center-container">
+      <div id="center-container-around">
         <button mat-raised-button color="primary" type="submit" [disabled]="!contactForm.valid">Send</button>
       </div>
     </form>
   </mat-card-content>
-</mat-card>

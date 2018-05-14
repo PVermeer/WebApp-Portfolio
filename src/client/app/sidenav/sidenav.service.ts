@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
-import { SidenavContent, MatToggle, MatToggleExp } from './sidenav.model';
+import { SidenavContent, MatToggle, MatToggleExp } from './sidenav.types';
 
 @Injectable()
 export class SidenavService {
 
   // Events
-  private sidenavContentSource = new Subject<SidenavContent[]>();
+  private sidenavContentSource = new Subject<SidenavContent>();
   private sidenavToggleSource = new Subject<MatToggle>();
   private expansionToggleSource = new Subject<MatToggleExp>();
   private themeToggleSource = new Subject<boolean>();
@@ -19,7 +19,7 @@ export class SidenavService {
   public themeToggle$ = this.themeToggleSource.asObservable();
   public scrollEvent$ = this.scrollEventSource.asObservable();
 
-  public passSidenavContent(sidenavContent: SidenavContent[]) {
+  public passSidenavContent(sidenavContent: SidenavContent) {
     this.sidenavContentSource.next(sidenavContent);
   }
   public passSidenavToggle(sidenavToggle: MatToggle) {

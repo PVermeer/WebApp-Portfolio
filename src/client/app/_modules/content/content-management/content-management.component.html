@@ -1,0 +1,120 @@
+<div class="right-container">
+  <button mat-raised-button (click)="newPageForm()">Add new page</button>
+</div>
+
+<div class="flex-column">
+  <div class="pages" #ngForPages *ngFor="let page of (pages | async); let i = index">
+    <div *ngIf="contentForm[i]">
+      <mat-progress-bar mode="indeterminate" *ngIf="progressBar"></mat-progress-bar>
+
+      <h3>{{ page.title }}</h3>
+
+      <form [formGroup]="contentForm[i]" (ngSubmit)="confirmUpdateForm(i)">
+
+        <!-- Texts -->
+        <div formArrayName="texts" class="flex-row-left">
+          <div *ngFor="let text of page.texts; let j = index">
+
+            <mat-card class="text-card" *ngIf="contentForm[i].controls.texts.controls[j]">
+              <!-- Header -->
+              <mat-card-header>
+                <mat-card-title>
+                  <mat-form-field [formGroupName]="j" floatLabel="always">
+                    <input matInput [type]="text.typeHeader" formControlName="header" [placeholder]="text.placeholderHeader"
+                      [value]="contentForm[i].controls.texts.controls[j].controls.header.value">
+                    <mat-error *ngIf="(contentForm[i].controls.texts.controls[j].controls.header.errors | json | slice:5:6) !== '0'
+                                && !contentForm[i].controls.texts.controls[j].controls.header.valid
+                                && (contentForm[i].controls.texts.controls[j].controls.header.touched || contentForm[i].controls.texts.controls[j].controls.header.dirty)">
+                      {{ text.alertHeader }}
+                    </mat-error>
+                  </mat-form-field>
+                </mat-card-title>
+              </mat-card-header>
+
+              <!-- Text field -->
+              <mat-card-content>
+                <mat-form-field [formGroupName]="j" floatLabel="always">
+                  <textarea matTextareaAutosize matAutosizeMinRows="5" matInput [type]="text.typeText" formControlName="text"
+                    [placeholder]="text.placeholderText" [value]="contentForm[i].controls.texts.controls[j].controls.text.value"></textarea>
+                  <mat-error *ngIf="(contentForm[i].controls.texts.controls[j].controls.text.errors | json | slice:5:6) !== '0'
+                          && !contentForm[i].controls.texts.controls[j].controls.text.valid
+                          && (contentForm[i].controls.texts.controls[j].controls.text.touched || contentForm[i].controls.texts.controls[j].controls.text.dirty)">
+                    {{ text.alertText }}
+                  </mat-error>
+                </mat-form-field>
+              </mat-card-content>
+
+              <mat-card-actions>
+                <button type="button" (click)="textFieldRemove(i, j)">Remove text field</button>
+              </mat-card-actions>
+
+            </mat-card>
+          </div>
+
+          <button type="button" (click)="textFieldAdd(i)">Add text field</button>
+        </div>
+
+        <!-- Images -->
+        <div formArrayName="images" class="flex-row-left">
+          <div *ngFor="let image of page.images; let k = index">
+
+            <mat-card class="image-card" #images floatLabel="always" *ngIf="contentForm[i].controls.images.controls[k]">
+
+              <div [formGroupName]="k">
+                <!-- Header -->
+                <mat-card-header>
+                  <mat-card-title>
+                    <mat-form-field floatLabel="always">
+                      <input matInput [type]="image.typeTitle" formControlName="title" [placeholder]="image.placeholderTitle"
+                        [value]="contentForm[i].controls.images.controls[k].controls.title.value">
+                      <mat-error *ngIf="(contentForm[i].controls.images.controls[k].controls.title.errors | json | slice:5:6) !== '0'
+                                  && !contentForm[i].controls.images.controls[k].controls.title.valid
+                                  && (contentForm[i].controls.images.controls[k].controls.title.touched || contentForm[i].controls.images.controls[k].controls.title.dirty)">
+                        {{ image.alertTitle }}
+                      </mat-error>
+                    </mat-form-field>
+                  </mat-card-title>
+                </mat-card-header>
+
+                <img mat-card-image [appPreviewImage]="image.imageSrc" *ngIf="image.image; else noImage">
+
+                <ng-template #noImage>
+                  <mat-icon id="no-image" color="warn">broken_image</mat-icon>
+                </ng-template>
+
+                <img mat-card-image [appPreviewImage]="imgFileInput.files">
+
+                <input hidden type="file" #imgFileInput (change)="contentForm[i].controls.images.controls[k].controls.imageUpdate.setValue(imgFileInput.files[0])">
+
+                <mat-card-actions>
+                  <div class="flex-column-around">
+
+                    <div *ngIf="contentForm[i].controls.images.controls[k].controls.image.value">
+                      {{ contentForm[i].controls.images.controls[k].controls.image.value.name }}
+                      <br>
+                      <br>
+                    </div>
+                    <mat-chip-list>
+                      <mat-chip color="accent" selected="true" (click)="imgFileInput.click()">
+                        <mat-icon>file_upload</mat-icon>Upload new image</mat-chip>
+                    </mat-chip-list>
+
+                    <br>
+                    <br>
+                    <button type="button" (click)="imageFieldRemove(i, k)">Remove image field</button>
+                  </div>
+                </mat-card-actions>
+              </div>
+            </mat-card>
+          </div>
+
+          <button type="button" (click)="imageFieldAdd(i)">Add image field</button>
+        </div>
+        <br>
+        <div class="flex-row-left">
+          <button type="submit" mat-raised-button color="primary">Submit changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

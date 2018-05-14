@@ -4,10 +4,12 @@
 @import 'text.css';
 @import 'layout.css';
 @import '~animate.css/animate.css';
+@import "~material-design-icons/iconfont/material-icons.css";
 
 // Import custom component theme files
 @import '../app/sidenav/sidenav.theme';
-@import '../app/_modules/_shared/snackbar/snackbar.theme';
+@import '../app/_modules/_shared/components/snackbar/snackbar.theme';
+@import '../app/_modules/users/user-management/user-management.theme.scss';
 
 // Include mat-core (only once)
 @include mat-core();
@@ -30,6 +32,7 @@ $secondary-theme:   mat-dark-theme($secondary-theme-primary, $secondary-theme-ac
 @mixin custom-theme($theme) {
   @include sidenav($theme);
   @include snackbar($theme);
+  @include userManagement($theme);
 }
 
 // Default theme (no class applied)

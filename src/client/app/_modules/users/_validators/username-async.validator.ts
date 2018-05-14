@@ -40,7 +40,7 @@ export class UsernameAsyncValidator {
       return this.options.service.checkUsername(value).map((response: boolean) => {
         if (response) { return 'true'; }
         return null;
-      }).catch((error: ErrorMessage) => error);
+      }).catch((error: ErrorMessage) => { throw error; });
     });
   }
 }

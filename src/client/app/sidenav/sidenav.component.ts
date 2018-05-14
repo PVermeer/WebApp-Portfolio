@@ -3,7 +3,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { MatSidenav, MatExpansionPanel, MatDialog, MatSlideToggle } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 
-import { SidenavContent } from './sidenav.model';
+import { SidenavContent } from './sidenav.types';
 import { SidenavService } from './sidenav.service';
 import { routerTransition } from './sidenav-router.animation';
 import { UserService } from '../_modules/users/user.service';
@@ -25,7 +25,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   // Sidenav content
   public title = 'app';
-  public pageNav: SidenavContent[] = [{
+  public pageNav: SidenavContent = [{
     title: 'Navigation',
     items: [
       { label: 'Home', path: 'home' },
@@ -36,11 +36,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   // Variables
   public mobileQuery: MediaQueryList;
-  public sidenavContent: SidenavContent[];
+  public sidenavContent: SidenavContent;
   private _mobileQueryListener: () => void;
   public isLoggedIn = false;
 
   // Methods
+  public tabChange() {
+    // Scroll to top
+    const element = document.getElementById('sidenav-content');
+    element.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   public scrollTo(element: string) { this.sidenavService.scrollIntoView(element); }
 
   public toggleTheme(event: MatSlideToggle) { this.sidenavService.passThemeToggle(event.checked); }
@@ -100,10 +106,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.sidenavService.sidenavToggle$.subscribe(sidenavToggle => {
       setTimeout(() => {
         switch (sidenavToggle) {
-        case 'open': this.sidenav.open(); break;
-        case 'close': this.sidenav.close(); break;
-        case 'toggle': this.sidenav.toggle(); break;
-        default: return;
+          case 'open': this.sidenav.open(); break;
+          case 'close': this.sidenav.close(); break;
+          case 'toggle': this.sidenav.toggle(); break;
+          default: return;
         }
       }, 0);
     });
@@ -138,8 +144,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private toggleIsLoggedIn() {
-      this.userService.isLoggedIn$.subscribe(isLoggedIn => {
-        this.isLoggedIn = isLoggedIn;
+    this.userService.isLoggedIn$.subscribe(isLoggedIn => {
+      this.isLoggedIn = isLoggedIn;
     });
   }
 

@@ -8,9 +8,11 @@ import {
   usernameValidator, usernameAsyncValidator, emailAsyncValidator,
   passwordValidator, matchValidator, emailValidator,
 } from '../validators';
-import { DialogComponent, DialogContent } from '../../_shared/dialog/dialog.component';
+import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-import { SnackbarComponent } from '../../_shared/snackbar/snackbar.component';
+import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
+import { UserModel } from '../../../../../server/database/models/users/user.types';
+import { CurrentUser } from '../jwt.interceptor';
 
 @Component({
   selector: 'app-user-details',
@@ -21,6 +23,7 @@ export class UserDetailsComponent implements OnInit {
 
   // Get elements
   @ViewChild('slideToggle') private slideToggle: MatSlideToggle;
+  @ViewChild('slideToggleDelete') private slideToggleDelete: MatSlideToggle;
 
   // Variables
   public userTitle = 'User details';
@@ -30,12 +33,15 @@ export class UserDetailsComponent implements OnInit {
   public userFormFields: Observable<Array<any>>;
   public disableButton = true;
   public userFormEmpty = true;
+  private user: UserModel;
 
   // Methods
   private getUserInfo = () => {
 
     // NgFor input fields (async) with current values
     this.userService.userInfo().subscribe((response) => {
+      this.user = response;
+
       this.userFormFields = Observable.of([
         {
           label: 'First name',
@@ -95,7 +101,8 @@ export class UserDetailsComponent implements OnInit {
   public async confirmUpdate() {
 
     // User must login again
-    const isLoggedIn = await this.userService.login(true);
+    const username = this.user.email;
+    const isLoggedIn = await this.userService.login(true, username);
 
     // Stop if not logged in
     if (!isLoggedIn) {
@@ -104,6 +111,9 @@ export class UserDetailsComponent implements OnInit {
     }
 
     // On success open dialog to confirm the form
+    this.userForm.disable();
+    this.userForm.setErrors(null);
+
     const data: DialogContent = {
       component: ConfirmDialogComponent, userFormFields: this.userFormFields, userForm: this.userForm
     };
@@ -114,6 +124,52 @@ export class UserDetailsComponent implements OnInit {
       if (response === 'success') { this.getUserInfo(); }
       this.slideToggle.toggle();
     });
+  }
+
+  public async deleteAccount() {
+
+    // User must login again
+    const username = this.user.email;
+    const isLoggedIn = await this.userService.login(true, username);
+
+    // Stop if not logged in
+    if (!isLoggedIn) {
+      this.slideToggleDelete.toggle();
+      return this.snackbarComponent.snackbarError('You\'re not logged in');
+    }
+
+    // On success open dialog to confirm the form
+    const data: DialogContent = {
+      dialogData: {
+        title: 'Delete your account',
+        body: 'Are you sure you want to <b>delete</b> your account?',
+        button: 'Yes I\'m sure'
+      }
+    };
+    const dialog = this.matDialog.open(DialogComponent, { data });
+
+    // On success close dialog and redirect to the home page
+    dialog.afterClosed().subscribe((response: boolean) => {
+
+      this.slideToggleDelete.toggle();
+      if (response) {
+        const currentUser: CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const { _id } = currentUser.payload;
+
+        this.userService.deleteUser(_id).subscribe(res => {
+
+          this.logout();
+          this.snackbarComponent.snackbarSuccess(res);
+
+          // Catch errors
+        }, (error) => {
+          this.snackbarComponent.snackbarError(error.message);
+        }
+        );
+      }
+    });
+
+
   }
 
   public logout() { this.userService.logout(); }
