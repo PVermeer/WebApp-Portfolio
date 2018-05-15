@@ -9,7 +9,7 @@
   </mat-dialog-content>
   <br>
   <mat-dialog-actions>
-    <div class="center-container-around">
+    <div class="flex-row-around">
       <button mat-raised-button color="primary" (click)="closeDialog(true)">{{button}}</button>
       <button *ngIf="button2" mat-raised-button color="warn" (click)="closeDialog(false)">{{button2}}</button>
     </div>

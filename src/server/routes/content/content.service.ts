@@ -3,17 +3,24 @@ import { Request, Response } from 'express';
 import {
   updateContentPage, findAllContentPagesLean, contentImage, saveContentPage, findContentPageLean
 } from './content.database';
-import { ContentPageModel } from '../../database/models/content/content.types';
 import { pageUpdateSuccess, saveError, updateErrorDetected, pageSaveSuccess } from '../../services/error-handler.service';
-import { ObjectID } from 'bson';
 import { ContentPageLeanInput } from './content.types';
-import { compareSortObject, uploadImageHandler, deleteOldFromDb, updateContentErrorHandler } from './content.helpers';
+import {
+  uploadImageHandler, deleteOldFromDb, updateContentErrorHandler, prepareArray, processToDbInput
+} from './content.helpers';
+
 
 export async function contentPageNew(req: Request): Promise<any> {
 
-  const page = req.body;
+  const pageForm: ContentPageLeanInput = req.body;
 
-  await saveContentPage(page);
+  const newArray = prepareArray(pageForm);
+  const imageArray = newArray.images;
+  const textArray = newArray.texts;
+
+  const dbInput = processToDbInput(pageForm, textArray, imageArray);
+
+  await saveContentPage(dbInput);
 
   return pageSaveSuccess;
 }
@@ -24,34 +31,16 @@ export async function contentPageUpdate(req: Request): Promise<any> {
   const pageForm: ContentPageLeanInput = JSON.parse(req.body.content);
   const pageDocument = await findContentPageLean({ title: pageForm.title });
 
-  // Prepare imagesArray
-  const imagesArray = pageForm.images.map(x => {
-    if (!x._id) { x._id = new ObjectID; }
-    if (x.imageUpdate && Object.keys(x.imageUpdate).length === 0) { x.imageUpdate = null; }
-    return x;
-  });
+  const newArray = prepareArray(pageForm);
+  const imageArray = newArray.images;
+  const textArray = newArray.texts;
 
-  // Prepare textArray
-  const textArray = pageForm.texts.map(x => {
-    if (!x._id) { x._id = new ObjectID; }
-    return x;
-  });
+  await deleteOldFromDb(pageDocument, imageArray);
 
-  // Delete files from database if not in the new imageArray
-  await deleteOldFromDb(pageDocument, imagesArray);
+  const fileArray = await uploadImageHandler(images, imageArray);
 
-  // Upload new files and/or replace
-  const fileArray = await uploadImageHandler(images, imagesArray);
+  const pageModel = processToDbInput(pageForm, textArray, imageArray);
 
-  // Build new pageDocument
-  const pageModel: ContentPageModel = {
-    title: pageForm.title,
-    description: pageForm.description,
-    texts: textArray.sort((a: object, b: object) => compareSortObject(a, b)),
-    images: imagesArray.sort((a: object, b: object) => compareSortObject(a, b)),
-  };
-
-  // Update the page document
   const result = await updateContentPage({ title: pageModel.title }, pageModel)
 
     // On errors revert back

@@ -1,6 +1,29 @@
 import { uploadFiles, deleteFileDb } from './content.database';
-import { GridFsDocument, ContentPageDocumentLean } from '../../database/models/content/content.types';
-import { ContentImageSubmit } from './content.types';
+import {
+  GridFsDocument, ContentPageDocumentLean, ContentTextDocumentLean, ContentPageModel
+} from '../../database/models/content/content.types';
+import { ContentImageSubmit, ContentPageLeanInput } from './content.types';
+import { ObjectID } from 'mongodb';
+
+export function prepareArray(pageForm: ContentPageLeanInput) {
+
+  const images = pageForm.images.map(x => {
+
+    if (!x._id) { x._id = new ObjectID; }
+    if (x.imageUpdate && Object.keys(x.imageUpdate).length === 0) { x.imageUpdate = null; }
+
+    return x;
+  });
+
+  const texts = pageForm.texts.map(x => {
+
+    if (!x._id) { x._id = new ObjectID; }
+
+    return x;
+  });
+
+  return { images, texts };
+}
 
 export function compareSortObject(a: object, b: object) {
 
@@ -49,6 +72,18 @@ export function deleteOldFromDb(pageDocument: ContentPageDocumentLean, imagesArr
     if (!exists && x.image) { await deleteFileDb(x.image as string); }
     resolve();
   })));
+}
+
+export function processToDbInput(
+  pageForm: ContentPageLeanInput, textArray: ContentTextDocumentLean[], imageArray: ContentImageSubmit[]
+): ContentPageModel {
+
+  return {
+    title: pageForm.title,
+    description: pageForm.description,
+    texts: textArray.sort((a: object, b: object) => compareSortObject(a, b)),
+    images: imageArray.sort((a: object, b: object) => compareSortObject(a, b)),
+  };
 }
 
 export async function updateContentErrorHandler(fileArray: GridFsDocument[], error: any) {
