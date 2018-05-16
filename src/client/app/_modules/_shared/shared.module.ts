@@ -6,8 +6,8 @@ import { HttpClientModule } from '@angular/common/http';
 import './modules/rxjs.module';
 import { MaterialModule } from './modules/material.module';
 import { SnackbarComponent } from './components/snackbar/snackbar.component';
-import { CssAnimateInviewService } from './services/css-animate-inview.service';
 import { PreviewImageDirective } from './directives/preview-image.directive';
+import { AnimateInviewDirective } from './directives/animate-inview.directive';
 
 import { DialogComponent } from './components/dialog/dialog.component';
 import { UserDialogComponent } from '../users/user-dialog/user-dialog.component';
@@ -33,13 +33,15 @@ const sharedModules = [
     SnackbarComponent,
     DialogComponent,
     PreviewImageDirective,
+    AnimateInviewDirective,
   ],
   exports: [
     sharedModules,
     PreviewImageDirective,
+    AnimateInviewDirective,
   ],
   providers: [
-    SnackbarComponent, CssAnimateInviewService, MailService
+    SnackbarComponent, MailService
   ],
   entryComponents: [
     DialogComponent, UserDialogComponent, UserManyDialogComponent,

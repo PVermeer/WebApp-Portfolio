@@ -6,7 +6,7 @@ import { Directive, ElementRef, OnChanges, Input, ChangeDetectorRef, AfterViewIn
 export class PreviewImageDirective implements OnChanges, AfterViewInit {
 
   @Input('appPreviewImage') appPreviewImage: Blob & FileList;
-  private element: any;
+  private element: ElementRef;
 
   public showPreviewImage() {
 

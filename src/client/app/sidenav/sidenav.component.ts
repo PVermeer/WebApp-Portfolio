@@ -1,7 +1,6 @@
 import { Component, ChangeDetectorRef, OnDestroy, ViewChild, ViewChildren, QueryList, OnInit } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MatSidenav, MatExpansionPanel, MatDialog, MatSlideToggle } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
 
 import { SidenavContent } from './sidenav.types';
 import { SidenavService } from './sidenav.service';
@@ -76,9 +75,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.toggleSidenav();
     this.toggleExpansions();
 
-    // Sends out scroll events on sidenav content
-    this.scrollEvents();
-
     // Subscribe to login status
     this.toggleIsLoggedIn();
   }
@@ -134,13 +130,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
         }
       }, 0);
     });
-  }
-
-  private scrollEvents() {
-    setTimeout(() => {
-      Observable.fromEvent(document.getElementById('sidenav-content'), 'scroll').subscribe(event =>
-        this.sidenavService.passScrollEvent(event));
-    }, 100);
   }
 
   private toggleIsLoggedIn() {

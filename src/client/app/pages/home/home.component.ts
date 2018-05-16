@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import { SidenavService } from '../../sidenav/sidenav.service';
 import { SidenavContent, MatToggle, MatToggleExp } from '../../sidenav/sidenav.types';
-import { CssAnimateInviewService } from '../../_modules/_shared/services/css-animate-inview.service';
 
 @Component({
   selector: 'app-home',
@@ -35,7 +34,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   constructor(
     private sidenavService: SidenavService,
-    private cssAnimateInviewService: CssAnimateInviewService,
   ) { }
 
   ngOnInit() {
@@ -47,13 +45,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     // Sidenav config
     this.sidenavService.passSidenavToggle(this.sidenavToggle);
-
-    // Subscribe to scroll events and add css-class when in view
-    this.sidenavService.scrollEvent$.subscribe(() => {
-      this.cssAnimateInviewService.elementInView();
-    });
-    // Run the animation service once AfterViewInit
-    this.cssAnimateInviewService.elementInView();
   }
 
 }

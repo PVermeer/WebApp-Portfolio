@@ -11,13 +11,11 @@ export class SidenavService {
   private sidenavToggleSource = new Subject<MatToggle>();
   private expansionToggleSource = new Subject<MatToggleExp>();
   private themeToggleSource = new Subject<boolean>();
-  private scrollEventSource = new Subject<any>();
 
   public sidenavContent$ = this.sidenavContentSource.asObservable();
   public sidenavToggle$ = this.sidenavToggleSource.asObservable();
   public expansionToggle$ = this.expansionToggleSource.asObservable();
   public themeToggle$ = this.themeToggleSource.asObservable();
-  public scrollEvent$ = this.scrollEventSource.asObservable();
 
   public passSidenavContent(sidenavContent: SidenavContent) {
     this.sidenavContentSource.next(sidenavContent);
@@ -30,9 +28,6 @@ export class SidenavService {
   }
   public passThemeToggle(themeToggle: boolean) {
     this.themeToggleSource.next(themeToggle);
-  }
-  public passScrollEvent(scrollEvent: any) {
-    this.scrollEventSource.next(scrollEvent);
   }
 
   // Methods
