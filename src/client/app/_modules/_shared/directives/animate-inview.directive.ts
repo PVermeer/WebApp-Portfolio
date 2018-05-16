@@ -1,5 +1,6 @@
-import { Directive, Input, ElementRef, AfterViewInit } from '@angular/core';
+import { Directive, Input, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 /**
  * Used to animate elements into the view on scroll.
@@ -10,9 +11,10 @@ import { Observable } from 'rxjs/Observable';
 @Directive({
   selector: '[appAnimateInview]'
 })
-export class AnimateInviewDirective implements AfterViewInit {
+export class AnimateInviewDirective implements AfterViewInit, OnDestroy {
 
   @Input('appAnimateInview') appAnimateInview: string;
+  private scrollEvents: Subscription;
 
   public elementInView(): void {
 
@@ -53,11 +55,14 @@ export class AnimateInviewDirective implements AfterViewInit {
   ) { }
 
   ngAfterViewInit() {
-    Observable.fromEvent(document.getElementById('sidenav-content'), 'scroll').subscribe(() => {
+    this.scrollEvents = Observable.fromEvent(document.getElementById('sidenav-content'), 'scroll').subscribe(() => {
       this.elementInView();
     });
-    // Run the animation service once AfterViewInit
+    // Run the animation service once
     this.elementInView();
+  }
+  ngOnDestroy() {
+    this.scrollEvents.unsubscribe();
   }
 
 }
