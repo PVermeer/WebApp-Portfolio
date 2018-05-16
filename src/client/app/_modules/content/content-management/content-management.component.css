@@ -1,5 +1,13 @@
 /* Layout */
 
+.flex-row-left-text>* {
+  flex-basis: 45%;
+}
+
+.button-margin>* {
+  margin: 3px;
+}
+
 .pages {
   width: 100%;
 }
@@ -7,11 +15,15 @@
 .image-card {
   max-width: 340px;
 }
-.text-card {
-  width: 45%;
-}
 .text-card>* {
   width: 100%;
+}
+.add-field-card {
+  height: 237px;
+  max-width: 340px;
+}
+.add-field-card>div {
+  height: 100%;
 }
 
 /* Material form */

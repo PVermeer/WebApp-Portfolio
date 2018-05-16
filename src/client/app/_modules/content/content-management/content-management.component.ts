@@ -6,7 +6,7 @@ import { ContentService } from '../content.service';
 import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
 import { Observable } from 'rxjs/Observable';
 import { NewPageComponent } from './new-page/new-page.component';
-import { ContentPageDocumentExt, ContentPageLeanSubmit, ContentTextExt, ContentImageExt } from './content-management.types';
+import { ContentPageDocumentExt, ContentPageLeanSubmit, ContentTextExt, ContentImageExt } from './content-management.types.d';
 
 
 @Component({
@@ -20,12 +20,13 @@ export class ContentManagementComponent {
   public progressBar = false;
   public contentForm: FormGroup[] = [];
   public pages: Observable<ContentPageDocumentExt[]>;
+  private pagesResponse: ContentPageDocumentExt[];
   private initFlag = true;
 
   // Methods
   public async getForm() {
 
-    this.contentService.getAllContent().subscribe(async response => {
+    this.contentService.getAllContentPages().subscribe(async response => {
 
       // Map new array for form options
       const newArray = await Promise.all(
@@ -79,10 +80,11 @@ export class ContentManagementComponent {
 
       // Pages as observable along with the FormGroup
       this.pages = Observable.of(newArray as ContentPageDocumentExt[]);
+      this.pagesResponse = newArray as ContentPageDocumentExt[];
       this.initFlag = false;
 
       // Errors
-    }, () => this.errorHandler()
+    }, () => { }
     );
   }
 
@@ -92,14 +94,12 @@ export class ContentManagementComponent {
       // Create formData
       const formData = new FormData;
       value.images.map(x => {
-        if (x.imageUpdate) {
-          formData.append('images', x.imageUpdate, x._id as string);
-        }
+        if (x.imageUpdate) { formData.append('images', x.imageUpdate, x._id as string); }
       });
       formData.append('content', JSON.stringify(value));
 
       // Send formdata
-      this.contentService.updateContent(formData).subscribe(resp => {
+      this.contentService.updateContentPage(formData).subscribe(resp => {
 
         // On success
         this.snackbarComponent.snackbarSuccess(resp);
@@ -141,19 +141,50 @@ export class ContentManagementComponent {
     const data: DialogContent = { component: NewPageComponent };
     const dialog = this.matDialog.open(DialogComponent, { data });
 
-    // Get title and create formGroup
     dialog.afterClosed().subscribe(title => {
 
       if (!title) { return; }
 
       // New page
       const index = this.addFormGroup();
-
       this.addTitleField(title, index);
       this.addTextField('Header 1', 'Some text', null, index);
+      this.addImageField('New image', null, null, null, index);
 
-      // Update document
-      this.contentService.newContent(this.contentForm[index].value).subscribe(response => {
+      this.contentService.newContentPage(this.contentForm[index].value).subscribe(response => {
+
+        // Success
+        this.snackbarComponent.snackbarSuccess(response);
+        this.getForm();
+
+        // Errors
+      }, () => { this.errorHandler(); }
+      );
+    });
+  }
+
+  public removePage(i: number) {
+
+    // Open dialog to remove a new page
+    const data: DialogContent = {
+      dialogData: {
+        title: 'Confirm',
+        body: `Do you really want to <b>delete</b> ${this.contentForm[i].value.title}?`,
+        button: 'Confirm',
+        button2: 'Cancel'
+      }
+    };
+    const dialog = this.matDialog.open(DialogComponent, { data, disableClose: true });
+
+    // Get title and create formGroup
+    dialog.afterClosed().subscribe(confirm => {
+
+      if (!confirm) { return; }
+
+      const _id = this.pagesResponse[i]._id;
+      this.removeFormGroup(i);
+
+      this.contentService.deleteContentPage(_id as string).subscribe(response => {
 
         // Success
         this.snackbarComponent.snackbarSuccess(response);
@@ -208,6 +239,7 @@ export class ContentManagementComponent {
     private snackbarComponent: SnackbarComponent,
   ) {
     this.getForm();
+    console.log(this.contentForm);
   }
 
   // Form methods
@@ -259,6 +291,9 @@ export class ContentManagementComponent {
     control.setControl(j, this.initImageField(title, image, imageUpdate, _id as string));
   }
 
+  private removeFormGroup(i: number) {
+    this.contentForm.splice(i, 1);
+  }
   private removeTextField(i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['texts'];
     control.removeAt(j);

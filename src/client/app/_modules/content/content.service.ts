@@ -13,16 +13,19 @@ export class ContentService {
   // Methods
 
   // Backend http requests
-  public getContent(id: string): Observable<string> {
+  public getContentPage(id: string): Observable<string> {
     return this.http.get<string>('/content/page?' + id);
   }
-  public newContent(page: ContentPageModel): Observable<string> {
+  public newContentPage(page: ContentPageModel): Observable<string> {
     return this.http.post<string>('/content/newpage', page);
   }
-  public updateContent(page: FormData): Observable<string> {
+  public updateContentPage(page: FormData): Observable<string> {
     return this.http.post<string>('/content/updatepage', page);
   }
-  public getAllContent(): Observable<ContentPageDocumentLean[]> {
+  public deleteContentPage(_id: string): Observable<string> {
+    return this.http.delete<string>('/content/deletepage/' + _id);
+  }
+  public getAllContentPages(): Observable<ContentPageDocumentLean[]> {
     return this.http.get<Array<ContentPageDocumentLean>>('/content/getpages');
   }
   public getImage(id: string) {

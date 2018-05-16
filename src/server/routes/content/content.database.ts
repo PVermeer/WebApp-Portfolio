@@ -75,6 +75,16 @@ export function saveContentPage(page: ContentPageModel) {
   });
 }
 
+export function deleteContentPage(query: ContentQuery) {
+
+  return ContentPage.findOneAndRemove(query).exec().then(async document => {
+
+    await Promise.all(document.images.map(async x => {
+      if (x.image) { await deleteFileDb(x.image as string); }
+    }));
+  });
+}
+
 // Update
 export function updateContentPage(query: ContentQuery, updateForm: Partial<ContentPageModel>): Promise<QueryResult> {
 

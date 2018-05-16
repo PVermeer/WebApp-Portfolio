@@ -15,7 +15,7 @@ section {
 }
 
 .container {
-  max-width: 1080px;
+  max-width: 1150px;
   padding: 10px;
   width: 100%;
   align-self: center;
@@ -23,12 +23,17 @@ section {
 
 /* ---------Flex box---------- */
 
+.flex1 {
+  flex: 1
+}
+
 /* Flex column */
 
 .flex-column-around {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-around;
   padding: 10px;
 }
 
@@ -41,6 +46,20 @@ section {
   align-items: flex-start;
   justify-content: center;
 }
+.flex-row-between {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-content: center;
+}
+.flex-row-around {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-flow: row wrap;
+  padding: 10px;
+}
 .flex-row-left {
   display: flex;
   width: 100%;
@@ -48,30 +67,25 @@ section {
   align-items: flex-start;
   justify-content: left;
 }
+.flex-row-right {
+  display: flex;
+  width: 100%;
+  flex-flow: row-reverse wrap;
+  align-items: center;
+  justify-content: right;
+}
 
 .flex-row-center mat-card,
-.flex-row-left mat-card {
+.flex-row-between mat-card,
+.flex-row-around mat-card,
+.flex-row-left mat-card,
+.flex-row-right mat-card, {
   min-width: 340px;
   margin-bottom: 10px !important;
 }
 
 /* Center container */
 
-.center-container-around {
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  flex-flow: row wrap;
-  padding: 10px;
-}
-
-.center-container-between {
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  flex-flow: row wrap;
-  padding: 10px;
-}
 
 /* Right container */
 .right-container {

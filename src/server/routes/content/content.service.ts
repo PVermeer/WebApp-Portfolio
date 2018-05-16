@@ -56,6 +56,15 @@ export async function contentPageUpdate(req: Request) {
   return pageUpdateSuccess;
 }
 
+export async function contentPageDelete(req: RequestId) {
+
+  const { _id } = req.params;
+
+  await deleteContentPage({ _id });
+
+  return deleteSuccess;
+}
+
 export async function contentPageGetAll() {
 
   const allPages = await findAllContentPagesLean({}) ;

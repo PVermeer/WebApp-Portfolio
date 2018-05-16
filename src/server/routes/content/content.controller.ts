@@ -11,6 +11,11 @@ export function contentPageUpdate(req: Request, res: Response, next: NextFunctio
     .then(result => res.json(result))
     .catch(error => next(error));
 }
+export function contentPageDelete(req: Request, res: Response, next: NextFunction): void {
+  contentService.contentPageDelete(req)
+    .then(result => res.json(result))
+    .catch(error => next(error));
+}
 export function contentPageGetAll(_req: Request, res: Response, next: NextFunction): void {
   contentService.contentPageGetAll()
     .then(result => res.json(result))
