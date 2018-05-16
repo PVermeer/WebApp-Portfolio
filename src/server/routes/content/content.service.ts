@@ -1,16 +1,19 @@
 import { Request, Response } from 'express';
 
 import {
-  updateContentPage, findAllContentPagesLean, contentImage, saveContentPage, findContentPageLean
+  updateContentPage, findAllContentPagesLean, contentImage, saveContentPage, findContentPageLean, deleteContentPage
 } from './content.database';
-import { pageUpdateSuccess, saveError, updateErrorDetected, pageSaveSuccess } from '../../services/error-handler.service';
+import {
+  pageUpdateSuccess, saveError, updateErrorDetected, pageSaveSuccess, deleteSuccess, deleteError
+} from '../../services/error-handler.service';
 import { ContentPageLeanInput } from './content.types';
 import {
   uploadImageHandler, deleteOldFromDb, updateContentErrorHandler, prepareArray, processToDbInput
 } from './content.helpers';
+import { RequestId } from '../../types/types';
 
 
-export async function contentPageNew(req: Request): Promise<any> {
+export async function contentPageNew(req: Request) {
 
   const pageForm: ContentPageLeanInput = req.body;
 
@@ -25,7 +28,7 @@ export async function contentPageNew(req: Request): Promise<any> {
   return pageSaveSuccess;
 }
 
-export async function contentPageUpdate(req: Request): Promise<any> {
+export async function contentPageUpdate(req: Request) {
 
   const images = req.files as Express.Multer.File[];
   const pageForm: ContentPageLeanInput = JSON.parse(req.body.content);
@@ -53,14 +56,14 @@ export async function contentPageUpdate(req: Request): Promise<any> {
   return pageUpdateSuccess;
 }
 
-export async function contentPageGetAll(): Promise<any> {
+export async function contentPageGetAll() {
 
-  const allPages = await findAllContentPagesLean({}, { _id: 0 });
+  const allPages = await findAllContentPagesLean({}) ;
 
   return allPages;
 }
 
-export async function getImage(req: Request, res: Response): Promise<any> {
+export async function getImage(req: Request, res: Response) {
 
   const _id = req.query.id;
 

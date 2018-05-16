@@ -7,7 +7,7 @@ import { ManyDocumentLean, ManyDocument } from '../../database/models/users/many
 import { saveError, findError } from '../../services/error-handler.service';
 
 
-export async function findUser(query: UserQuery, fetch?: UserFetch): Promise<UserDocument> {
+export async function findUser(query: UserQuery, fetch?: UserFetch): Promise<Partial<UserDocument>> {
 
   return User.findOne(query, fetch).exec().then(result => {
     if (result) { return result; }
@@ -19,7 +19,7 @@ export async function findUser(query: UserQuery, fetch?: UserFetch): Promise<Use
   });
 }
 
-export async function findUserLean(query: UserQuery, fetch?: UserFetch): Promise<UserDocumentLean> {
+export async function findUserLean(query: UserQuery, fetch?: UserFetch): Promise<Partial<UserDocumentLean>> {
 
   return User.findOne(query, fetch).lean().exec().then(result => {
     if (result) { return result; }
@@ -90,7 +90,7 @@ export async function deleteUser(query: UserQuery): Promise<QueryResult> {
 
 export function deleteTempUser(query: UserQuery): void {
 
-  UserTemp.deleteOne(query).exec().catch(error => { console.error(error); });
+  UserTemp.deleteOne(query).exec();
 }
 
 export async function deleteMany(transactions: Array<string>): Promise<QueryResult> {

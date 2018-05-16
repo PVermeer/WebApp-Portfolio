@@ -51,7 +51,7 @@ export function deleteFileDb(_id: string): Promise<boolean> {
 }
 
 // GridFs image
-export function contentImage(_id: string, res: Response) {
+export function contentImage(_id: string, res: Response): Promise<void> {
   return new Promise((resolve, reject) => {
 
     const id = new ObjectId(_id);
@@ -60,14 +60,14 @@ export function contentImage(_id: string, res: Response) {
     readStream.pipe(res);
 
     readStream.on('error', error => reject(error));
-    readStream.on('file', (file) => res.contentType(file.contentType));
+    readStream.on('file', file => res.contentType(file.contentType));
     readStream.on('close', () => resolve());
   });
 
 }
 
 // Save
-export async function saveContentPage(page: ContentPageModel) {
+export function saveContentPage(page: ContentPageModel) {
 
   return new ContentPage(page).save().then(result => {
     if (!result) { throw saveError; }
@@ -76,13 +76,13 @@ export async function saveContentPage(page: ContentPageModel) {
 }
 
 // Update
-export async function updateContentPage(query: ContentQuery, updateForm: Partial<ContentPageModel>): Promise<QueryResult> {
+export function updateContentPage(query: ContentQuery, updateForm: Partial<ContentPageModel>): Promise<QueryResult> {
 
   return ContentPage.update(query, { $set: updateForm }, { runValidators: true }).exec();
 }
 
 // Find
-export async function findContentPageLean(query: ContentQuery, fetch?: ContentFetch): Promise<ContentPageDocumentLean> {
+export function findContentPageLean(query: ContentQuery, fetch?: ContentFetch): Promise<Partial<ContentPageDocumentLean>> {
 
   return ContentPage.findOne(query, fetch).lean().exec().then(result => {
     if (!result) { throw findError; }
@@ -90,7 +90,7 @@ export async function findContentPageLean(query: ContentQuery, fetch?: ContentFe
   });
 }
 
-export async function findAllContentPagesLean(query: ContentQuery, fetch?: ContentFetch): Promise<ContentPageDocumentLean> {
+export function findAllContentPagesLean(query: ContentQuery, fetch?: ContentFetch): Promise<Partial<ContentPageDocumentLean>> {
 
   return ContentPage.find(query, fetch).lean().exec().then(result => {
     if (!result) { throw findError; }

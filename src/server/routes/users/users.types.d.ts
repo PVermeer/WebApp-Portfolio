@@ -49,15 +49,3 @@ export interface EmailUpdatePayload extends Payload {
   _id: string;
   newEmail: string;
 }
-
-// --------- Express request extender --------
-export interface RequestId extends Request {
-  userId?: string;
-  type?: UserType;
-}
-
-export interface ReqQuery {
-  query?: any;
-  body?: any;
-  headers?: any;
-}

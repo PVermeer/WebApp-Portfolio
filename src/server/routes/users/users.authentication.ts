@@ -3,11 +3,11 @@ import { compare } from 'bcryptjs';
 import { NextFunction, Response } from 'express';
 
 import {
-  RequestId, LoginTokens, VerificationPayload, LoginPayload, Payload, EmailUpdatePayload,
+  LoginTokens, VerificationPayload, LoginPayload, Payload, EmailUpdatePayload,
 } from './users.types';
 import { config } from '../../services/server.service';
 import { findUserLean } from './users.database';
-import { ErrorMessage } from '../../types/types';
+import { ErrorMessage, RequestId } from '../../types/types';
 import { UserDocumentLean, UserType } from '../../database/models/users/user.types';
 
 // --------- Passwords -------------
@@ -29,7 +29,7 @@ export async function comparePasswords(password: string, hashedPassword: string)
  * @param user User document.
  * @returns Payload object.
  */
-function payloadLogin(user: UserDocumentLean): LoginPayload {
+function payloadLogin(user: Partial<UserDocumentLean>): LoginPayload {
   const payload = { _id: user._id, username: user.username, type: user.type };
 
   return payload;
@@ -69,7 +69,7 @@ function createToken(payload: Payload, secret: string, expires: string): string 
  * @param user user object.
  * @returns Object with two tokens.
  */
-export function createLoginTokens(user: UserDocumentLean): LoginTokens {
+export function createLoginTokens(user: Partial<UserDocumentLean>): LoginTokens {
 
   const refreshSecret = config.secret2 + user.password;
   const payload = payloadLogin(user);
@@ -135,7 +135,7 @@ export async function verifyToken(token: string): Promise<false | Payload> {
  * @param user User lean object with password
  * @returns Payload as object or false if token is invalid.
  */
-export async function verifyRefreshToken(token: string, user: UserDocumentLean): Promise<false | Payload> {
+export async function verifyRefreshToken(token: string, user: Partial<UserDocumentLean>): Promise<false | Payload> {
 
   let result: Payload | false;
   const refreshSecret = config.secret2 + user.password;
@@ -154,7 +154,7 @@ export async function verifyRefreshToken(token: string, user: UserDocumentLean):
  * @param user User lean object with email.
  * @returns Payload as object or false if token is invalid.
  */
-export async function verifyEmailUpdateToken(token: string, user: UserDocumentLean): Promise<false | Payload> {
+export async function verifyEmailUpdateToken(token: string, user: Partial<UserDocumentLean>): Promise<false | Payload> {
 
   let result: Payload | false;
   const refreshSecret = config.secret2 + user.email;
@@ -216,7 +216,7 @@ export const requiresUserAuth = (status: number, type: UserType) => async (req: 
   if (verifiedToken) {
     if (verifiedToken.type.rank < type.rank) { return next(typeError); }
 
-    req.userId = verifiedToken._id;
+    req._id = verifiedToken._id;
     req.type = verifiedToken.type;
 
     return next();
@@ -228,7 +228,7 @@ export const requiresUserAuth = (status: number, type: UserType) => async (req: 
   const newTokens = await refreshLoginTokens(refreshToken);
   if (!newTokens) { return next(sessionError); }
 
-  req.userId = newTokens._id;
+  req._id = newTokens._id;
   req.type = newTokens.type;
   res.set('x-token', newTokens.token);
   res.set('x-refresh-token', newTokens.refreshToken);

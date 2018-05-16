@@ -63,7 +63,7 @@ export async function uploadImageHandler(images: Express.Multer.File[], imagesAr
   return fileArray;
 }
 
-export function deleteOldFromDb(pageDocument: ContentPageDocumentLean, imagesArray: ContentImageSubmit[]) {
+export function deleteOldFromDb(pageDocument: Partial<ContentPageDocumentLean>, imagesArray: ContentImageSubmit[]) {
 
   Promise.all(pageDocument.images.map(x => new Promise(async resolve => {
 

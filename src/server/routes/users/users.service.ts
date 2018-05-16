@@ -12,23 +12,21 @@ import { spamHandler } from '../mail/spam.service';
 import { Request, Response } from 'express';
 import { userVerificationMail, passwordRecoveryMail, userEmailUpdateMail } from '../mail/mail.service';
 import { UserUpdate, UserQuery, UserDocumentLean, UserLogin, UserRegister, UserModel } from '../../database/models/users/user.types';
-import { RequestId, ReqQuery, PasswordRecovery } from './users.types';
-import { ManyDocumentLean } from '../../database/models/users/many.types';
+import { PasswordRecovery } from './users.types';
 import {
   passwordLengthError, duplicateError, blockedError, mailVerifyError, loginError, saveError,
   verifyError, updateError, deleteError, loginSuccess, updateSuccess, sendMailSuccess,
-  actionSuccess, deleteSuccess, registrationSuccess, verifyDone, verifySuccess,
+  actionSuccess, registrationSuccess, verifyDone, verifySuccess, accountDeleteSuccess,
 } from '../../services/error-handler.service';
+import { RequestId, ReqQuery } from '../../types/types';
 
 // ------------- functions --------------
 
 // Validation checks
-async function userValidation(user: UserRegister | UserUpdate): Promise<void> {
+async function userValidation(user: UserRegister | UserUpdate) {
 
   // Sync
-  if (user.password) {
-    if (user.password.length > 59) { throw passwordLengthError; }
-  }
+  if (user.password && user.password.length > 59) { throw passwordLengthError; }
 
   // Async
   const check: Promise<boolean>[] = [];
@@ -39,20 +37,21 @@ async function userValidation(user: UserRegister | UserUpdate): Promise<void> {
   if (user.email) {
     check.push(checkDuplicate({ query: { username: user.email } }));
   }
+
   const exists = await Promise.all(check);
   if (exists.some(x => x === true)) { throw duplicateError; }
 }
 
 // Save a document for multiple actions
-export async function userMany(req: RequestId): Promise<ManyDocumentLean> {
+export async function userMany(req: RequestId) {
   const transactions: UserDocumentLean['_id'][] = req.body;
 
   const document = await saveTransactions(transactions);
-  return document._id.toString();
+  return document._id.toString() as string;
 }
 
 // Check for duplicates
-export async function checkDuplicate(req: Request | ReqQuery): Promise<boolean> {
+export async function checkDuplicate(req: Request | ReqQuery) {
   const { query } = req;
 
   return findUserLean(query, { _id: 0, username: 1 })
@@ -61,14 +60,14 @@ export async function checkDuplicate(req: Request | ReqQuery): Promise<boolean> 
 }
 
 // Login
-export async function logIn(req: Request, res: Response): Promise<string> {
+export async function logIn(req: Request, res: Response) {
 
   const loginForm: UserLogin = req.body;
 
   // Spam check
   if (loginForm.lname) { spamHandler('Login'); return loginSuccess; }
 
-  const user = await findUserLean({ email: loginForm.email });
+  const user = await findUserLean({ email: loginForm.email }) as UserDocumentLean;
 
   if (user.type.rank < 0) { throw blockedError; }
   if (user.type.rank < 1) { throw mailVerifyError; }
@@ -85,14 +84,14 @@ export async function logIn(req: Request, res: Response): Promise<string> {
 }
 
 // Login check
-export async function loginCheck(): Promise<string> {
+export async function loginCheck() {
   return loginSuccess;
 }
 
 // Update user
-export async function userUpdate(req: RequestId): Promise<string> {
+export async function userUpdate(req: RequestId) {
 
-  const _id = req.userId;
+  const _id = req._id;
   const updateForm: UserUpdate = req.body;
   const { origin } = req.headers;
 
@@ -106,7 +105,7 @@ export async function userUpdate(req: RequestId): Promise<string> {
   // Email update
   if (updateForm.email) {
 
-    const user = await findUserLean({ _id });
+    const user = await findUserLean({ _id }) as UserDocumentLean;
     const verificationToken = createEmailUpdateToken(user, updateForm.email);
 
     // Send verificationmail to new address
@@ -124,7 +123,7 @@ export async function userUpdate(req: RequestId): Promise<string> {
   return updateSuccess;
 }
 
-export async function updateEmail(req: RequestId): Promise<string> {
+export async function updateEmail(req: RequestId) {
 
   if (!req.query.token) { throw verifyError; }
 
@@ -143,7 +142,7 @@ export async function updateEmail(req: RequestId): Promise<string> {
   return updateSuccess;
 }
 
-export async function passwordRecovery(req: RequestId | ReqQuery): Promise<string> {
+export async function passwordRecovery(req: RequestId | ReqQuery) {
 
   const request: PasswordRecovery = req.body;
 
@@ -153,7 +152,7 @@ export async function passwordRecovery(req: RequestId | ReqQuery): Promise<strin
   if (request.email) { query.email = req.body.email; }
   if (request._id) { query._id = req.body.id; }
 
-  const user = await findUserLean(query);
+  const user = await findUserLean(query) as UserDocumentLean;
   if (user.type.rank < 1) { throw mailVerifyError; }
 
   const verificationToken = createVerificationToken(user);
@@ -163,7 +162,7 @@ export async function passwordRecovery(req: RequestId | ReqQuery): Promise<strin
   return sendMailSuccess;
 }
 
-export async function updatePassword(req: RequestId): Promise<string> {
+export async function updatePassword(req: RequestId) {
 
   if (!req.query.token) { throw verifyError; }
 
@@ -171,16 +170,16 @@ export async function updatePassword(req: RequestId): Promise<string> {
 
   const decodedToken = decodeToken(token);
 
-  const user = await findUserLean({ email: decodedToken.email });
+  const user = await findUserLean({ email: decodedToken.email }) as UserDocumentLean;
 
   const verifiedToken = await verifyRefreshToken(token, user);
   if (!verifiedToken) { throw verifyError; }
 
-  req.userId = user._id; // Input for userUpdate function
+  req._id = user._id; // Input for userUpdate function
   return userUpdate(req);
 }
 
-export async function userBlockMany(req: Request): Promise<string> {
+export async function userBlockMany(req: Request) {
 
   const _id = req.params.id;
 
@@ -195,7 +194,7 @@ export async function userBlockMany(req: Request): Promise<string> {
 
 }
 
-export async function userUnblockMany(req: Request): Promise<string> {
+export async function userUnblockMany(req: Request) {
 
   const _id = req.params.id;
 
@@ -210,7 +209,7 @@ export async function userUnblockMany(req: Request): Promise<string> {
 
 }
 
-export async function makeAdminMany(req: Request): Promise<string> {
+export async function makeAdminMany(req: Request) {
 
   const _id = req.params.id;
 
@@ -225,7 +224,7 @@ export async function makeAdminMany(req: Request): Promise<string> {
 
 }
 
-export async function makeUserMany(req: Request): Promise<string> {
+export async function makeUserMany(req: Request) {
 
   const _id = req.params.id;
 
@@ -241,17 +240,17 @@ export async function makeUserMany(req: Request): Promise<string> {
 }
 
 // Delete user
-export async function userDelete(req: RequestId): Promise<string> {
+export async function userDelete(req: RequestId) {
 
-  const { userId } = req;
+  const { _id } = req;
 
-  const result = await deleteUser({ _id: userId });
+  const result = await deleteUser({ _id });
   if (result.n !== 1) { throw deleteError; }
 
-  return deleteSuccess;
+  return accountDeleteSuccess;
 }
 
-export async function userDeleteMany(req: RequestId): Promise<string> {
+export async function userDeleteMany(req: RequestId) {
   const deleteManyId = req.params.id;
 
   const transactionDocument = await findTransactions(deleteManyId);
@@ -264,7 +263,7 @@ export async function userDeleteMany(req: RequestId): Promise<string> {
 }
 
 // Register user
-export async function registerUser(req: RequestId): Promise<string> {
+export async function registerUser(req: RequestId) {
 
   const userForm: UserRegister = req.body;
   const { origin } = req.headers;
@@ -297,14 +296,14 @@ export async function registerUser(req: RequestId): Promise<string> {
 }
 
 // Verify email user
-export async function verifyEmail(req: RequestId): Promise<string> {
+export async function verifyEmail(req: RequestId) {
 
   const { token } = req.query;
 
   const verifiedToken = await verifyToken(token);
   if (!verifiedToken) { throw verifyError; }
 
-  const userTemp = await findUserLean({ email: verifiedToken.email });
+  const userTemp = await findUserLean({ email: verifiedToken.email }) as UserDocumentLean;
 
   if (userTemp.type.rank >= userTypes.user.rank) { return verifyDone; }
 
@@ -317,12 +316,12 @@ export async function verifyEmail(req: RequestId): Promise<string> {
 }
 
 // Resend verification email
-export async function resendEmailVerification(req: Request): Promise<string> {
+export async function resendEmailVerification(req: Request) {
 
   const email = req.body.email;
   const { origin } = req.headers;
 
-  const tempUser = await findUserLean({ email: email });
+  const tempUser = await findUserLean({ email: email }) as UserDocumentLean;
 
   const verificationToken = createVerificationToken(tempUser);
 
@@ -332,23 +331,23 @@ export async function resendEmailVerification(req: Request): Promise<string> {
 }
 
 // User queries
-export async function userInfo(req: RequestId): Promise<Partial<UserDocumentLean>> {
-  const { userId } = req;
+export async function userInfo(req: RequestId) {
+  const { _id } = req;
 
-  return findUserLean({ _id: userId }, { _id: 0, password: 0, usernameIndex: 0 });
+  return findUserLean({ _id }, { _id: 0, password: 0, usernameIndex: 0 });
 }
 
-export async function userGetAll(req: RequestId): Promise<Partial<UserDocumentLean[]>> {
+export async function userGetAll(req: RequestId) {
 
   if (req.type.rank === userTypes.superAdmin.rank) {
-    return findUsers({ 'type.rank': { $lt: userTypes.superAdmin.rank }}, { password: 0, usernameIndex: 0 });
+    return findUsers({ 'type.rank': { $lt: userTypes.superAdmin.rank } }, { password: 0, usernameIndex: 0 });
   }
 
-  return findUsers({ 'type.rank': { $lt: userTypes.admin.rank }}, { password: 0, usernameIndex: 0 });
+  return findUsers({ 'type.rank': { $lt: userTypes.admin.rank } }, { password: 0, usernameIndex: 0 });
 }
 
 // Mock user
-export async function mockUser(req: RequestId): Promise<string> {
+export async function mockUser(req: RequestId) {
   const user = req.body;
 
   const exists = await Promise.all([
