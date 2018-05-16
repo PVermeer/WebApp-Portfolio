@@ -4,10 +4,6 @@
   flex-basis: 45%;
 }
 
-.button-margin>* {
-  margin: 3px;
-}
-
 .pages {
   width: 100%;
 }

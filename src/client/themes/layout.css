@@ -23,6 +23,7 @@ section {
 
 /* ---------Flex box---------- */
 
+.flex1-all>*,
 .flex1 {
   flex: 1
 }
@@ -65,39 +66,21 @@ section {
   width: 100%;
   flex-flow: row wrap;
   align-items: flex-start;
-  justify-content: left;
 }
 .flex-row-right {
   display: flex;
   width: 100%;
   flex-flow: row-reverse wrap;
   align-items: center;
-  justify-content: right;
 }
 
 .flex-row-center mat-card,
 .flex-row-between mat-card,
 .flex-row-around mat-card,
 .flex-row-left mat-card,
-.flex-row-right mat-card, {
+.flex-row-right mat-card {
   min-width: 340px;
-  margin-bottom: 10px !important;
 }
-
-/* Center container */
-
-
-/* Right container */
-.right-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-items: center;
-}
-.right-container>* {
-  margin: 10px !important;
-}
-
 
 /* ----------Columns---------- */
 
@@ -131,6 +114,11 @@ section {
 
 /* ----------Material design---------- */
 
+/* Buttons */
+.button-margin>* {
+  margin: 3px !important;
+}
+
 /* Card */
 mat-card {
   margin: 10px;
@@ -161,7 +149,6 @@ mat-form-field {
 /* Control */
 
 /* Hide an element (used by CssAnimateInviewService */
-
 .hide {
   opacity: 0;
 }
