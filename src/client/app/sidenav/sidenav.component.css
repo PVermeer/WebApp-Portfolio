@@ -45,6 +45,10 @@ mat-sidenav {
   justify-content: space-between;
 }
 
+mat-expansion-panel {
+  background: transparent;
+}
+
 mat-panel-title {
   font-size: 13px;
   text-transform: uppercase;
