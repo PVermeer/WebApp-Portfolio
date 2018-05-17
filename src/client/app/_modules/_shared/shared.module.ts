@@ -9,6 +9,7 @@ import { SnackbarComponent } from './components/snackbar/snackbar.component';
 import { PreviewImageDirective } from './directives/preview-image.directive';
 import { ViewImageDirective } from './directives/view-image.directive';
 import { AnimateInviewDirective } from './directives/animate-inview.directive';
+import { PagePathHighlightDirective } from './directives/page-path-highlight.directive';
 
 import { DialogComponent } from './components/dialog/dialog.component';
 import { UserDialogComponent } from '../users/user-dialog/user-dialog.component';
@@ -36,12 +37,14 @@ const sharedModules = [
     PreviewImageDirective,
     AnimateInviewDirective,
     ViewImageDirective,
+    PagePathHighlightDirective,
   ],
   exports: [
     sharedModules,
     PreviewImageDirective,
     AnimateInviewDirective,
     ViewImageDirective,
+    PagePathHighlightDirective,
   ],
   providers: [
     SnackbarComponent, MailService

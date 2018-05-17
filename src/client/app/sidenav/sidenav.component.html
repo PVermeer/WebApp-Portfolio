@@ -57,8 +57,7 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-nav-list role="list">
-            <a mat-list-item role="listitem" *ngFor="let item of content.items" role="listitem"
-              (click)="scrollTo(item.path)">
+              <a mat-list-item role="listitem" *ngFor="let item of content.items" role="listitem" (click)="scrollTo(item.path)" [appPagePathHighlight]="item.path">
               {{item.label}}
             </a>
           </mat-nav-list>
