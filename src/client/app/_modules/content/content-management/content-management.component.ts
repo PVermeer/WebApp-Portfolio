@@ -77,7 +77,7 @@ export class ContentManagementComponent {
                 resolve2();
 
                 // Errors
-              }, () => this.errorHandler()
+              }, () => {}
               );
 
             } else { resolve2(); }
