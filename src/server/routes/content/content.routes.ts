@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { DbConnectionError, upload } from '../../database/connection';
 // import { requiresUserAuth } from '../users/users.authentication';
 // import { userTypes } from '../database/models/users/user.schema';
-import { contentPageUpdate, contentPageGetAll, getImage, contentPageNew, contentPageDelete } from './content.controller';
+import { contentPageUpdate, contentPageGetAll, getImage, contentPageNew, contentPageDelete, getPage } from './content.controller';
 import { urlencoded, json } from 'body-parser';
 
 const router = Router();
@@ -17,6 +17,8 @@ router.use(json());
 // router.use(upload.single());
 
 // -----------Routes-------------------
+
+router.get('/page', getPage);
 
 router.post('/newpage', contentPageNew);
 router.post('/updatepage', upload.array('images'), contentPageUpdate);

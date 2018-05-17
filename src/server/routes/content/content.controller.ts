@@ -25,3 +25,8 @@ export function getImage(req: Request, res: Response, next: NextFunction): void 
   contentService.getImage(req, res)
     .catch(error => next(error));
 }
+export function getPage(req: Request, res: Response, next: NextFunction): void {
+  contentService.getPage(req)
+    .then(result => res.json(result))
+    .catch(error => next(error));
+}

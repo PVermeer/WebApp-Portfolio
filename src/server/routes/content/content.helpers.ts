@@ -25,16 +25,6 @@ export function prepareArray(pageForm: ContentPageLeanInput) {
   return { images, texts };
 }
 
-export function compareSortObject(a: object, b: object) {
-
-  const nameA = Object.values(a)[0];
-  const nameB = Object.values(b)[0];
-
-  if (nameA < nameB) { return -1; }
-  if (nameA > nameB) { return 1; }
-  return 0;
-}
-
 export async function uploadImageHandler(images: Express.Multer.File[], imagesArray: ContentImageSubmit[]) {
 
   if (images.length === 0) { return null; }
@@ -74,15 +64,14 @@ export function deleteOldFromDb(pageDocument: Partial<ContentPageDocumentLean>, 
   })));
 }
 
-export function processToDbInput(
-  pageForm: ContentPageLeanInput, textArray: ContentTextDocumentLean[], imageArray: ContentImageSubmit[]
+export function processToDbInput(pageForm: ContentPageLeanInput, textArray: ContentTextDocumentLean[], imageArray: ContentImageSubmit[]
 ): ContentPageModel {
 
   return {
     title: pageForm.title,
     description: pageForm.description,
-    texts: textArray.sort((a: object, b: object) => compareSortObject(a, b)),
-    images: imageArray.sort((a: object, b: object) => compareSortObject(a, b)),
+    texts: textArray,
+    images: imageArray,
   };
 }
 

@@ -239,7 +239,6 @@ export class ContentManagementComponent {
     private snackbarComponent: SnackbarComponent,
   ) {
     this.getForm();
-    console.log(this.contentForm);
   }
 
   // Form methods

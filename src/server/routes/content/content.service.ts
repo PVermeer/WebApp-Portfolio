@@ -4,7 +4,7 @@ import {
   updateContentPage, findAllContentPagesLean, contentImage, saveContentPage, findContentPageLean, deleteContentPage
 } from './content.database';
 import {
-  pageUpdateSuccess, saveError, updateErrorDetected, pageSaveSuccess, deleteSuccess, deleteError
+  pageUpdateSuccess, saveError, updateErrorDetected, pageSaveSuccess, deleteSuccess,
 } from '../../services/error-handler.service';
 import { ContentPageLeanInput } from './content.types';
 import {
@@ -77,4 +77,12 @@ export async function getImage(req: Request, res: Response) {
   const _id = req.query.id;
 
   await contentImage(_id, res);
+}
+
+export function getPage(req: Request) {
+
+  const { title } = req.query;
+
+  return findContentPageLean({ title }, { _id: 0 });
+
 }

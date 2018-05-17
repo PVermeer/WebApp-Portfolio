@@ -11,10 +11,20 @@ export class ContentService {
   ) { }
 
   // Methods
+  /**
+   * @param title Search value
+   */
+  public getImageId(title: string, page: ContentPageDocumentLean) {
+    if (page) {
+      const imageObject = page.images.find(x => x.title === title);
+      return imageObject.image as string;
+    }
+    return null;
+  }
 
   // Backend http requests
-  public getContentPage(id: string): Observable<string> {
-    return this.http.get<string>('/content/page?' + id);
+  public getContentPage(title: string): Observable<ContentPageDocumentLean> {
+    return this.http.get<ContentPageDocumentLean>('/content/page?title=' + title);
   }
   public newContentPage(page: ContentPageModel): Observable<string> {
     return this.http.post<string>('/content/newpage', page);

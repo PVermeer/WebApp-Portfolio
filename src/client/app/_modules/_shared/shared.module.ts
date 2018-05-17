@@ -7,6 +7,7 @@ import './modules/rxjs.module';
 import { MaterialModule } from './modules/material.module';
 import { SnackbarComponent } from './components/snackbar/snackbar.component';
 import { PreviewImageDirective } from './directives/preview-image.directive';
+import { ViewImageDirective } from './directives/view-image.directive';
 import { AnimateInviewDirective } from './directives/animate-inview.directive';
 
 import { DialogComponent } from './components/dialog/dialog.component';
@@ -34,11 +35,13 @@ const sharedModules = [
     DialogComponent,
     PreviewImageDirective,
     AnimateInviewDirective,
+    ViewImageDirective,
   ],
   exports: [
     sharedModules,
     PreviewImageDirective,
     AnimateInviewDirective,
+    ViewImageDirective,
   ],
   providers: [
     SnackbarComponent, MailService
