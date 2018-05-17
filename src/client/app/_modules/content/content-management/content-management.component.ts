@@ -7,6 +7,7 @@ import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.co
 import { Observable } from 'rxjs/Observable';
 import { NewPageComponent } from './new-page/new-page.component';
 import { ContentPageDocumentExt, ContentPageLeanSubmit, ContentTextExt, ContentImageExt } from './content-management.types.d';
+import { ContentPageDocumentLean } from '../../../../../server/database/models/content/content.types';
 
 
 @Component({
@@ -20,13 +21,20 @@ export class ContentManagementComponent {
   public progressBar = false;
   public contentForm: FormGroup[] = [];
   public pages: Observable<ContentPageDocumentExt[]>;
-  private pagesResponse: ContentPageDocumentExt[];
+  private pagesResponse: ContentPageDocumentLean[];
   private initFlag = true;
 
   // Methods
-  public async getForm() {
+  /**
+   * @param input Conditional, input edited response (pagesLean) for manual submit.
+   */
+  public async getForm(input?: ContentPageDocumentLean[]) {
 
-    this.contentService.getAllContentPages().subscribe(async response => {
+    let response = input;
+
+    if (!input) {
+      response = await this.contentService.getAllContentPages().first().toPromise();
+    }
 
       // Map new array for form options
       const newArray = await Promise.all(
@@ -62,7 +70,7 @@ export class ContentManagementComponent {
             this.updateImageField(z.title, z.image, null, z._id as string, i, k);
 
             // Get image if available
-            if (z.image) {
+          if (!input && z.image) {
               this.contentService.getImage(z.image as string).subscribe(response2 => {
 
                 z.imageSrc = response2;
@@ -82,10 +90,6 @@ export class ContentManagementComponent {
       this.pages = Observable.of(newArray as ContentPageDocumentExt[]);
       this.pagesResponse = newArray as ContentPageDocumentExt[];
       this.initFlag = false;
-
-      // Errors
-    }, () => { }
-    );
   }
 
   public updateForm(value: ContentPageLeanSubmit): Promise<void> {
@@ -169,7 +173,9 @@ export class ContentManagementComponent {
     const data: DialogContent = {
       dialogData: {
         title: 'Confirm',
-        body: `Do you really want to <b>delete</b> ${this.contentForm[i].value.title}?`,
+        body: `Do you really want to <b>delete</b> ${this.contentForm[i].value.title}?
+                <br><br>
+               Submit your changes first, this will delete unsaved changes`,
         button: 'Confirm',
         button2: 'Cancel'
       }
@@ -200,29 +206,29 @@ export class ContentManagementComponent {
   public async textFieldAdd(i: number) {
 
     this.addTextField('New header', 'Some text', null, i);
-    await this.updateForm(this.contentForm[i].value).catch(() => { this.errorHandler(); return; });
-    this.getForm();
+    this.pagesResponse[i].texts.push({ _id: null, header: 'New header', text: 'Some text' });
+    this.getForm(this.pagesResponse);
   }
 
   public async imageFieldAdd(i: number) {
 
     this.addImageField('New image', null, null, null, i);
-    await this.updateForm(this.contentForm[i].value).catch(() => { this.errorHandler(); return; });
-    this.getForm();
+    this.pagesResponse[i].images.push({ _id: null, title: 'New image', image: null });
+    this.getForm(this.pagesResponse);
   }
 
   public async textFieldRemove(i: number, j: number) {
 
     this.removeTextField(i, j);
-    await this.updateForm(this.contentForm[i].value).catch(() => { this.errorHandler(); return; });
-    this.getForm();
+    this.pagesResponse[i].texts.splice(j, 1);
+    this.getForm(this.pagesResponse);
   }
 
   public async imageFieldRemove(i: number, j: number) {
 
     this.removeImageField(i, j);
-    await this.updateForm(this.contentForm[i].value).catch(() => { this.errorHandler(); return; });
-    this.getForm();
+    this.pagesResponse[i].images.splice(j, 1);
+    this.getForm(this.pagesResponse);
   }
 
   public errorHandler() {

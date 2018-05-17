@@ -2,7 +2,9 @@
 
 <mat-dialog-content>
 
-  <p>Enter the title of the new page</p>
+  <p>Submit your changes first, this will delete unsaved changes.
+    <br>
+    <br> Enter the title of the new page</p>
 
   <br>
   <form class="form">
@@ -15,5 +17,5 @@
 <br>
 <mat-dialog-actions class="flex-row-around">
   <button mat-raised-button color="warn" mat-dialog-close>Cancel</button>
-  <button mat-raised-button color="primary" (click)="create()" [disabled]="!pageTitle" >Create</button>
+  <button mat-raised-button color="primary" (click)="create()" [disabled]="!pageTitle">Create</button>
 </mat-dialog-actions>
