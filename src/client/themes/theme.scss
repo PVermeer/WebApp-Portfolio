@@ -16,7 +16,7 @@
 
 // Primary theme
 $primary-theme-primary: mat-palette($mat-indigo);
-$primary-theme-accent:  mat-palette($mat-pink, A200, A100, A400);
+$primary-theme-accent:  mat-palette($mat-deep-orange, A200, A100, A400);
 $primary-theme-warn:    mat-palette($mat-red, 900);
 
 $primary-theme: mat-light-theme($primary-theme-primary, $primary-theme-accent, $primary-theme-warn);
