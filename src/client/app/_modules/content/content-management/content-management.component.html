@@ -17,9 +17,9 @@
               <h4>Text</h4>
             </div>
             <div class="flex1 flex-row-right button-margin">
-              <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)">
-                Submit changes
-              </button>
+                <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)">
+                    Submit changes
+                  </button>
               <button type="submit" mat-raised-button color="warn" (click)="removePage(i)">
                 Remove page
               </button>
@@ -128,8 +128,8 @@
                     <mat-card-actions>
                       <div class="flex-column-around">
 
-                        <div *ngIf="contentForm[i].controls.images.controls[k].controls.image.value">
-                          {{ contentForm[i].controls.images.controls[k].controls.image.value.name }}
+                        <div *ngIf="contentForm[i].controls.images.controls[k].controls.imageUpdate.value">
+                          {{ contentForm[i].controls.images.controls[k].controls.imageUpdate.value.name }}
                           <br>
                           <br>
                         </div>
@@ -152,6 +152,17 @@
             </div>
           </form>
         </div>
+
+        <br>
+        <mat-divider></mat-divider>
+        <br>
+        <br>
+        <div class="flex-row-center">
+          <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)">
+            Submit changes
+          </button>
+        </div>
+
       </mat-tab>
     </div>
   </div>

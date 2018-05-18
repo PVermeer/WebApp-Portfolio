@@ -26,70 +26,56 @@ export class ContentManagementComponent {
 
   // Methods
   /**
-   * @param input Conditional, input edited response (pagesLean) for manual submit.
+   * @param input Optional, input edited response (pagesLean) for manual submit.
    */
-  public async getForm(input?: ContentPageDocumentLean[]) {
+  public async getForm() {
 
-    let response = input;
-
-    if (!input) {
-      response = await this.contentService.getAllContentPages().first().toPromise();
-    }
+    this.contentService.getAllContentPages().subscribe(response => {
 
       // Map new array for form options
-      const newArray = await Promise.all(
-        response.map((x: ContentPageDocumentExt, i) => new Promise(async resolve => {
+      const newArray = response.map((x: ContentPageDocumentExt, i) => {
 
-          // Basic init
+        // Basic init
+        if (this.initFlag) {
+          this.addFormGroup();
+          this.addTitleField(x.title, i);
+        }
+
+        // Map texts array
+        x.texts.map((y, j) => {
+
           if (this.initFlag) {
-            this.addFormGroup();
-            this.addTitleField(x.title, i);
+            this.addTextField(y.header, y.text, null, i);
           }
 
-          // Map texts array
-          x.texts.map((y, j) => {
+          // Text options + data
+          this.formText(y);
+          this.updateTextField(y.header, y.text, y._id as string, i, j);
+        });
 
-            if (this.initFlag) {
-              this.addTextField(y.header, y.text, null, i);
-            }
+        // Map images array, async to get images
+        x.images.map((z, k) => {
 
-            // Text options + data
-            this.formText(y);
-            this.updateTextField(y.header, y.text, y._id as string, i, j);
-          });
+          if (this.initFlag) {
+            this.addImageField(z.title, z.image, null, z._id as string, i);
+          }
 
-          // Map images array, async to get images
-          await Promise.all(x.images.map((z, k) => new Promise(resolve2 => {
+          // Image options + data
+          this.formImages(z);
+          this.updateImageField(z.title, z.image, null, z._id as string, i, k);
+        });
 
-            if (this.initFlag) {
-              this.addImageField(z.title, z.image, null, z._id as string, i);
-            }
-
-            // Image options + data
-            this.formImages(z);
-            this.updateImageField(z.title, z.image, null, z._id as string, i, k);
-
-            // Get image if available
-          if (!input && z.image) {
-              this.contentService.getImage(z.image as string).subscribe(response2 => {
-
-                z.imageSrc = response2;
-                resolve2();
-
-                // Errors
-              }, () => {}
-              );
-
-            } else { resolve2(); }
-          })));
-
-          resolve(x);
-        })));
+        return x;
+      });
 
       // Pages as observable along with the FormGroup
       this.pages = Observable.of(newArray as ContentPageDocumentExt[]);
       this.pagesResponse = newArray as ContentPageDocumentExt[];
       this.initFlag = false;
+
+      // On server errors
+    }, () => {} // Avoid loop
+    );
   }
 
   public updateForm(value: ContentPageLeanSubmit): Promise<void> {
@@ -98,19 +84,27 @@ export class ContentManagementComponent {
       // Create formData
       const formData = new FormData;
       value.images.map(x => {
-        if (x.imageUpdate) { formData.append('images', x.imageUpdate, x._id as string); }
+        if (x.imageUpdate) {
+
+          const id = <string>x._id || 'newId-' + x.title + '-' + Math.random().toString(36).slice(-10);
+
+          formData.append('images', x.imageUpdate, id);
+          x._id = id;
+        }
       });
       formData.append('content', JSON.stringify(value));
 
       // Send formdata
-      this.contentService.updateContentPage(formData).subscribe(resp => {
+      this.contentService.updateContentPage(formData).subscribe(res => {
 
         // On success
-        this.snackbarComponent.snackbarSuccess(resp);
+        this.snackbarComponent.snackbarSuccess(res);
         resolve();
 
         // Errors
-      }, () => { this.errorHandler(); reject(); }
+      }, () => {
+        this.errorHandler(); reject();
+      }
       );
     });
   }
@@ -207,28 +201,24 @@ export class ContentManagementComponent {
 
     this.addTextField('New header', 'Some text', null, i);
     this.pagesResponse[i].texts.push({ _id: null, header: 'New header', text: 'Some text' });
-    this.getForm(this.pagesResponse);
   }
 
   public async imageFieldAdd(i: number) {
 
     this.addImageField('New image', null, null, null, i);
     this.pagesResponse[i].images.push({ _id: null, title: 'New image', image: null });
-    this.getForm(this.pagesResponse);
   }
 
   public async textFieldRemove(i: number, j: number) {
 
     this.removeTextField(i, j);
     this.pagesResponse[i].texts.splice(j, 1);
-    this.getForm(this.pagesResponse);
   }
 
   public async imageFieldRemove(i: number, j: number) {
 
     this.removeImageField(i, j);
     this.pagesResponse[i].images.splice(j, 1);
-    this.getForm(this.pagesResponse);
   }
 
   public errorHandler() {

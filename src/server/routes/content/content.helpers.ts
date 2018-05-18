@@ -3,13 +3,13 @@ import {
   GridFsDocument, ContentPageDocumentLean, ContentTextDocumentLean, ContentPageModel
 } from '../../database/models/content/content.types';
 import { ContentImageSubmit, ContentPageLeanInput } from './content.types';
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 export function prepareArray(pageForm: ContentPageLeanInput) {
 
   const images = pageForm.images.map(x => {
 
-    if (!x._id) { x._id = new ObjectID; }
+    if (!x._id) { x._id = (new ObjectId).toString(); }
     if (x.imageUpdate && Object.keys(x.imageUpdate).length === 0) { x.imageUpdate = null; }
 
     return x;
@@ -17,12 +17,23 @@ export function prepareArray(pageForm: ContentPageLeanInput) {
 
   const texts = pageForm.texts.map(x => {
 
-    if (!x._id) { x._id = new ObjectID; }
+    if (!x._id) { x._id = new ObjectId; }
 
     return x;
   });
 
   return { images, texts };
+}
+
+export function deleteOldFromDb(pageDocument: Partial<ContentPageDocumentLean>, imagesArray: ContentImageSubmit[]) {
+
+  Promise.all(pageDocument.images.map(x => new Promise(async resolve => {
+
+    const exists = imagesArray.some(y => y._id === x._id.toString());
+
+    if (!exists && x.image) { await deleteFileDb(x.image as string); }
+    resolve();
+  })));
 }
 
 export async function uploadImageHandler(images: Express.Multer.File[], imagesArray: ContentImageSubmit[]) {
@@ -42,26 +53,21 @@ export async function uploadImageHandler(images: Express.Multer.File[], imagesAr
 
         if (y.image) { await deleteFileDb(y.image as string); }
         imagesArray[i].image = x._id;
-
-        return resolve2();
-      } else { return resolve2(); }
+      }
+      return resolve2();
     })));
 
     resolve();
   })));
 
+  // Convert _id field to ObjectId when done
+  imagesArray.map(x => {
+
+    if ((x._id as string).split('-')[0] === 'newId') { x._id = new ObjectId; }
+
+  });
+
   return fileArray;
-}
-
-export function deleteOldFromDb(pageDocument: Partial<ContentPageDocumentLean>, imagesArray: ContentImageSubmit[]) {
-
-  Promise.all(pageDocument.images.map(x => new Promise(async resolve => {
-
-    const exists = imagesArray.some(y => y._id === x._id.toString());
-
-    if (!exists && x.image) { await deleteFileDb(x.image as string); }
-    resolve();
-  })));
 }
 
 export function processToDbInput(pageForm: ContentPageLeanInput, textArray: ContentTextDocumentLean[], imageArray: ContentImageSubmit[]
