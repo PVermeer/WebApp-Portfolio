@@ -26,8 +26,9 @@ export class ViewImageDirective implements OnChanges, AfterViewInit {
         this.element.nativeElement.src = reader.result;
       };
       reader.readAsDataURL(response);
-    }, () => { }
-    );
+
+      // On server errors
+    }, () => this.element.nativeElement.src = 'image/svg/production/ic_broken_image_48px.svg');
   }
 
   constructor(

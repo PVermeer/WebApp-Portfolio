@@ -115,7 +115,7 @@
                       </button>
                     </mat-card-header>
 
-                    <img mat-card-image [appPreviewImage]="image.imageSrc" *ngIf="image.image; else noImage">
+                    <img mat-card-image [appViewImage]="image.image" *ngIf="image.image; else noImage">
 
                     <ng-template #noImage>
                       <mat-icon id="no-image" color="warn">broken_image</mat-icon>

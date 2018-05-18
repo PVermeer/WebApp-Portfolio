@@ -22,10 +22,19 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     // Check for error status on incomming responses
     return next.handle(request).catch((responseError: any) => {
+
+      // https://github.com/angular/angular/issues/19888
+      // When request of type Blob, the error is also in Blob instead of object of the json data
+      // Duplicate of #19148
+      if (responseError.error instanceof Blob) {
+        return Observable.throw(responseError.error);
+      }
+
       const error: ErrorMessage = responseError.error;
 
       // Handle errors
       if (responseError instanceof HttpErrorResponse) {
+
         const status = responseError.status;
 
         // Handle some errors special
@@ -61,3 +70,4 @@ export const ErrorInterceptorProvider = {
   useClass: ErrorInterceptor,
   multi: true,
 };
+
