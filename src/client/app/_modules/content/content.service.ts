@@ -17,6 +17,8 @@ export class ContentService {
   public getImageId(title: string, page: ContentPageDocumentLean) {
     if (page) {
       const imageObject = page.images.find(x => x.title === title);
+      if (!imageObject) { return null; }
+
       return imageObject.image as string;
     }
     return null;

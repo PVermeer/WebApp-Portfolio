@@ -13,6 +13,7 @@ const app = express();
 // Middleware
 app.use(compression());
 app.use(express.static(join(__dirname, '../../dist/client')));
+app.use(express.static(join(__dirname, '../../node_modules/material-design-icons')));
 
 // -----------------Routes--------------------
 

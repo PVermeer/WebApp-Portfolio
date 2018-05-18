@@ -1,6 +1,7 @@
 import { Directive, Input, ElementRef, ChangeDetectorRef, OnChanges, AfterViewInit } from '@angular/core';
 import { ContentService } from '../../content/content.service';
 
+
 @Directive({
   selector: '[appViewImage]'
 })
@@ -11,7 +12,11 @@ export class ViewImageDirective implements OnChanges, AfterViewInit {
 
   public showImage() {
 
-    if (!this.appViewImage) { return; }
+    if (!this.appViewImage) {
+      this.element.nativeElement.src = 'image/svg/production/ic_broken_image_48px.svg';
+      return;
+    }
+
     const _id = this.appViewImage;
 
     this.contentService.getImage(_id).subscribe(response => {
@@ -22,7 +27,7 @@ export class ViewImageDirective implements OnChanges, AfterViewInit {
       };
       reader.readAsDataURL(response);
     }, () => { }
-  );
+    );
   }
 
   constructor(
