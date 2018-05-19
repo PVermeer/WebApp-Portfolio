@@ -1,0 +1,154 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body * {
+  box-sizing: border-box;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.container {
+  max-width: 1150px;
+  padding: 10px;
+  width: 100%;
+  align-self: center;
+}
+
+/* ---------Flex box---------- */
+
+.flex1-all>*,
+.flex1 {
+  flex: 1
+}
+
+/* Flex column */
+
+.flex-column-around {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+/* Flex row */
+
+.flex-row-center {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: center;
+}
+.flex-row-between {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-content: center;
+}
+.flex-row-around {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-flow: row wrap;
+  padding: 10px;
+}
+.flex-row-left {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+  align-items: flex-start;
+}
+.flex-row-right {
+  display: flex;
+  width: 100%;
+  flex-flow: row-reverse wrap;
+  align-items: center;
+}
+
+.flex-row-center mat-card,
+.flex-row-between mat-card,
+.flex-row-around mat-card,
+.flex-row-left mat-card,
+.flex-row-right mat-card {
+  min-width: 340px;
+}
+
+/* ----------Columns---------- */
+
+.columnblock {
+  display: block;
+  columns: 2 320px;
+  column-gap: 40px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.columnblock>*,
+.columnblock>div>p {
+  display: block;
+  width: auto;
+  max-width: 500px;
+  margin: 0 auto 20px auto;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* --------------Block------------- */
+
+.block {
+  display: block;
+  width: 100%;
+  margin: 0 auto 20px auto;
+}
+
+/* ----------Material design---------- */
+
+/* Buttons */
+.button-margin>* {
+  margin: 3px !important;
+}
+
+/* Card */
+mat-card {
+  margin: 10px;
+}
+
+/* Form */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-form-field {
+  flex: 1;
+}
+
+.lname {
+  display: none;
+}
+
+/* Cursor settings */
+.mat-slide-toggle-label,
+.mat-slide-toggle-thumb-container,
+.mat-icon-button,
+.mat-checkbox {
+  cursor: default !important;
+}
+
+/* Control */
+
+/* Hide an element (used by CssAnimateInviewService */
+.hide {
+  opacity: 0;
+}

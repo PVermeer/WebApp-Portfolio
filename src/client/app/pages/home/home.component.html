@@ -1,0 +1,9 @@
+<section>
+  <div class="container">
+    <img [appViewImage]="getImageId('Image 1')" class="image">
+    <div *ngFor="let text of (page$ | async)?.texts" appAnimateInview="bounceInLeft">
+      <h3 [id]="text.header">{{ text.header }}</h3>
+      <p>{{ text.text }}</p>
+    </div>
+  </div>
+</section>

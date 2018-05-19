@@ -1,0 +1,14 @@
+.mat-dialog-container {
+  padding: 0 !important;
+}
+
+#progress-wrapper {
+  height: 2px;
+}
+
+mat-progress-bar {
+  position: relative;
+  top: -10px;
+  left: 0;
+  right: 0;
+}

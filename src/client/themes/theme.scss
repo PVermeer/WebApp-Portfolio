@@ -1,0 +1,46 @@
+@import '~@angular/material/theming';
+
+// Import general stylesheets
+@import 'text.css';
+@import 'layout.css';
+@import '~animate.css/animate.css';
+@import "~material-design-icons/iconfont/material-icons.css";
+
+// Import custom component theme files
+@import '../app/sidenav/sidenav.theme';
+@import '../app/_modules/_shared/components/snackbar/snackbar.theme';
+@import '../app/_modules/users/user-management/user-management.theme.scss';
+
+// Include mat-core (only once)
+@include mat-core();
+
+// Primary theme
+$primary-theme-primary: mat-palette($mat-indigo);
+$primary-theme-accent:  mat-palette($mat-deep-orange, A200, A100, A400);
+$primary-theme-warn:    mat-palette($mat-red, 900);
+
+$primary-theme: mat-light-theme($primary-theme-primary, $primary-theme-accent, $primary-theme-warn);
+
+// Secondary theme
+$secondary-theme-primary: mat-palette($mat-blue);
+$secondary-theme-accent:  mat-palette($mat-amber, A200, A100, A400);
+$secondary-theme-warn:    mat-palette($mat-deep-orange);
+
+$secondary-theme:   mat-dark-theme($secondary-theme-primary, $secondary-theme-accent, $secondary-theme-warn);
+
+// Include custom component theme files
+@mixin custom-theme($theme) {
+  @include sidenav($theme);
+  @include snackbar($theme);
+  @include userManagement($theme);
+}
+
+// Default theme (no class applied)
+@include angular-material-theme($primary-theme);
+@include custom-theme($primary-theme);
+
+// Class to enable secondary theme
+.secondary-theme {
+  @include angular-material-theme($secondary-theme);
+  @include custom-theme($secondary-theme);
+}
