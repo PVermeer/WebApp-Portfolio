@@ -1,2 +1,6 @@
 # Set the default behavior, in case people don't have core.autocrlf set.
 * text=auto
+
+# .gitattributes in project root
+package.json text eol=crlf
+package-lock.json text eol=crlf
