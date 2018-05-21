@@ -19,7 +19,7 @@ export class ViewImageDirective implements OnChanges, AfterViewInit {
 
     const _id = this.appViewImage;
 
-    this.contentService.getImage(_id).subscribe(response => {
+    this.contentService.getFile(_id).subscribe(response => {
 
       const reader = new FileReader();
       reader.onload = () => {

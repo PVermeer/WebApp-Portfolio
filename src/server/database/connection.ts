@@ -2,14 +2,15 @@ import { connect, connection } from 'mongoose';
 import { NextFunction, Request, Response } from 'express';
 import * as multer from 'multer';
 import { diskStorage } from 'multer';
+import { GridFSBucket } from 'mongodb';
 
 import { config } from '../services/server.service';
 import { ErrorMessage } from '../types/types';
-import { GridFSBucket } from 'mongodb';
+import { app } from '../server';
 
 // ---------------- Mongoose connection ---------------
 
-let connectionFlag = true;
+let connectionFlag = false;
 const options = {
   reconnectTries: Number.MAX_VALUE,
   reconnectInterval: 2000, // Reconnect every 2s
@@ -22,7 +23,6 @@ const connectWithRetry = () => {
   connect(config.mongoDb, options).then(
     () => {
       connectionFlag = true;
-      console.log('Mongoose default connection ready to use.');
     }, err => {
       connectionFlag = false;
       console.log(`\nWhoops, cannot connect to MongoDb at server start:\n\n${err}\n\nWill try again in 5 seconds!\n`);
@@ -34,9 +34,10 @@ const connectWithRetry = () => {
 };
 connectWithRetry();
 
-connection.on('connected', () => {
+connection.on('open', () => {
   connectionFlag = true;
   console.log('Mongoose default connection open');
+  app.emit('ready');
 });
 
 connection.on('error', err => {
@@ -57,6 +58,7 @@ process.on('SIGINT', () => {
   });
 });
 
+// Connection middleware
 export function DbConnectionError(_req: Request, res: Response, next: NextFunction): void | Response {
 
   if (!connectionFlag) { return res.status(error.status).send(error); }
@@ -67,16 +69,14 @@ export function DbConnectionError(_req: Request, res: Response, next: NextFuncti
 // ---------------- GridFs connection ---------------------
 
 export let gridFsBucket: GridFSBucket;
-connection.once('open', () => {
+connection.once('connected', () => {
   gridFsBucket = new GridFSBucket(connection.db, { bucketName: 'content' });
   console.log('GridFsBucket connection open');
 });
 
 export const upload = multer({
   storage: diskStorage({
-    destination: './_temp/content-uploads',
-    filename: (_req, file, cb) => {
-      cb(null, file.originalname);
-    }
+    destination: config.uploadDir,
+    filename: (_req, file, cb) => cb(null, file.originalname)
   })
 });

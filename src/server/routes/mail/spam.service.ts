@@ -13,9 +13,9 @@ let spamCount = 0;
 let logCount = 0;
 const maxSpamCount = 10; // Before sending a report
 const maxLogCount = 100; // Before deleting
-const spamLog = './server/dist/mail/logs/spam-mail.log';
-const spamLogOld = './server/dist/mail/logs/spam-mail_old.log';
-const spamLogDir = './server/dist/mail/logs';
+const spamLogDir = config.logDir;
+const spamLog = spamLogDir + 'spam-mail.log';
+const spamLogOld = spamLogDir + 'spam-mail_old.log';
 
 // Report time-out
 function flagTimeOut(): void {

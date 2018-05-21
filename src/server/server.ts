@@ -7,8 +7,11 @@ import { errorHandler } from './services/error-handler.service';
 import { mail } from './routes/mail/mail.routes';
 import { users } from './routes/users/users.routes';
 import { content } from './routes/content/content.routes';
+import { startUpServer } from './services/server.service';
 
-const app = express();
+startUpServer();
+
+export const app = express();
 
 // Middleware
 app.use(compression());
@@ -32,7 +35,7 @@ app.use(errorHandler);
 
 // Start server
 const port = process.env.PORT || 8080;
-app.listen(port);
-
-// tslint:disable-next-line:no-console
-console.log(`Listening to port ${port}`);
+app.on('ready', () => {
+  app.listen(port);
+  console.log(`Listening to port ${port}`);
+});

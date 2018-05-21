@@ -21,8 +21,8 @@ export function contentPageGetAll(_req: Request, res: Response, next: NextFuncti
     .then(result => res.json(result))
     .catch(error => next(error));
 }
-export function getImage(req: Request, res: Response, next: NextFunction): void {
-  contentService.getImage(req, res)
+export function getFile(req: Request, res: Response, next: NextFunction): void {
+  contentService.getFile(req, res)
     .catch(error => next(error));
 }
 export function getPage(req: Request, res: Response, next: NextFunction): void {

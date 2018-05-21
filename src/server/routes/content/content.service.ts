@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import {
-  updateContentPage, findAllContentPagesLean, contentImage, saveContentPage, findContentPageLean, deleteContentPage
+  updateContentPage, findAllContentPagesLean, contentFile, saveContentPage, findContentPageLean, deleteContentPage
 } from './content.database';
 import {
   pageUpdateSuccess, saveError, updateErrorDetected, pageSaveSuccess, deleteSuccess, findError,
@@ -72,19 +72,18 @@ export async function contentPageGetAll() {
   return allPages;
 }
 
-export async function getImage(req: Request, res: Response) {
+export async function getFile(req: Request, res: Response) {
 
   const _id = req.query.id;
 
-  await contentImage(_id, res)
+  await contentFile(_id, res)
     .catch(() => { throw findError; });
-
 }
 
 export function getPage(req: Request) {
 
   const { title } = req.query;
 
-  return findContentPageLean({ title }, { _id: 0 });
+  return findContentPageLean({ title });
 
 }

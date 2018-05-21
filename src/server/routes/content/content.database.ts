@@ -1,5 +1,5 @@
 import { gridFsBucket } from '../../database/connection';
-import { createReadStream, unlink } from 'fs';
+import { createReadStream, unlink, createWriteStream, existsSync, stat } from 'fs';
 import { Response } from 'express';
 import {
   ContentPageModel, GridFsDocument, ContentQuery, ContentFetch, ContentPageDocumentLean
@@ -8,7 +8,7 @@ import { ContentPage } from '../../database/models/content/content.schema';
 import { saveError, deleteError, findError } from '../../services/error-handler.service';
 import { QueryResult } from './content.types';
 import { ObjectId } from 'mongodb';
-
+import { config } from '../../services/server.service';
 
 // GridFs upload
 export async function uploadFiles(files: Express.Multer.File[]) {
@@ -39,9 +39,11 @@ export async function uploadFiles(files: Express.Multer.File[]) {
 
 // GridFs delete
 export function deleteFileDb(_id: string): Promise<boolean> {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
 
     const id = new ObjectId(_id);
+
+    if (existsSync(config.cacheDirFiles + _id)) { unlink(config.cacheDirFiles + _id, () => { }); }
 
     gridFsBucket.delete(id, (error) => {
       if (error) { reject(deleteError); }
@@ -51,19 +53,41 @@ export function deleteFileDb(_id: string): Promise<boolean> {
 }
 
 // GridFs image
-export function contentImage(_id: string, res: Response): Promise<void> {
+export function contentFile(_id: string, res: Response): Promise<void> {
   return new Promise((resolve, reject) => {
 
-    const id = new ObjectId(_id);
+    stat(config.cacheDirFiles + _id, (error, stats) => {
 
-    const readStream = gridFsBucket.openDownloadStream(id);
-    readStream.pipe(res);
+      if (error || stats.size === 0) { return isNotCached(); }
 
-    readStream.on('error', error => reject(error));
-    readStream.on('file', file => res.contentType(file.contentType));
-    readStream.on('close', () => resolve());
+      return isCached();
+    });
+
+    function isCached() {
+
+      const readStreamFs = createReadStream(config.cacheDirFiles + _id);
+      readStreamFs.pipe(res);
+
+      readStreamFs.on('error', error => { console.log(error); reject(error); });
+      readStreamFs.on('file', file => res.contentType(file.contentType));
+      readStreamFs.on('close', () => resolve());
+    }
+
+    function isNotCached() {
+
+      const id = new ObjectId(_id);
+
+      const readStream = gridFsBucket.openDownloadStream(id);
+      const writeStreamFs = createWriteStream(config.cacheDirFiles + id);
+
+      readStream.pipe(writeStreamFs);
+      readStream.pipe(res);
+
+      readStream.on('error', error => reject(error));
+      readStream.on('file', file => res.contentType(file.contentType));
+      readStream.on('close', () => resolve());
+    }
   });
-
 }
 
 // Save

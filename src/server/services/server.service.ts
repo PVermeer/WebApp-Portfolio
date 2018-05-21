@@ -1,25 +1,8 @@
+import * as rimraf from 'rimraf';
+import * as mkdirp from 'mkdirp';
+import { Config } from '../types/types';
 
-interface Config {
-  appName: string;
-  mongoDb: string;
-  secret1: string;
-  secret2: string;
-  loginTokenExpires: string;
-  refreshTokenExpires: string;
-  verificationTokenExpires: string;
-  passwordRecoveryTokenExpires: string;
-  emailTo: string;
-  gmailConfig: {
-    host: string;
-    port: number;
-    secure: boolean;
-    auth: {
-      user: string;
-      pass: string;
-    }
-  };
-}
-
+// ----------------- Config file ---------------------
 let config: Config;
 try {
   config = require('../../../config.json');
@@ -27,4 +10,34 @@ try {
   console.log('Config file missing');
   config = require('../../../config_dummy.json');
 }
-export { config };
+
+config.maxDiskCache = convertDayToMs(config.maxDiskCache);
+const configReadOnly: Readonly<Config> = Object.freeze(config);
+
+export { configReadOnly as config };
+
+
+// ------------------ Functions ----------------
+export function startUpServer() {
+
+  try {
+    rimraf.sync(config.cacheDir);
+
+    mkdirp.sync(config.tempDir);
+    mkdirp.sync(config.cacheDir);
+    mkdirp.sync(config.cacheDirFiles);
+    mkdirp.sync(config.cacheDirJson);
+    mkdirp.sync(config.uploadDir);
+
+  } catch (error) {
+
+    setTimeout(() => {
+      startUpServer();
+    }, 1000
+    );
+  }
+}
+
+function convertDayToMs(day: number) {
+  return day * 24 * 60 * 60 * 1000;
+}

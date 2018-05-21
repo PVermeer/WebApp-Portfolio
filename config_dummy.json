@@ -16,5 +16,12 @@
       "user": "",
       "pass": ""
     }
-  }
+  },
+  "tempDir": "",
+  "cacheDir": "",
+  "cacheDirFiles": "",
+  "cacheDirJson": "",
+  "uploadDir": "",
+  "spamLogDir": "",
+  "maxDiskCache": 0
 }
