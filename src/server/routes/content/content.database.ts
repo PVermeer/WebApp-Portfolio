@@ -8,7 +8,7 @@ import { ContentPage } from '../../database/models/content/content.schema';
 import { saveError, deleteError, findError } from '../../services/error-handler.service';
 import { QueryResult } from './content.types';
 import { ObjectId } from 'mongodb';
-import { config } from '../../services/server.service';
+import { config, appRoot } from '../../services/server.service';
 
 // GridFs upload
 export async function uploadFiles(files: Express.Multer.File[]) {
@@ -65,10 +65,10 @@ export function contentFile(_id: string, res: Response): Promise<void> {
 
     function isCached() {
 
-      const readStreamFs = createReadStream(config.cacheDirFiles + _id);
+      const readStreamFs = createReadStream(appRoot + config.cacheDirFiles + _id);
       readStreamFs.pipe(res);
 
-      readStreamFs.on('error', error => { console.log(error); reject(error); });
+      readStreamFs.on('error', error => reject(error));
       readStreamFs.on('file', file => res.contentType(file.contentType));
       readStreamFs.on('close', () => resolve());
     }
@@ -78,7 +78,7 @@ export function contentFile(_id: string, res: Response): Promise<void> {
       const id = new ObjectId(_id);
 
       const readStream = gridFsBucket.openDownloadStream(id);
-      const writeStreamFs = createWriteStream(config.cacheDirFiles + id);
+      const writeStreamFs = createWriteStream(appRoot + config.cacheDirFiles + id);
 
       readStream.pipe(writeStreamFs);
       readStream.pipe(res);

@@ -4,7 +4,7 @@ import * as multer from 'multer';
 import { diskStorage } from 'multer';
 import { GridFSBucket } from 'mongodb';
 
-import { config } from '../services/server.service';
+import { config, appRoot } from '../services/server.service';
 import { ErrorMessage } from '../types/types';
 import { app } from '../server';
 
@@ -76,7 +76,7 @@ connection.once('connected', () => {
 
 export const upload = multer({
   storage: diskStorage({
-    destination: config.uploadDir,
+    destination: appRoot + config.uploadDir,
     filename: (_req, file, cb) => cb(null, file.originalname)
   })
 });

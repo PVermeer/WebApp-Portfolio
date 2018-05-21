@@ -2,11 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { createHash } from 'crypto';
 import { writeFile, unlink } from 'fs';
 import { Glob } from 'glob';
-import { join } from 'path';
-import * as rimraf from 'rimraf';
-import * as mkdirp from 'mkdirp';
 
-import { config, startUpServer } from './server.service';
+import { config, startUpServer, appRoot } from './server.service';
 
 // Cache headers middleware
 export function disableCache(_req: Request, res: Response, next: NextFunction) {
@@ -22,22 +19,23 @@ export function disableCache(_req: Request, res: Response, next: NextFunction) {
 export function cacheJson(req: Request, res: Response, next: NextFunction) {
 
   const hash = createHash('sha1').update(req.url).digest('base64');
+  const find = appRoot + config.cacheDirJson + hash + '-' + '*.json';
 
-  return new Glob(config.cacheDirJson + hash + '-' + '*.json', (error, matches) => {
+  return new Glob(find, (error, matches) => { // Matches returns full path
 
     if (error || !matches[0]) { return isNotCached(); }
     if (matches[0]) { return isCached(matches[0]); }
   });
 
+
   function isNotCached() {
 
     const original = res.json;
     const expires = Date.now() + config.maxDiskCache;
-    const newFile = config.cacheDirJson + hash + '-' + expires + '.json';
+    const newFile = appRoot + config.cacheDirJson + hash + '-' + expires + '.json';
 
     function jsonHook(this: any, json: any) {
 
-      json.cache = { expires: Date.now() + config.maxDiskCache };
       writeFile(newFile, JSON.stringify(json), () => { });
 
       return original.call(this, json);
@@ -52,16 +50,16 @@ export function cacheJson(req: Request, res: Response, next: NextFunction) {
     const expires = Number((file.split('-')[1]).split('.')[0]);
 
     if (Date.now() > expires) {
-      unlink(file, () => {});
+      unlink(file, () => { });
       return isNotCached();
     }
 
-    return res.sendFile(join(__dirname, '../../../' + file));
+    return res.sendFile(file);
   }
 }
 
 // Cache json clear middleware
-export function clearCache(_req: Request, res: Response, next: NextFunction) {
+export function clearCache(_req: Request, _res: Response, next: NextFunction) {
 
   startUpServer();
 
