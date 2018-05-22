@@ -13,7 +13,7 @@ export class ContentService {
   /**
    * Find the id of an image title in page document.
    * @param title Search value
-   * @returns The id of and image
+   * @returns The id of an image
    */
   public getImageId(title: string, page: ContentPageDocumentLean) {
     if (page) {

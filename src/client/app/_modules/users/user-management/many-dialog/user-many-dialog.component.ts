@@ -51,27 +51,27 @@ export class UserManyDialogComponent {
     switch (this.action) {
 
       case 'deleteUser':
-        response = await this.userService.deleteUserMany(this.id).first().toPromise()
+        response = await this.userService.deleteUserMany(this.id).toPromise()
           .catch(() => { data = this.errorHandler(); });
         break;
 
       case 'blockUser':
-        response = await this.userService.blockUserMany(this.id).first().toPromise()
+        response = await this.userService.blockUserMany(this.id).toPromise()
           .catch(() => { data = this.errorHandler(); });
         break;
 
       case 'unblockUser':
-        response = await this.userService.unblockUserMany(this.id).first().toPromise()
+        response = await this.userService.unblockUserMany(this.id).toPromise()
           .catch(() => { data = this.errorHandler(); });
         break;
 
       case 'makeAdmin':
-        response = await this.userService.makeAdminMany(this.id).first().toPromise()
+        response = await this.userService.makeAdminMany(this.id).toPromise()
           .catch((err) => { data = this.errorHandler(); error = err; });
         break;
 
       case 'makeUser':
-        response = await this.userService.makeUserMany(this.id).first().toPromise()
+        response = await this.userService.makeUserMany(this.id).toPromise()
           .catch((err) => { data = this.errorHandler(); error = err; });
         break;
 

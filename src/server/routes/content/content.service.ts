@@ -11,6 +11,7 @@ import {
   uploadImageHandler, deleteOldFromDb, updateContentErrorHandler, prepareArray, processToDbInput
 } from './content.helpers';
 import { RequestId } from '../../types/types';
+import { startUpServer } from '../../services/server.service';
 
 
 export async function contentPageNew(req: Request) {
@@ -49,9 +50,8 @@ export async function contentPageUpdate(req: Request) {
     // On errors revert back
     .catch(async error => await updateContentErrorHandler(fileArray, error));
 
-  if (result && result.ok !== 1) { throw saveError; }
-
-  if (fileArray && fileArray.some(x => !x)) { throw updateErrorDetected; }
+  if (result && result.ok !== 1) { startUpServer(); throw saveError; }
+  if (fileArray && fileArray.some(x => !x)) { startUpServer(); throw updateErrorDetected; }
 
   return pageUpdateSuccess;
 }

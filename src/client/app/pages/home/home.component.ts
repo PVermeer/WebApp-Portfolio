@@ -4,7 +4,7 @@ import { SidenavService } from '../../sidenav/sidenav.service';
 import { SidenavContent, MatToggle, MatToggleExp } from '../../sidenav/sidenav.types';
 import { ContentService } from '../../_modules/content/content.service';
 import { ContentPageDocumentLean } from '../../../../server/database/models/content/content.types';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.contentService.getContentPage(this.title).subscribe(response => {
 
-      this.page$ = Observable.of(response as ContentPageDocumentLean);
+      this.page$ = of(response as ContentPageDocumentLean);
       this.page = response;
 
       // Sidenav config

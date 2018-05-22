@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
-import './modules/rxjs.module';
 import { MaterialModule } from './modules/material.module';
 import { SnackbarComponent } from './components/snackbar/snackbar.component';
 import { PreviewImageDirective } from './directives/preview-image.directive';

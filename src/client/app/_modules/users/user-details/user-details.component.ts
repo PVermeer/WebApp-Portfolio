@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { MatDialog, MatSlideToggle } from '@angular/material';
 
 import { UserService } from '.././user.service';
@@ -42,7 +42,7 @@ export class UserDetailsComponent implements OnInit {
     this.userService.userInfo().subscribe((response) => {
       this.user = response;
 
-      this.userFormFields = Observable.of([
+      this.userFormFields = of([
         {
           label: 'First name',
           placeholder: response.firstName,

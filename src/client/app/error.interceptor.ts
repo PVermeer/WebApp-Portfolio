@@ -1,6 +1,7 @@
-﻿import { Injectable } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
 
 import { SnackbarComponent } from './_modules/_shared/components/snackbar/snackbar.component';
 import { UserService } from './_modules/users/user.service';
@@ -21,13 +22,14 @@ export class ErrorInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     // Check for error status on incomming responses
-    return next.handle(request).catch((responseError: any) => {
+    return next.handle(request).pipe(catchError((responseError: any) => {
 
       // https://github.com/angular/angular/issues/19888
       // When request of type Blob, the error is also in Blob instead of object of the json data
       // Duplicate of #19148
+      // On angular v. 5.2.0
       if (responseError.error instanceof Blob) {
-        return Observable.throw(responseError.error);
+        return throwError(responseError.error);
       }
 
       const error: ErrorMessage = responseError.error;
@@ -60,8 +62,8 @@ export class ErrorInterceptor implements HttpInterceptor {
       if (error.message) { consoleError = error.message; } else { consoleError = error; }
 
       console.error(consoleError);
-      return Observable.throw(error);
-    });
+      return throwError(error);
+    }));
   }
 
 }

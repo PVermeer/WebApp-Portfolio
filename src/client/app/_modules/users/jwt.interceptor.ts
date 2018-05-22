@@ -1,6 +1,7 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { UserDocumentLean } from '../../../../server/database/models/users/user.types';
 
@@ -40,7 +41,7 @@ export class JwtInterceptor implements HttpInterceptor {
     }
 
     // Check for new tokens on incomming responses
-    return next.handle(request).map((response: HttpEvent<any>) => {
+    return next.handle(request).pipe(map((response: HttpEvent<any>) => {
       if (response instanceof HttpResponse) {
 
         // Get tokens from headers
@@ -60,7 +61,7 @@ export class JwtInterceptor implements HttpInterceptor {
         }
       }
       return response;
-    });
+    }));
   }
 }
 

@@ -1,5 +1,7 @@
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { timer } from 'rxjs';
+import { switchMap, map, catchError } from 'rxjs/operators';
+
 import { ErrorMessage } from '../../../../../server/types/types';
 
 export interface UsernameAsyncValidatorOptions {
@@ -36,11 +38,11 @@ export class UsernameAsyncValidator {
         resolve(null);
       });
     }
-    return Observable.timer(this.options.debounceTime).switchMap(() => {
-      return this.options.service.checkUsername(value).map((response: boolean) => {
+    return timer(this.options.debounceTime).pipe(switchMap(() => {
+      return this.options.service.checkUsername(value).pipe(map((response: boolean) => {
         if (response) { return 'true'; }
         return null;
-      }).catch((error: ErrorMessage) => { throw error; });
-    });
+      }), catchError((error: ErrorMessage) => { throw error; }));
+    }));
   }
 }

@@ -16,10 +16,10 @@ export async function uploadFiles(files: Express.Multer.File[]) {
   const promises = await Promise.all(files.map(x => new Promise((resolve, reject) => {
 
     const writeStream = gridFsBucket.openUploadStream(x.filename, { contentType: x.mimetype });
-    const readStream = createReadStream('./' + x.path);
-    readStream.pipe(writeStream);
+    const readStreamFs = createReadStream(x.path);
+    readStreamFs.pipe(writeStream);
 
-    readStream.on('error', error => reject(error));
+    readStreamFs.on('error', error => reject(error));
     writeStream.on('error', error => reject(error));
 
     writeStream.on('finish', (file: GridFsDocument) => {
@@ -56,7 +56,7 @@ export function deleteFileDb(_id: string): Promise<boolean> {
 export function contentFile(_id: string, res: Response): Promise<void> {
   return new Promise((resolve, reject) => {
 
-    stat(config.cacheDirFiles + _id, (error, stats) => {
+    stat(appRoot + config.cacheDirFiles + _id, (error, stats) => {
 
       if (error || stats.size === 0) { return isNotCached(); }
 

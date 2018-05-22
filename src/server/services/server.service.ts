@@ -26,6 +26,7 @@ export function startUpServer() {
 
   try {
     rimraf.sync(appRoot + config.cacheDir);
+    rimraf.sync(appRoot + config.uploadDir);
 
     mkdirp.sync(appRoot + config.tempDir);
     mkdirp.sync(appRoot + config.cacheDir);

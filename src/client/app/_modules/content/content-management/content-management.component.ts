@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material';
 import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
 import { ContentService } from '../content.service';
 import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { NewPageComponent } from './new-page/new-page.component';
 import { ContentPageDocumentExt, ContentPageLeanSubmit, ContentTextExt, ContentImageExt } from './content-management.types.d';
 import { ContentPageDocumentLean } from '../../../../../server/database/models/content/content.types';
@@ -69,7 +69,7 @@ export class ContentManagementComponent {
       });
 
       // Pages as observable along with the FormGroup
-      this.pages = Observable.of(newArray as ContentPageDocumentExt[]);
+      this.pages = of(newArray as ContentPageDocumentExt[]);
       this.pagesResponse = newArray as ContentPageDocumentExt[];
       this.initFlag = false;
 

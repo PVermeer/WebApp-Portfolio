@@ -1,6 +1,5 @@
 import { Directive, ElementRef, Input, AfterViewInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+import { Subscription, fromEvent } from 'rxjs';
 
 @Directive({
   selector: '[appPagePathHighlight]'
@@ -44,7 +43,7 @@ export class PagePathHighlightDirective implements AfterViewInit, OnDestroy {
   ) { }
 
   ngAfterViewInit() {
-    this.scrollEvents = Observable.fromEvent(document.getElementById('sidenav-content'), 'scroll').subscribe(() => {
+    this.scrollEvents = fromEvent(document.getElementById('sidenav-content'), 'scroll').subscribe(() => {
       this.elementInView();
     });
     // Run once
