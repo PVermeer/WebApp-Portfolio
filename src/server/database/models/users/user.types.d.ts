@@ -2,15 +2,17 @@ import { Document } from 'mongoose';
 
 
 export interface UserType {
-  rank: number;
-  value: string;
+  readonly rank: number;
+  readonly value: string;
 }
 export interface UserTypes {
-  blockedUser: UserType;
-  tempUser: UserType;
-  user: UserType;
-  admin: UserType;
-  superAdmin: UserType;
+  readonly blockedUser: UserType;
+  readonly notLoggedIn: UserType,
+  readonly tempUser: UserType;
+  readonly user: UserType;
+  readonly admin: UserType;
+  readonly superAdmin: UserType;
+  readonly developer: UserType;
 }
 
 // Input

@@ -1,23 +1,26 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable ,  Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-
-import { SnackbarComponent } from '../_shared/components/snackbar/snackbar.component';
-import { DialogComponent } from '../_shared/components/dialog/dialog.component';
-import { UserDialogComponent } from './user-dialog/user-dialog.component';
+import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  UserDocumentLean, UserLogin, UserModel, UserRegister, UserType, UserUpdate
+} from '../../../../server/database/models/users/user.types';
 import { PasswordRecovery } from '../../../../server/routes/users/users.types';
-import { UserLogin, UserRegister, UserModel, UserUpdate, UserDocumentLean } from '../../../../server/database/models/users/user.types';
-
-interface UserType { rank: number; value: string; }
+import { DialogComponent } from '../_shared/components/dialog/dialog.component';
+import { SnackbarComponent } from '../_shared/components/snackbar/snackbar.component';
+import { CurrentUser } from './jwt.interceptor';
+import { UserDialogComponent } from './user-dialog/user-dialog.component';
 
 @Injectable()
 export class UserService {
 
   // Variables
-  private isLoggedInSource = new Subject<boolean>();
-  private userTypeSource = new Subject<UserType>();
+  private notLoggedIn: UserType = { rank: 0, value: 'not logged in' };
+
+  // Observable
+  private isLoggedInSource = new BehaviorSubject<boolean>(false);
+  private userTypeSource = new BehaviorSubject<UserType>(this.notLoggedIn);
 
   public isLoggedIn$ = this.isLoggedInSource.asObservable();
   public userType$ = this.userTypeSource.asObservable();
@@ -78,14 +81,18 @@ export class UserService {
     });
   })
 
-  public passLoginStatus(isLoggedIn: boolean) { this.isLoggedInSource.next(isLoggedIn); }
+  public passLoginStatus(isLoggedIn: boolean) {
 
-  public passUserType(): void | null {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) { return null; }
-
+    const currentUser: CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser || !isLoggedIn) {
+      this.userTypeSource.next(this.notLoggedIn);
+      this.isLoggedInSource.next(false);
+      return;
+    }
     const userType = currentUser.payload.type;
+
     this.userTypeSource.next(userType);
+    this.isLoggedInSource.next(isLoggedIn);
   }
 
   // Backend http requests

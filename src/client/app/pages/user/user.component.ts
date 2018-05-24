@@ -1,8 +1,9 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
-
-import { MatToggle, MatToggleExp, SidenavContent } from '../../sidenav/sidenav.types';
-import { SidenavService } from '../../sidenav/sidenav.service';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { UserType } from '../../../../server/database/models/users/user.types';
 import { UserService } from '../../_modules/users/user.service';
+import { SidenavService } from '../../sidenav/sidenav.service';
+import { MatToggle, MatToggleExp, SidenavContent } from '../../sidenav/sidenav.types';
 
 @Component({
   selector: 'app-user',
@@ -10,10 +11,13 @@ import { UserService } from '../../_modules/users/user.service';
   styleUrls: ['./user.component.css'],
   providers: [],
 })
-export class UserComponent implements OnInit, AfterViewInit {
+export class UserComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Variables
+  private userType: UserType;
   public isAdmin = false;
+
+  private subscriptions = new Subscription;
 
   // Sidenav config
   private sidenavToggle: MatToggle = 'open';
@@ -27,20 +31,33 @@ export class UserComponent implements OnInit, AfterViewInit {
     ],
   }];
 
+  // Methods
   public logout() { this.userService.logout(); }
 
+  private applyUsertype() {
+    if (this.userType.rank > 2) {
+      this.sidenavContent[0].items.unshift({ label: 'Admin panel', path: 'admin' });
+      this.isAdmin = true;
+    }
+  }
+
+  // Life cycle
   constructor(
     private sidenavService: SidenavService,
     private userService: UserService,
   ) {
     // User type
-    this.getUsertype();
+    const subscription = this.userService.userType$.subscribe(type => {
+      this.userType = type;
+    });
+    this.subscriptions.add(subscription);
   }
 
   ngOnInit() {
     // Sidenav config
     this.sidenavService.passSidenavContent(this.sidenavContent);
     this.sidenavService.passExpansionToggle(this.expansionToggle);
+    this.applyUsertype();
   }
 
   ngAfterViewInit() {
@@ -48,17 +65,8 @@ export class UserComponent implements OnInit, AfterViewInit {
     this.sidenavService.passSidenavToggle(this.sidenavToggle);
   }
 
-  // ---------------------------------------------------------------------------
-
-  // Constructor methods
-  private getUsertype() {
-    this.userService.userType$.subscribe(type => {
-      if (type.rank > 1) {
-        this.sidenavContent[0].items.unshift({ label: 'Admin panel', path: 'admin' });
-        this.isAdmin = true;
-      }
-    });
-    this.userService.passUserType();
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
 }

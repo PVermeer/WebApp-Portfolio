@@ -1,19 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatDialog, MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
-
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { Subscription } from 'rxjs';
+import { UserType } from '../../../../../server/database/models/users/user.types';
+import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
+import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
 import { UserService } from '../user.service';
 import { UserManyDialogComponent } from './many-dialog/user-many-dialog.component';
-import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
-import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
-import { CurrentUser } from '../jwt.interceptor';
+
 
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css']
 })
-export class UserManagementComponent implements OnInit {
+export class UserManagementComponent implements OnInit, OnDestroy {
 
   // Get elements
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -26,7 +27,7 @@ export class UserManagementComponent implements OnInit {
   public progressBar = false;
   public disableButtons = false;
   public searchInput: string;
-  private currentUser: CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
+  private userType: UserType;
 
   public columnsToDisplay = ['select', 'username', 'firstName', 'lastName', 'type', 'email', 'created_at'];
   public options = [
@@ -34,6 +35,8 @@ export class UserManagementComponent implements OnInit {
     { action: 'blockUser', view: 'Block user(s)' },
     { action: 'unblockUser', view: 'Unblock user(s)' },
   ];
+
+  private subscription = new Subscription;
 
   // Methods
   private getUsers() {
@@ -162,6 +165,11 @@ export class UserManagementComponent implements OnInit {
     private snackbarComponent: SnackbarComponent,
     public matDialog: MatDialog,
   ) {
+    const subscription = this.userService.userType$.subscribe(type => {
+      this.userType = type;
+    });
+    this.subscription.add(subscription);
+
     this.getUsers();
   }
 
@@ -171,10 +179,14 @@ export class UserManagementComponent implements OnInit {
     this.dataSource.sort = this.sort;
 
     // Add features if SuperAdmin
-    if (this.currentUser.payload.type.rank > 2) {
+    if (this.userType.rank > 3) {
       this.options.push({ action: 'makeAdmin', view: 'Promote to admin' });
       this.options.push({ action: 'makeUser', view: 'Demote to user' });
     }
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
 }

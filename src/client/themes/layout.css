@@ -135,7 +135,7 @@ mat-form-field {
 }
 
 .lname {
-  display: none;
+  display: none !important;
 }
 
 /* Cursor settings */

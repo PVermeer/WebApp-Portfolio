@@ -70,7 +70,7 @@ export async function logIn(req: Request, res: Response) {
   const user = await findUserLean({ email: loginForm.email }) as UserDocumentLean;
 
   if (user.type.rank < 0) { throw blockedError; }
-  if (user.type.rank < 1) { throw mailVerifyError; }
+  if (user.type.rank ===  userTypes.tempUser.rank) { throw mailVerifyError; }
 
   const password = await comparePasswords(loginForm.password, user.password);
   if (!password) { throw loginError; }
@@ -153,7 +153,7 @@ export async function passwordRecovery(req: RequestId | ReqQuery) {
   if (request._id) { query._id = req.body.id; }
 
   const user = await findUserLean(query) as UserDocumentLean;
-  if (user.type.rank < 1) { throw mailVerifyError; }
+  if (user.type.rank === userTypes.tempUser.rank) { throw mailVerifyError; }
 
   const verificationToken = createVerificationToken(user);
 

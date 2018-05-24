@@ -1,5 +1,6 @@
-import { Directive, Input, ElementRef, ChangeDetectorRef, OnChanges, AfterViewInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Directive, ElementRef, Input, OnChanges } from '@angular/core';
 import { ContentService } from '../../content/content.service';
+
 
 
 @Directive({
@@ -7,9 +8,10 @@ import { ContentService } from '../../content/content.service';
 })
 export class ViewImageDirective implements OnChanges, AfterViewInit {
 
+  // Variables
   @Input('appViewImage') appViewImage: string;
-  private element: ElementRef;
 
+  // Methods
   public showImage() {
 
     if (!this.appViewImage) {
@@ -31,8 +33,9 @@ export class ViewImageDirective implements OnChanges, AfterViewInit {
     }, () => this.element.nativeElement.src = 'image/svg/production/ic_broken_image_48px.svg');
   }
 
+  // Lifecycle
   constructor(
-    element: ElementRef,
+    private element: ElementRef,
     private changeDetectorRef: ChangeDetectorRef,
     private contentService: ContentService,
   ) {

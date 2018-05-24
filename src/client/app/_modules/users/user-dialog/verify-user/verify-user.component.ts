@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { DialogComponent, DialogContent } from '../../../_shared/components/dialog/dialog.component';
 import { UserService } from '../../user.service';
 
@@ -11,10 +11,12 @@ import { UserService } from '../../user.service';
   templateUrl: './verify-user.component.html',
   styleUrls: ['./verify-user.component.css']
 })
-export class VerifyUserComponent {
+export class VerifyUserComponent implements OnDestroy {
 
   // Variables
   private token: string;
+
+  private subscription = new Subscription;
 
   // Methods
   public verifyEmail() {
@@ -23,7 +25,7 @@ export class VerifyUserComponent {
     this.userService.verifyEmail(this.token).subscribe(response => {
 
       // Open the dialog
-      const data: DialogContent = { dialogData: { title: response, body: '', button: 'Cool!' }};
+      const data: DialogContent = { dialogData: { title: response, body: '', button: 'Cool!' } };
       const verifyDialog = this.matDialog.open(DialogComponent, { data, disableClose: true, });
 
       // Redirect
@@ -32,7 +34,7 @@ export class VerifyUserComponent {
       // Catch errors
     }, (error) => {
       // Open the dialog
-      const data: DialogContent = { dialogData: { title: 'Something went wrong', body: error.message, button: 'Hmmmm...', }};
+      const data: DialogContent = { dialogData: { title: 'Something went wrong', body: error.message, button: 'Hmmmm...', } };
       const verifyDialog = this.matDialog.open(DialogComponent, { data, disableClose: true });
 
       // Redirect
@@ -40,6 +42,7 @@ export class VerifyUserComponent {
     });
   }
 
+  // Life cycle
   constructor(
     private matDialog: MatDialog,
     private router: Router,
@@ -47,12 +50,16 @@ export class VerifyUserComponent {
     private route: ActivatedRoute,
   ) {
     // Get token from url
-    this.route.queryParamMap.subscribe(params => {
+    const subscription = this.route.queryParamMap.subscribe(params => {
       this.token = params.get('user');
     });
-
+    this.subscription.add(subscription);
     // Verify e-mail
     this.verifyEmail();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
 }

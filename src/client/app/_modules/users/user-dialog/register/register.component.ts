@@ -6,7 +6,6 @@ import { UserService } from '../.././user.service';
 import { AppValidators } from '../../custom.validators';
 import { UserDialogComponent } from '../user-dialog.component';
 
-
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -89,17 +88,7 @@ export class RegisterComponent {
 
   public closeDialog() { this.dialogComponent.matDialog.close(); }
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private userService: UserService,
-    private userDialogComponent: UserDialogComponent,
-    private dialogComponent: DialogComponent,
-  ) {
-    // Form validation
-    this.registerForm = this.validateRegister();
-  }
-
-  // Constructor methods
+  // Form validation
   private validateRegister() {
     return this.formBuilder.group({
       firstName: ['asd', [
@@ -143,6 +132,16 @@ export class RegisterComponent {
         AppValidators.matchControl('password'),
       ]],
     });
+  }
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private userService: UserService,
+    private userDialogComponent: UserDialogComponent,
+    private dialogComponent: DialogComponent,
+  ) {
+    // Form validation
+    this.registerForm = this.validateRegister();
   }
 
 }

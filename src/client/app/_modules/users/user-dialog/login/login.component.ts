@@ -1,19 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-
-import { UserService } from '../.././user.service';
-import { SnackbarComponent } from '../../../_shared/components/snackbar/snackbar.component';
-import { DialogComponent, DialogContent } from '../../../_shared/components/dialog/dialog.component';
-import { UserDialogComponent } from '../user-dialog.component';
 import { UserLogin } from '../../../../../../server/database/models/users/user.types';
+import { DialogComponent, DialogContent } from '../../../_shared/components/dialog/dialog.component';
+import { SnackbarComponent } from '../../../_shared/components/snackbar/snackbar.component';
+import { UserService } from '../.././user.service';
+import { UserDialogComponent } from '../user-dialog.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
   // Variables
   public loginForm: FormGroup;
@@ -126,29 +125,7 @@ export class LoginComponent implements OnInit {
 
   }
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private userService: UserService,
-    private snackbarComponent: SnackbarComponent,
-    private dialogComponent: DialogComponent,
-    private userDialogComponent: UserDialogComponent,
-    private matDialog: MatDialog,
-  ) {
-    // Form validation
-    if (this.dialogComponent.data.username) {
-      this.username = this.dialogComponent.data.username;
-      this.usernameDisable = true;
-    }
-    this.loginForm = this.validateLogin();
-  }
-
-  ngOnInit() {
-  }
-
-
-  // -----------------Constructor methods------------------------
-
-  // Validations
+  // Form validations
   private validateLogin() {
     return this.formBuilder.group({
       email: [{ value: this.username, disabled: this.usernameDisable }, [
@@ -164,6 +141,23 @@ export class LoginComponent implements OnInit {
         Validators.maxLength(50),
       ]],
     });
+  }
+
+  // Life cycle
+  constructor(
+    private formBuilder: FormBuilder,
+    private userService: UserService,
+    private snackbarComponent: SnackbarComponent,
+    private dialogComponent: DialogComponent,
+    private userDialogComponent: UserDialogComponent,
+    private matDialog: MatDialog,
+  ) {
+    // Form validation
+    if (this.dialogComponent.data.username) {
+      this.username = this.dialogComponent.data.username;
+      this.usernameDisable = true;
+    }
+    this.loginForm = this.validateLogin();
   }
 
 }

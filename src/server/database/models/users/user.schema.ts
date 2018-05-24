@@ -1,19 +1,19 @@
-import { model, Schema, HookNextFunction, Model } from 'mongoose';
 import { hash } from 'bcryptjs';
+import { HookNextFunction, Model, Schema, model } from 'mongoose';
+import { QueryPre } from '../model.service';
 import { UserDocument, UserTypes } from './user.types';
 
 // User types
-export const userTypes: UserTypes = {
+export const userTypes: Readonly<UserTypes> = {
   blockedUser: { rank: -1, value: 'blocked' },
-  tempUser: { rank: 0, value: 'tempUser' },
-  user: { rank: 1, value: 'user' },
-  admin: { rank: 2, value: 'admin' },
-  superAdmin: { rank: 3, value: 'superAdmin' }
+  notLoggedIn: { rank: 0, value: 'not logged in' },
+  tempUser: { rank: 1, value: 'tempUser' },
+  user: { rank: 2, value: 'user' },
+  admin: { rank: 3, value: 'admin' },
+  superAdmin: { rank: 4, value: 'superAdmin' },
+  developer: { rank: 10, value: 'developer' }
 };
 
-// ------- Mongoose middleware User functions --------
-// Shared
-import { QueryPre } from '../model.service';
 
 // Specific
 async function saveOnePre(context: any, next: HookNextFunction): Promise<void> {

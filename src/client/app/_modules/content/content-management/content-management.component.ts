@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
-import { ContentService } from '../content.service';
-import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
-import { Observable, of } from 'rxjs';
-import { NewPageComponent } from './new-page/new-page.component';
-import { ContentPageDocumentExt, ContentPageLeanSubmit, ContentTextExt, ContentImageExt } from './content-management.types.d';
+import { Observable, Subscription, of } from 'rxjs';
 import { ContentPageDocumentLean } from '../../../../../server/database/models/content/content.types';
+import { UserType } from '../../../../../server/database/models/users/user.types';
+import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
+import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
+import { UserService } from '../../users/user.service';
+import { ContentService } from '../content.service';
+import { ContentImageExt, ContentPageDocumentExt, ContentPageLeanSubmit, ContentTextExt } from './content-management.types.d';
+import { NewPageComponent } from './new-page/new-page.component';
 
 
 @Component({
@@ -15,7 +17,7 @@ import { ContentPageDocumentLean } from '../../../../../server/database/models/c
   templateUrl: './content-management.component.html',
   styleUrls: ['./content-management.component.css'],
 })
-export class ContentManagementComponent {
+export class ContentManagementComponent implements OnDestroy {
 
   // Variables
   public progressBar = false;
@@ -23,11 +25,12 @@ export class ContentManagementComponent {
   public pages: Observable<ContentPageDocumentExt[]>;
   private pagesResponse: ContentPageDocumentLean[];
   private initFlag = true;
+  public userType: UserType;
+
+  // Subscriptions
+  private getUserType: Subscription;
 
   // Methods
-  /**
-   * @param input Optional, input edited response (pagesLean) for manual submit.
-   */
   public async getForm() {
 
     this.contentService.getAllContentPages().subscribe(response => {
@@ -74,7 +77,7 @@ export class ContentManagementComponent {
       this.initFlag = false;
 
       // On server errors
-    }, () => {} // Avoid loop
+    }, () => { } // Avoid loop
     );
   }
 
@@ -228,15 +231,6 @@ export class ContentManagementComponent {
     this.getForm();
   }
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private matDialog: MatDialog,
-    private contentService: ContentService,
-    private snackbarComponent: SnackbarComponent,
-  ) {
-    this.getForm();
-  }
-
   // Form methods
   private initFormGroup() {
     return this.formBuilder.group({
@@ -260,7 +254,9 @@ export class ContentManagementComponent {
     });
   }
 
-  /** @returns Index of the new FormGroup */
+  /**
+   * @returns Index of the new FormGroup
+   */
   private addFormGroup() {
     this.contentForm.push(this.initFormGroup());
     return this.contentForm.length - 1;
@@ -311,6 +307,22 @@ export class ContentManagementComponent {
     z.placeholderTitle = 'Edit the title here';
     z.typeTitle = 'text';
     z.alertTitle = '';
+  }
+
+  // Lifecycle
+  constructor(
+    private formBuilder: FormBuilder,
+    private matDialog: MatDialog,
+    private contentService: ContentService,
+    private snackbarComponent: SnackbarComponent,
+    private userService: UserService,
+  ) {
+    this.getUserType = this.userService.userType$.subscribe(type => { this.userType = type; });
+    this.getForm();
+  }
+
+  ngOnDestroy() {
+    this.getUserType.unsubscribe();
   }
 
 }

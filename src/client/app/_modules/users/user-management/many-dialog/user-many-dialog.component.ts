@@ -93,6 +93,7 @@ export class UserManyDialogComponent {
 
   public cancel() { this.dialogComponent.matDialog.close(); }
 
+  // Life cycle
   constructor(
     private dialogComponent: DialogComponent,
     private userService: UserService,

@@ -1,11 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-
-import { MailService } from '../../_shared/services/mail.service';
-import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
-import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
 import { ContactForm } from '../../../../../server/routes/mail/mail.types';
+import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
+import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
+import { MailService } from '../../_shared/services/mail.service';
 
 @Component({
   selector: 'app-contact-form',
@@ -98,6 +97,17 @@ export class ContactFormComponent {
     });
   }
 
+  private validateContactForm() {
+    return this.formBuilder.group({
+      name: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      email: [null, [Validators.required, Validators.email]],
+      subject: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      message: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(1000)]],
+      lname: [null, [Validators.maxLength(0)]],
+    });
+  }
+
+  // Lifecycle
   constructor(
     private formBuilder: FormBuilder,
     private mailService: MailService,
@@ -106,19 +116,6 @@ export class ContactFormComponent {
   ) {
     // Form validation
     this.contactForm = this.validateContactForm();
-  }
-
-  // -----------------Constructor methods------------------------
-
-  // Validations
-  private validateContactForm() {
-    return this.formBuilder.group({
-      name: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
-      email: [null, Validators.compose([Validators.required, Validators.email])],
-      subject: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
-      message: [null, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(1000)])],
-      lname: [null, Validators.compose([Validators.maxLength(0)])],
-    });
   }
 
 }

@@ -1,18 +1,12 @@
+import { HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { LoginPayload } from '../../../../server/routes/users/users.types';
 
-import { UserDocumentLean } from '../../../../server/database/models/users/user.types';
 
 export interface CurrentUser {
-  payload: {
-    exp: number;
-    iat: number;
-    type: UserDocumentLean['type'];
-    username: UserDocumentLean['username'];
-    _id: UserDocumentLean['_id'];
-  };
+  payload: LoginPayload;
   tokens: {
     token: string;
     refreshToken: string;

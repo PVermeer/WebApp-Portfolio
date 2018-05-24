@@ -6,37 +6,23 @@
 
     <form [formGroup]="contactForm" (ngSubmit)="sendForm(contactForm.value)" #contactFormRef="ngForm">
 
-      <mat-form-field *ngFor="let field of contactFormInputfields">
+      <mat-form-field *ngFor="let field of contactFormInputfields" (keyup)="contactForm.get(field.formControlName).markAsTouched()">
         <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
-        <mat-error *ngIf="(contactForm.controls[field.formControlName].errors | json | slice:5:6) !== '0'
-                        && !contactForm.controls[field.formControlName].valid
-                        && (contactForm.controls[field.formControlName].touched || contactForm.controls[field.formControlName].dirty)">
+        <mat-error *ngIf="contactForm.get(field.formControlName).errors">
           {{ field.alert }}
-        </mat-error>
-        <mat-error *ngIf="(contactForm.controls[field.formControlName].errors | json | slice:5:6) === '0'
-                        && (contactForm.controls[field.formControlName].touched || contactForm.controls[field.formControlName].dirty)">
-          {{ field.asyncAlert }}
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field *ngFor="let field of contactFormTextfields">
+      <mat-form-field *ngFor="let field of contactFormTextfields" (keyup)="contactForm.get(field.formControlName).markAsTouched()">
         <textarea matTextareaAutosize matAutosizeMinRows="5" matInput [type]="field.type"
           [formControlName]="field.formControlName" [placeholder]="field.placeholder"></textarea>
-        <mat-error *ngIf="(contactForm.controls[field.formControlName].errors | json | slice:5:6) !== '0'
-                          && !contactForm.controls[field.formControlName].valid
-                          && (contactForm.controls[field.formControlName].touched || contactForm.controls[field.formControlName].dirty)">
+        <mat-error *ngIf="contactForm.get(field.formControlName).errors">
           {{ field.alert }}
-        </mat-error>
-        <mat-error *ngIf="(contactForm.controls[field.formControlName].errors | json | slice:5:6) === '0'
-                          && (contactForm.controls[field.formControlName].touched || contactForm.controls[field.formControlName].dirty)">
-          {{ field.asyncAlert }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field class="lname">
         <input matInput type="text" formControlName="lname" placeholder="Last name...">
-        <mat-error *ngIf="!contactForm.controls['lname'].valid && contactForm.controls['lname'].touched">
-        </mat-error>
       </mat-form-field>
 
       <br>

@@ -11,6 +11,7 @@ export class AppComponent {
   // Variables
   public secondaryTheme: boolean;
 
+  // Life cycle
   constructor(
     private sidenavService: SidenavService,
   ) {

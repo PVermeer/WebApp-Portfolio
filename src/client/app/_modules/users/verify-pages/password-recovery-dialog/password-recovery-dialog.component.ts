@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { UserRegister } from '../../../../../../server/database/models/users/user.types';
 import { DialogComponent, DialogContent } from '../../../_shared/components/dialog/dialog.component';
 import { SnackbarComponent } from '../../../_shared/components/snackbar/snackbar.component';
@@ -13,7 +14,7 @@ import { AppValidators } from '../../custom.validators';
   templateUrl: './password-recovery-dialog.component.html',
   styleUrls: ['./password-recovery-dialog.component.css'],
 })
-export class PasswordRecoveryDialogComponent implements OnInit {
+export class PasswordRecoveryDialogComponent implements OnInit, OnDestroy {
 
   // Variables
   private token: string;
@@ -21,6 +22,8 @@ export class PasswordRecoveryDialogComponent implements OnInit {
   public progressBar = false;
   public userForm: FormGroup;
   public userFormEmpty = true;
+
+  private subscriptions = new Subscription;
 
   // NgFor fields
   public userFormFields = [
@@ -63,6 +66,20 @@ export class PasswordRecoveryDialogComponent implements OnInit {
     });
   }
 
+  // Form validation
+  private validateForm() {
+    return this.formBuilder.group({
+      password: [null, [
+        AppValidators.matchPattern({ minLength: 8, maxLength: 50 }),
+      ]],
+
+      passwordConfirm: [null, [
+        AppValidators.matchControl('password'),
+      ]],
+    });
+  }
+
+  // Life cycle
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
@@ -80,22 +97,15 @@ export class PasswordRecoveryDialogComponent implements OnInit {
 
   ngOnInit() {
     // Empty form validator
-    this.userForm.valueChanges.subscribe(value => {
+    const subscription = this.userForm.valueChanges.subscribe(value => {
       if (Object.values(value).every(x => (x === null || x === ''))) { return this.userFormEmpty = true; }
       return this.userFormEmpty = false;
     });
+    this.subscriptions.add(subscription);
   }
 
-  // Constructor methods
-  private validateForm() {
-    return this.formBuilder.group({
-      password: [null, [
-        AppValidators.matchPattern({ minLength: 8, maxLength: 50 }),
-      ]],
-
-      passwordConfirm: [null, [
-        AppValidators.matchControl('password'),
-      ]],
-    });
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
+
 }

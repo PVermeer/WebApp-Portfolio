@@ -1,12 +1,12 @@
-import { Component, ChangeDetectorRef, OnDestroy, ViewChild, ViewChildren, QueryList, OnInit } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { MatSidenav, MatExpansionPanel, MatDialog, MatSlideToggle } from '@angular/material';
-
-import { SidenavContent } from './sidenav.types';
-import { SidenavService } from './sidenav.service';
-import { routerTransition } from './sidenav-router.animation';
-import { UserService } from '../_modules/users/user.service';
+import { ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatDialog, MatExpansionPanel, MatSidenav, MatSlideToggle } from '@angular/material';
 import { RouterOutlet } from '@angular/router';
+import { UserService } from '../_modules/users/user.service';
+import { routerTransition } from './sidenav-router.animation';
+import { SidenavService } from './sidenav.service';
+import { SidenavContent } from './sidenav.types';
+
 
 @Component({
   selector: 'app-sidenav',
@@ -15,7 +15,7 @@ import { RouterOutlet } from '@angular/router';
   providers: [MediaMatcher],
   animations: [routerTransition()]
 })
-export class SidenavComponent implements OnInit, OnDestroy {
+export class SidenavComponent implements OnInit {
 
   // Get elements
   @ViewChild('sidenav') private sidenav: MatSidenav;
@@ -56,41 +56,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   public logout() { this.userService.logout(); }
 
-  constructor(
-    private changeDetectorRef: ChangeDetectorRef,
-    private media: MediaMatcher,
-    private sidenavService: SidenavService,
-    public matDialog: MatDialog,
-    private userService: UserService,
-  ) {
-    // Sidenav mobile support
-    this.mobileQuery = this.media.matchMedia('(max-width: 600px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-    this.mobileQuery.addListener(this._mobileQueryListener);
-
-    // Change sidenav content based on route
-    this.sideNavContentChange();
-
-    // Toggle sidenav based on route
-    this.toggleSidenav();
-    this.toggleExpansions();
-
-    // Subscribe to login status
-    this.toggleIsLoggedIn();
-  }
-
-  ngOnInit() {
-    // Check if user still has valid tokens
-    this.userService.checkLogin();
-  }
-
-  ngOnDestroy(): void {
-    this.mobileQuery.removeListener(this._mobileQueryListener);
-  }
-
-  // ---------------------------------------------------------------------------
-
-  // Constructor methods
+  // Sidenav options
   private sideNavContentChange() {
     this.sidenavService.sidenavContent$.subscribe(sidenavPassedContent => {
       this.sidenavContent = sidenavPassedContent;
@@ -105,7 +71,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
           case 'open': this.sidenav.open(); break;
           case 'close': this.sidenav.close(); break;
           case 'toggle': this.sidenav.toggle(); break;
-          default: return;
+          default: this.sidenav.open();
         }
       }, 0);
     });
@@ -136,6 +102,35 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.userService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
     });
+  }
+
+  // Life cycle
+  constructor(
+    private changeDetectorRef: ChangeDetectorRef,
+    private media: MediaMatcher,
+    private sidenavService: SidenavService,
+    public matDialog: MatDialog,
+    private userService: UserService,
+  ) {
+    // Sidenav mobile support
+    this.mobileQuery = this.media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
+
+    // Change sidenav content based on route
+    this.sideNavContentChange();
+
+    // Toggle sidenav based on route
+    this.toggleSidenav();
+    this.toggleExpansions();
+
+    // Subscribe to login status
+    this.toggleIsLoggedIn();
+  }
+
+  ngOnInit() {
+    // Check if user still has valid tokens
+    this.userService.checkLogin();
   }
 
 }

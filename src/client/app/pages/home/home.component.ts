@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-
-import { SidenavService } from '../../sidenav/sidenav.service';
-import { SidenavContent, MatToggle, MatToggleExp } from '../../sidenav/sidenav.types';
-import { ContentService } from '../../_modules/content/content.service';
-import { ContentPageDocumentLean } from '../../../../server/database/models/content/content.types';
 import { Observable, of } from 'rxjs';
+import { ContentPageDocumentLean } from '../../../../server/database/models/content/content.types';
+import { ContentService } from '../../_modules/content/content.service';
+import { SidenavService } from '../../sidenav/sidenav.service';
+import { MatToggle, MatToggleExp, SidenavContent } from '../../sidenav/sidenav.types';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +12,7 @@ import { Observable, of } from 'rxjs';
 })
 export class HomeComponent implements OnInit {
 
-  // Page
+  // Variables
   private title = 'Home';
   public page$: Observable<ContentPageDocumentLean>;
   public page: ContentPageDocumentLean;
@@ -28,6 +27,7 @@ export class HomeComponent implements OnInit {
   // Methods
   public getImageId(title: string) { return this.contentService.getImageId(title, this.page); }
 
+  // Life cycle
   constructor(
     private sidenavService: SidenavService,
     private contentService: ContentService,
@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.contentService.getContentPage(this.title).subscribe(response => {
 
-      this.page$ = of(response as ContentPageDocumentLean);
+      this.page$ = of(response);
       this.page = response;
 
       // Sidenav config

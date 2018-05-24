@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, AfterViewInit, OnDestroy } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, OnDestroy } from '@angular/core';
 import { Subscription, fromEvent } from 'rxjs';
 
 @Directive({
@@ -6,9 +6,13 @@ import { Subscription, fromEvent } from 'rxjs';
 })
 export class PagePathHighlightDirective implements AfterViewInit, OnDestroy {
 
-  private scrollEvents: Subscription;
+  // Variables
   @Input('appPagePathHighlight') appPagePathHighlight: string; // Path
 
+  // Subscriptions
+  private scrollEvents: Subscription;
+
+  // Methods
   public elementInView(): void {
 
     if (!this.appPagePathHighlight) { return; }
@@ -38,8 +42,9 @@ export class PagePathHighlightDirective implements AfterViewInit, OnDestroy {
     }
   }
 
+  // Lifecycle
   constructor(
-    public element: ElementRef,
+    private element: ElementRef,
   ) { }
 
   ngAfterViewInit() {

@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSlideToggle } from '@angular/material';
-import { Observable, of } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { UserModel } from '../../../../../server/database/models/users/user.types';
 import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
 import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
@@ -15,7 +15,7 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.css'],
 })
-export class UserDetailsComponent implements OnInit {
+export class UserDetailsComponent implements OnInit, OnDestroy {
 
   // Get elements
   @ViewChild('slideToggle') private slideToggle: MatSlideToggle;
@@ -30,6 +30,8 @@ export class UserDetailsComponent implements OnInit {
   public disableButton = true;
   public userFormEmpty = true;
   private user: UserModel;
+
+  private subscription = new Subscription;
 
   // Methods
   private getUserInfo = () => {
@@ -164,12 +166,55 @@ export class UserDetailsComponent implements OnInit {
         );
       }
     });
-
-
   }
 
   public logout() { this.userService.logout(); }
 
+  private validateForm() {
+    return this.formBuilder.group({
+      firstName: [null,
+        [Validators.minLength(1), Validators.maxLength(50)]
+      ],
+
+      lastName: [null,
+        [Validators.minLength(1), Validators.maxLength(50)]
+      ],
+
+      username: [null,
+        [AppValidators.matchPattern({ noSpecialCharacters: true, minLength: 3, maxLength: 50 })],
+        [AppValidators.usernameAsync(this.userService)]
+      ],
+
+      email: [null,
+        [Validators.email],
+        [AppValidators.emailAsync(this.userService)]
+      ],
+
+      password: [null,
+        [AppValidators.matchPattern({ minLength: 8, maxLength: 50 })]
+      ],
+
+      passwordConfirm: [null,
+        [AppValidators.matchControl('password')]
+      ],
+    });
+  }
+
+  private extraFormValidation() {
+    const subscription = this.userForm.valueChanges.subscribe(value => {
+
+      if (this.userForm.get('password').value !== this.userForm.get('passwordConfirm').value) {
+        this.userFormEmpty = true;
+        return;
+      }
+      if (Object.values(value).every(x => (x === null || x === ''))) { this.userFormEmpty = true; return; }
+
+      this.userFormEmpty = false;
+    });
+    this.subscription.add(subscription);
+  }
+
+  // Life cycle
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
@@ -186,50 +231,12 @@ export class UserDetailsComponent implements OnInit {
   ngOnInit() {
     // Get user info at start
     this.getUserInfo();
-
-    // Empty form validator
-    this.userForm.valueChanges.subscribe(value => {
-      if (Object.values(value).every(x => (x === null || x === ''))) { return this.userFormEmpty = true; }
-      this.userFormEmpty = false;
-      return undefined;
-    });
+    // Extra form validation
+    this.extraFormValidation();
   }
 
-  // Constructor methods
-  private validateForm() {
-    return this.formBuilder.group({
-      firstName: [null, [
-        Validators.minLength(1),
-        Validators.maxLength(50)
-      ]],
-
-      lastName: [null, [
-        Validators.minLength(1),
-        Validators.maxLength(50),
-      ]],
-
-      username: [null, [
-        AppValidators.matchPattern({ noSpecialCharacters: true, minLength: 3, maxLength: 50 }),
-      ], [
-          AppValidators.usernameAsync(this.userService),
-        ]
-      ],
-
-      email: [null, [
-        Validators.email
-      ], [
-          AppValidators.emailAsync(this.userService),
-        ]
-      ],
-
-      password: [null, [
-        AppValidators.matchPattern({ minLength: 8, maxLength: 50 }),
-      ]],
-
-      passwordConfirm: [null, [
-        AppValidators.matchControl('password'),
-      ]],
-    });
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
 }

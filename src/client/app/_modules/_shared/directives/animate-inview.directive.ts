@@ -1,4 +1,4 @@
-import { Directive, Input, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, OnDestroy } from '@angular/core';
 import { Subscription, fromEvent } from 'rxjs';
 
 /**
@@ -12,9 +12,13 @@ import { Subscription, fromEvent } from 'rxjs';
 })
 export class AnimateInviewDirective implements AfterViewInit, OnDestroy {
 
+  // Variables
   @Input('appAnimateInview') appAnimateInview: string;
+
+  // Subscriptions
   private scrollEvents: Subscription;
 
+  // Methods
   public elementInView(): void {
 
     const element = this.element.nativeElement;
@@ -49,8 +53,9 @@ export class AnimateInviewDirective implements AfterViewInit, OnDestroy {
     }
   }
 
+  // Lifecycle
   constructor(
-    public element: ElementRef,
+    private element: ElementRef,
   ) { }
 
   ngAfterViewInit() {

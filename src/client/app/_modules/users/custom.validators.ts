@@ -1,4 +1,4 @@
-import { AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { UserService } from './user.service';
@@ -19,7 +19,7 @@ interface PatternValidatorOptions {
   noSpecialCharacters?: boolean;
 }
 
-export class AppValidators {
+export class AppValidators extends Validators {
 
   /**
    * Validator that requires controls to not match a username in the database.
@@ -29,7 +29,7 @@ export class AppValidators {
     return (control: AbstractControl) => {
 
       if (isEmptyInputValue(control.value)) {
-        return null;  // Don't validate empty values to allow optional controls
+        return Promise.resolve(null);  // Don't validate empty values to allow optional controls
       }
       return timer(500).pipe(switchMap(() => { // Debounce requests
         return userService.checkUsername(control.value).pipe(map((response: boolean) => {
@@ -48,7 +48,7 @@ export class AppValidators {
     return (control: AbstractControl) => {
 
       if (isEmptyInputValue(control.value)) {
-        return null;  // Don't validate empty values to allow optional controls
+        return Promise.resolve(null);  // Don't validate empty values to allow optional controls
       }
       return timer(500).pipe(switchMap(() => { // Debounce requests
         return userService.checkEmail(control.value).pipe(map((response: boolean) => {
@@ -80,7 +80,7 @@ export class AppValidators {
   }
 
   /**
-   * Validator that requires controls to match an an other control in the same FormGroup.
+   * Validator that requires controls to match the specified patterns.
    * @param option Options object.
    */
   static matchPattern(options: PatternValidatorOptions): ValidatorFn {
