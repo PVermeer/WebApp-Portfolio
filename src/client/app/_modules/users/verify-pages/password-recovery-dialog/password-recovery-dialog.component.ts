@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
-
-import { UserService } from '../.././user.service';
-import { SnackbarComponent } from '../../../_shared/components/snackbar/snackbar.component';
-import { passwordValidator, matchValidator } from '../../validators';
-import { DialogComponent, DialogContent } from '../../../_shared/components/dialog/dialog.component';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
+import { Router } from '@angular/router';
 import { UserRegister } from '../../../../../../server/database/models/users/user.types';
-
+import { DialogComponent, DialogContent } from '../../../_shared/components/dialog/dialog.component';
+import { SnackbarComponent } from '../../../_shared/components/snackbar/snackbar.component';
+import { UserService } from '../.././user.service';
+import { AppValidators } from '../../custom.validators';
 
 @Component({
   selector: 'app-password-recovery-dialog',
@@ -92,12 +90,11 @@ export class PasswordRecoveryDialogComponent implements OnInit {
   private validateForm() {
     return this.formBuilder.group({
       password: [null, [
-        passwordValidator({ minLength: 8, maxLength: 50 }),
+        AppValidators.matchPattern({ minLength: 8, maxLength: 50 }),
       ]],
 
       passwordConfirm: [null, [
-        passwordValidator({ minLength: 8, maxLength: 50 }),
-        matchValidator('password'),
+        AppValidators.matchControl('password'),
       ]],
     });
   }

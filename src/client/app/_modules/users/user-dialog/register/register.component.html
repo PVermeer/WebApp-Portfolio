@@ -2,22 +2,23 @@
   <form [formGroup]="registerForm" (ngSubmit)="register(registerForm.value)" #regForm="ngForm">
 
     <mat-form-field *ngFor="let field of registerFormInputfields">
-      <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
-      <mat-error *ngIf="(registerForm.controls[field.formControlName].errors | json | slice:5:6) !== '0'
-              && !registerForm.controls[field.formControlName].valid
-              && (registerForm.controls[field.formControlName].touched || registerForm.controls[field.formControlName].dirty)">
-        {{ field.alert }}
-      </mat-error>
-      <mat-error *ngIf="(registerForm.controls[field.formControlName].errors | json | slice:5:6) === '0'
-              && (registerForm.controls[field.formControlName].touched || registerForm.controls[field.formControlName].dirty)">
+
+      <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder"
+        (keyup)="registerForm.get(field.formControlName).markAsTouched()">
+
+      <mat-error *ngIf="registerForm.get(field.formControlName).hasError('async'); else sync">
         {{ field.asyncAlert }}
       </mat-error>
+      <ng-template #sync>
+        <mat-error *ngIf="registerForm.get(field.formControlName).errors">
+          {{ field.alert }}
+        </mat-error>
+      </ng-template>
+
     </mat-form-field>
 
     <mat-form-field class="lname">
       <input matInput type="text" formControlName="lname" placeholder="Last name...">
-      <mat-error *ngIf="!registerForm.controls['lname'].valid && registerForm.controls['lname'].touched">
-      </mat-error>
     </mat-form-field>
 
     <br>

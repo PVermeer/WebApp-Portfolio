@@ -1,11 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
-
-import { UserDialogComponent } from '../user-dialog.component';
-import { UserService } from '../.././user.service';
-import { usernameValidator, usernameAsyncValidator, emailAsyncValidator, passwordValidator, matchValidator } from '../../validators';
-import { DialogComponent } from '../../../_shared/components/dialog/dialog.component';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { UserRegister } from '../../../../../../server/database/models/users/user.types';
+import { DialogComponent } from '../../../_shared/components/dialog/dialog.component';
+import { UserService } from '../.././user.service';
+import { AppValidators } from '../../custom.validators';
+import { UserDialogComponent } from '../user-dialog.component';
+
 
 @Component({
   selector: 'app-register',
@@ -115,9 +115,9 @@ export class RegisterComponent {
 
       username: ['asd', [
         Validators.required,
-        usernameValidator({ noSpecialCharacters: true, minLength: 3, maxLength: 50 }),
+        AppValidators.matchPattern({ noSpecialCharacters: true, minLength: 3, maxLength: 50 }),
       ], [
-          usernameAsyncValidator({ debounceTime: 500, service: this.userService }),
+          AppValidators.usernameAsync(this.userService),
         ]
       ],
 
@@ -125,7 +125,7 @@ export class RegisterComponent {
         Validators.required,
         Validators.email
       ], [
-          emailAsyncValidator({ debounceTime: 500, service: this.userService }),
+          AppValidators.emailAsync(this.userService),
         ]
       ],
 
@@ -135,13 +135,12 @@ export class RegisterComponent {
 
       password: ['password', [
         Validators.required,
-        passwordValidator({ minLength: 8, maxLength: 50 }),
+        AppValidators.matchPattern({ minLength: 8, maxLength: 50 }),
       ]],
 
       passwordConfirm: ['password', [
         Validators.required,
-        passwordValidator({ minLength: 8, maxLength: 50 }),
-        matchValidator('password'),
+        AppValidators.matchControl('password'),
       ]],
     });
   }

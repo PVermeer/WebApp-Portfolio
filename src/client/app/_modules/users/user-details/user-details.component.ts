@@ -1,18 +1,14 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable, of } from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSlideToggle } from '@angular/material';
-
-import { UserService } from '.././user.service';
-import {
-  usernameValidator, usernameAsyncValidator, emailAsyncValidator,
-  passwordValidator, matchValidator, emailValidator,
-} from '../validators';
-import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
-import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
+import { Observable, of } from 'rxjs';
 import { UserModel } from '../../../../../server/database/models/users/user.types';
+import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
+import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
+import { UserService } from '.././user.service';
+import { AppValidators } from '../custom.validators';
 import { CurrentUser } from '../jwt.interceptor';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-user-details',
@@ -213,26 +209,25 @@ export class UserDetailsComponent implements OnInit {
       ]],
 
       username: [null, [
-        usernameValidator({ noSpecialCharacters: true, minLength: 3, maxLength: 50 }),
+        AppValidators.matchPattern({ noSpecialCharacters: true, minLength: 3, maxLength: 50 }),
       ], [
-          usernameAsyncValidator({ debounceTime: 500, service: this.userService }),
+          AppValidators.usernameAsync(this.userService),
         ]
       ],
 
       email: [null, [
-        emailValidator()
+        Validators.email
       ], [
-          emailAsyncValidator({ debounceTime: 500, service: this.userService }),
+          AppValidators.emailAsync(this.userService),
         ]
       ],
 
       password: [null, [
-        passwordValidator({ minLength: 8, maxLength: 50 }),
+        AppValidators.matchPattern({ minLength: 8, maxLength: 50 }),
       ]],
 
       passwordConfirm: [null, [
-        passwordValidator({ minLength: 8, maxLength: 50 }),
-        matchValidator('password'),
+        AppValidators.matchControl('password'),
       ]],
     });
   }
