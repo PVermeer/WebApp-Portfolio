@@ -1,12 +1,11 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { MatDialog, MatExpansionPanel, MatSidenav, MatSlideToggle } from '@angular/material';
+import { MatExpansionPanel, MatSidenav, MatSlideToggle } from '@angular/material';
 import { RouterOutlet } from '@angular/router';
 import { UserService } from '../_modules/users/user.service';
 import { routerTransition } from './sidenav-router.animation';
 import { SidenavService } from './sidenav.service';
 import { SidenavContent } from './sidenav.types';
-
 
 @Component({
   selector: 'app-sidenav',
@@ -42,8 +41,7 @@ export class SidenavComponent implements OnInit {
   // Methods
   public tabChange() {
     // Scroll to top
-    const element = document.getElementById('sidenav-content');
-    element.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('sidenav-content').scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   public scrollTo(element: string) { this.sidenavService.scrollIntoView(element); }
@@ -109,7 +107,6 @@ export class SidenavComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private media: MediaMatcher,
     private sidenavService: SidenavService,
-    public matDialog: MatDialog,
     private userService: UserService,
   ) {
     // Sidenav mobile support

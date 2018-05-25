@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-
-import { SidenavContent, MatToggle, MatToggleExp } from './sidenav.types';
+import { MatToggle, MatToggleExp, SidenavContent } from './sidenav.types';
 
 @Injectable()
 export class SidenavService {

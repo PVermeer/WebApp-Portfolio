@@ -1,4 +1,4 @@
-import { Directive, ElementRef, OnChanges, Input, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Directive, ElementRef, Input, OnChanges } from '@angular/core';
 
 @Directive({
   selector: '[appPreviewImage]'
@@ -6,10 +6,10 @@ import { Directive, ElementRef, OnChanges, Input, ChangeDetectorRef, AfterViewIn
 export class PreviewImageDirective implements OnChanges, AfterViewInit {
 
   @Input('appPreviewImage') appPreviewImage: Blob & FileList;
-  private element: ElementRef;
 
   public showPreviewImage() {
 
+    const element = this.elementRef.nativeElement;
     if (!this.appPreviewImage || this.appPreviewImage.length === 0) { return; }
 
     let file: Blob | File;
@@ -17,20 +17,15 @@ export class PreviewImageDirective implements OnChanges, AfterViewInit {
     if (this.appPreviewImage instanceof Blob) { file = this.appPreviewImage; }
 
     const reader = new FileReader();
-
-    reader.onload = () => {
-      this.element.nativeElement.src = reader.result;
-    };
-
+    reader.onload = () => element.src = reader.result;
     reader.readAsDataURL(file);
   }
 
+  // Life cycle
   constructor(
-    element: ElementRef,
+    private elementRef: ElementRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) {
-    this.element = element;
-  }
+  ) { }
 
   ngOnChanges() {
     this.showPreviewImage();

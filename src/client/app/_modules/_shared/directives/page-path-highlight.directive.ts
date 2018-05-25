@@ -1,61 +1,64 @@
-import { AfterViewInit, Directive, ElementRef, Input, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, fromEvent } from 'rxjs';
+import { auditTime } from 'rxjs/operators';
 
 @Directive({
   selector: '[appPagePathHighlight]'
 })
-export class PagePathHighlightDirective implements AfterViewInit, OnDestroy {
+export class PagePathHighlightDirective implements OnInit, OnDestroy {
 
-  // Variables
-  @Input('appPagePathHighlight') appPagePathHighlight: string; // Path
+  private contentDiv: HTMLElement;
+  private subscriptions = new Subscription;
 
-  // Subscriptions
-  private scrollEvents: Subscription;
+  @Input('appPagePathHighlight') appPagePathHighlight: string;
 
-  // Methods
-  public elementInView(): void {
+  public checkInView(): void {
 
     if (!this.appPagePathHighlight) { return; }
 
-    const linkElement = this.element.nativeElement;
-    const getElement = document.getElementById(this.appPagePathHighlight);
+    const element = this.elementRef.nativeElement;
+    const targetElement = document.getElementById(this.appPagePathHighlight);
+    if (!targetElement) { return; }
 
-    if (!getElement) { return; }
+    const targetElementRec = targetElement.getBoundingClientRect();
+    const contentDivRec = this.contentDiv.getBoundingClientRect();
 
-    const element = getElement.getBoundingClientRect();
+    const elementTop = targetElementRec.top - contentDivRec.top;
+    const elementHeight = targetElementRec.height;
+    const elementBottom = elementTop + elementHeight;
+    const contentDivHeight = contentDivRec.height;
 
-    // Element variables
-    const scrollDiv = document.getElementById('sidenav-content');
-    const scrollDivHeight = scrollDiv.offsetHeight;
-    const elementTop = element.top - 64; // Toolbar height // TODO Dynamic height
-    const elementBottom = elementTop + element.height;
+    if (elementBottom > 0 && elementBottom < contentDivHeight / 3) {
+      entry();
+    }
+    if (elementBottom < 0 || elementTop > contentDivHeight / 3) {
+      leave();
+    }
 
-    // Check if out of view
-    if (elementTop < 0 || elementBottom > scrollDivHeight / 3) {
-      linkElement.classList.remove('active-link');
-    } else {
-
-      // Check if in view
-      if (elementTop < (scrollDivHeight / 3)) {
-        linkElement.classList.add('active-link');
-      }
+    function entry() {
+      element.classList.add('active-link');
+    }
+    function leave() {
+      element.classList.remove('active-link');
     }
   }
 
   // Lifecycle
   constructor(
-    private element: ElementRef,
-  ) { }
-
-  ngAfterViewInit() {
-    this.scrollEvents = fromEvent(document.getElementById('sidenav-content'), 'scroll').subscribe(() => {
-      this.elementInView();
-    });
-    // Run once
-    this.elementInView();
+    private elementRef: ElementRef,
+  ) {
+    this.contentDiv = document.getElementById('sidenav-content');
   }
+
+  ngOnInit() {
+    this.checkInView();
+
+    const scroll = fromEvent(this.contentDiv, 'scroll').pipe(auditTime(500)).subscribe(() => this.checkInView());
+    this.subscriptions.add(scroll);
+  }
+
   ngOnDestroy() {
-    this.scrollEvents.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
 }

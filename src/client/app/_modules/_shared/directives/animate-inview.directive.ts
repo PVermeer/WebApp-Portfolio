@@ -1,72 +1,66 @@
-import { AfterViewInit, Directive, ElementRef, Input, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, fromEvent } from 'rxjs';
+import { auditTime } from 'rxjs/operators';
 
-/**
- * Used to animate elements into the view on scroll.
- * Add the directive with the to be added animation class.
- * Animation classes are provided by the animate.css package.
- * https://daneden.github.io/animate.css/
-*/
 @Directive({
   selector: '[appAnimateInview]'
 })
-export class AnimateInviewDirective implements AfterViewInit, OnDestroy {
+export class AnimateInviewDirective implements OnInit, OnDestroy {
 
-  // Variables
+  private contentDiv: HTMLElement;
+  private subscriptions = new Subscription;
+
   @Input('appAnimateInview') appAnimateInview: string;
 
-  // Subscriptions
-  private scrollEvents: Subscription;
+  private checkInView() {
 
-  // Methods
-  public elementInView(): void {
-
-    const element = this.element.nativeElement;
-
-    if (!element.classList.contains('animated')) { element.classList.add('hide'); }
-
-    // Element variables
     const animation = this.appAnimateInview;
-    const scrollDiv = document.getElementById('sidenav-content');
-    const scrollDivBottom = scrollDiv.scrollTop + scrollDiv.offsetHeight;
-    const scrollDivHeight = scrollDiv.offsetHeight;
-    const elementHeight = element.offsetHeight;
-    const elementBottom = element.offsetTop + elementHeight;
+    const element = this.elementRef.nativeElement;
 
-    // Check if out of view
-    if (element.classList.contains('animated')) {
-      if (!(elementBottom - elementHeight < scrollDivBottom && scrollDivBottom - scrollDivHeight < elementBottom + elementHeight)) {
-        element.classList.remove('animated');
-        element.classList.remove(animation);
-        element.classList.add('hide');
-      }
-    } else {
+    const elementRec = element.getBoundingClientRect();
+    const contentDivRec = this.contentDiv.getBoundingClientRect();
 
-      // Check if in view
-      if (!element.classList.contains('animated')) {
-        if (elementBottom < scrollDivBottom && scrollDivBottom - scrollDivHeight < elementBottom + elementHeight) {
-          element.classList.add('animated');
-          element.classList.add(animation);
-          element.classList.remove('hide');
-        }
-      }
+    const elementTop = elementRec.top - contentDivRec.top;
+    const elementHeight = elementRec.height;
+    const elementBottom = elementTop + elementHeight;
+    const contentDivHeight = contentDivRec.height;
+
+    if (elementBottom > 0 && elementBottom < contentDivHeight) {
+      entry();
+    }
+    if (elementBottom < 0 || elementTop > contentDivHeight) {
+      leave();
+    }
+
+    function entry() {
+      element.classList.add('animated'); // https://github.com/daneden/animate.css/
+      element.classList.remove('hide');
+      element.classList.add(animation);
+    }
+    function leave() {
+      element.classList.remove('animated'); // https://github.com/daneden/animate.css/
+      element.classList.add('hide');
+      element.classList.remove(animation);
     }
   }
 
-  // Lifecycle
+  // Life cycle
   constructor(
-    private element: ElementRef,
-  ) { }
+    private elementRef: ElementRef,
+  ) {
+    this.contentDiv = document.getElementById('sidenav-content');
+  }
+  ngOnInit() {
+    this.checkInView();
 
-  ngAfterViewInit() {
-    this.scrollEvents = fromEvent(document.getElementById('sidenav-content'), 'scroll').subscribe(() => {
-      this.elementInView();
-    });
-    // Run the animation service once
-    this.elementInView();
+    const scroll = fromEvent(this.contentDiv, 'scroll').pipe(auditTime(100)).subscribe(() => this.checkInView());
+    const resize = fromEvent(this.contentDiv, 'resize').pipe(auditTime(100)).subscribe(() => this.checkInView());
+
+    this.subscriptions.add(scroll);
+    this.subscriptions.add(resize);
   }
   ngOnDestroy() {
-    this.scrollEvents.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
 }
