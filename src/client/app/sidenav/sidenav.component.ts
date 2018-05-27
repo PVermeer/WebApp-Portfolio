@@ -1,24 +1,27 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatExpansionPanel, MatSidenav, MatSlideToggle } from '@angular/material';
 import { RouterOutlet } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { UserService } from '../_modules/users/user.service';
-import { routerTransition } from './sidenav-router.animation';
 import { SidenavService } from './sidenav.service';
 import { SidenavContent } from './sidenav.types';
+import { fadeAnimation } from '../_modules/_shared/services/animations.service';
 
 @Component({
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.css'],
   providers: [MediaMatcher],
-  animations: [routerTransition()]
+  animations: [fadeAnimation()]
 })
-export class SidenavComponent implements OnInit {
+export class SidenavComponent implements OnInit, OnDestroy {
+
+  private subscriptions = new Subscription;
 
   // Get elements
   @ViewChild('sidenav') private sidenav: MatSidenav;
-  @ViewChild('expHomeNav') private expHomeNav: MatExpansionPanel;
+  @ViewChild('expPageNav') private expPageNav: MatExpansionPanel;
   @ViewChildren('expRouteNav') private expRoutedNav: QueryList<MatExpansionPanel>;
 
   // Sidenav content
@@ -56,14 +59,16 @@ export class SidenavComponent implements OnInit {
 
   // Sidenav options
   private sideNavContentChange() {
-    this.sidenavService.sidenavContent$.subscribe(sidenavPassedContent => {
+    const subscription = this.sidenavService.sidenavContent$.subscribe(sidenavPassedContent => {
       this.sidenavContent = sidenavPassedContent;
       this.changeDetectorRef.detectChanges();
     });
+    this.subscriptions.add(subscription);
   }
 
   private toggleSidenav() {
-    this.sidenavService.sidenavToggle$.subscribe(sidenavToggle => {
+    const subscription = this.sidenavService.sidenavToggle$.subscribe(sidenavToggle => {
+      if (this.mobileQuery.matches) { this.sidenav.close(); return; }
       setTimeout(() => {
         switch (sidenavToggle) {
           case 'open': this.sidenav.open(); break;
@@ -73,12 +78,17 @@ export class SidenavComponent implements OnInit {
         }
       }, 0);
     });
+    this.subscriptions.add(subscription);
   }
 
   private toggleExpansions() {
-    this.sidenavService.expansionToggle$.subscribe(expansionToggle => {
+    const subscription = this.sidenavService.expansionToggle$.subscribe(expansionToggle => {
       setTimeout(() => {
-        this.expHomeNav.close();
+
+        if (this.mobileQuery.matches) {
+          this.expPageNav.open();
+        } else { this.expPageNav.close(); }
+
         if (expansionToggle === 'open') {
           this.expRoutedNav.forEach((child) => { child.open(); return; });
         }
@@ -89,17 +99,19 @@ export class SidenavComponent implements OnInit {
           this.expRoutedNav.forEach((child) => { child.toggle(); return; });
         }
         if (expansionToggle === 'home') {
-          this.expHomeNav.open();
+          this.expPageNav.open();
           return;
         }
       }, 0);
     });
+    this.subscriptions.add(subscription);
   }
 
   private toggleIsLoggedIn() {
-    this.userService.isLoggedIn$.subscribe(isLoggedIn => {
+    const subscription = this.userService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
     });
+    this.subscriptions.add(subscription);
   }
 
   // Life cycle
@@ -128,6 +140,10 @@ export class SidenavComponent implements OnInit {
   ngOnInit() {
     // Check if user still has valid tokens
     this.userService.checkLogin();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
 }

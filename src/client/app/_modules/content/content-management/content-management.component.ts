@@ -11,7 +11,6 @@ import { ContentService } from '../content.service';
 import { ContentImageExt, ContentPageDocumentExt, ContentPageLeanSubmit, ContentTextExt } from './content-management.types.d';
 import { NewPageComponent } from './new-page/new-page.component';
 
-
 @Component({
   selector: 'app-content-management',
   templateUrl: './content-management.component.html',

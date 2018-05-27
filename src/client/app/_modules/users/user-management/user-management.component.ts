@@ -12,7 +12,7 @@ import { UserManyDialogComponent } from './many-dialog/user-many-dialog.componen
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',
-  styleUrls: ['./user-management.component.css']
+  styles: ['']
 })
 export class UserManagementComponent implements OnInit, OnDestroy {
 

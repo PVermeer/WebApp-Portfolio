@@ -1,11 +1,11 @@
 <section>
   <div class="container">
-    <div class="flex-row-left">
-      <mat-card *ngIf="isAdmin" class="admin-tab">
-        <app-admin id="admin"></app-admin>
+    <div class="flex-row-left-start">
+      <mat-card *ngIf="isAdmin" id="admin-card">
+        <app-admin></app-admin>
       </mat-card>
-      <mat-card>
-        <app-user-details id="userDetails"></app-user-details>
+      <mat-card id="user-card">
+        <app-user-details></app-user-details>
       </mat-card>
     </div>
     <br>

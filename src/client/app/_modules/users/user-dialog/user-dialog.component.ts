@@ -4,7 +4,7 @@ import { DialogComponent } from '../../_shared/components/dialog/dialog.componen
 @Component({
   selector: 'app-user-dialog',
   templateUrl: './user-dialog.component.html',
-  styleUrls: ['./user-dialog.component.css'],
+  styles: [''],
 })
 export class UserDialogComponent implements OnInit {
 

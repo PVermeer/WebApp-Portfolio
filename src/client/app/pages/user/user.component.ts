@@ -9,7 +9,6 @@ import { MatToggle, MatToggleExp, SidenavContent } from '../../sidenav/sidenav.t
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
-  providers: [],
 })
 export class UserComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -27,7 +26,7 @@ export class UserComponent implements OnInit, AfterViewInit, OnDestroy {
   private sidenavContent: SidenavContent = [{
     title: 'User page',
     items: [
-      { label: 'User details', path: 'userDetails' },
+      { label: 'User details', path: 'user-card' },
     ],
   }];
 
@@ -36,7 +35,7 @@ export class UserComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private applyUsertype() {
     if (this.userType.rank > 2) {
-      this.sidenavContent[0].items.unshift({ label: 'Admin panel', path: 'admin' });
+      this.sidenavContent[0].items.unshift({ label: 'Admin panel', path: 'admin-card' });
       this.isAdmin = true;
     }
   }

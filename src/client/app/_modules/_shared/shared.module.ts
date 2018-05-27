@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MaterialModule } from './modules/material.module';
 import { SnackbarComponent } from './components/snackbar/snackbar.component';
@@ -18,12 +19,12 @@ import { PasswordRecoveryDialogComponent } from '../users/verify-pages/password-
 import { MailService } from './services/mail.service';
 import { NewPageComponent } from '../content/content-management/new-page/new-page.component';
 
-
 const sharedModules = [
   CommonModule,
   MaterialModule,
   FormsModule,
   HttpClientModule,
+  BrowserAnimationsModule,
 ];
 
 @NgModule({

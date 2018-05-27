@@ -12,7 +12,7 @@ import { AppValidators } from '../../custom.validators';
 @Component({
   selector: 'app-password-recovery-dialog',
   templateUrl: './password-recovery-dialog.component.html',
-  styleUrls: ['./password-recovery-dialog.component.css'],
+  styles: [''],
 })
 export class PasswordRecoveryDialogComponent implements OnInit, OnDestroy {
 

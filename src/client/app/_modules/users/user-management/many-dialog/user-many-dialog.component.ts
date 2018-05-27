@@ -9,7 +9,7 @@ import { ErrorMessage } from '../../../../../../server/types/types';
 @Component({
   selector: 'app-user-many-dialog',
   templateUrl: './user-many-dialog.component.html',
-  styleUrls: ['./user-many-dialog.component.css']
+  styles: ['']
 })
 export class UserManyDialogComponent {
 

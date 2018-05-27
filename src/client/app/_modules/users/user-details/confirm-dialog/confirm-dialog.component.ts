@@ -10,7 +10,7 @@ import { UserService } from '../.././user.service';
 @Component({
   selector: 'app-confirm-dialog',
   templateUrl: './confirm-dialog.component.html',
-  styleUrls: ['./confirm-dialog.component.css'],
+  styles: [''],
 })
 export class ConfirmDialogComponent implements OnInit {
 

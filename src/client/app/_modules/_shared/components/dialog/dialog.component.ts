@@ -5,7 +5,7 @@ import { ComponentType } from '@angular/cdk/portal';
 @Component({
   selector: 'app-dialog',
   templateUrl: './dialog.component.html',
-  styleUrls: ['./dialog.component.css']
+  styles: ['']
 })
 export class DialogComponent implements OnInit {
 
