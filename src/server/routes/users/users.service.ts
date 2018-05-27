@@ -1,24 +1,14 @@
 // Imports
-import {
-  deleteMany, deleteUser, findTransactions,
-  saveTempUser, saveTransactions, saveUser, updateUser, findUserLean, updateMany, deleteTempUser, findUsers
-} from './users.database';
-import {
-  comparePasswords, createLoginTokens, decodeToken, verifyToken, createVerificationToken, verifyRefreshToken,
-  createEmailUpdateToken, verifyEmailUpdateToken,
-} from './users.authentication';
-import { userTypes } from '../../database/models/users/user.schema';
-import { spamHandler } from '../mail/spam.service';
 import { Request, Response } from 'express';
-import { userVerificationMail, passwordRecoveryMail, userEmailUpdateMail } from '../mail/mail.service';
-import { UserUpdate, UserQuery, UserDocumentLean, UserLogin, UserRegister, UserModel } from '../../database/models/users/user.types';
+import { userTypes } from '../../database/models/users/user.schema';
+import { UserDocumentLean, UserLogin, UserModel, UserQuery, UserRegister, UserUpdate } from '../../database/models/users/user.types';
+import { accountDeleteSuccess, actionSuccess, blockedError, deleteError, duplicateError, loginError, loginSuccess, mailVerifyError, passwordLengthError, registrationSuccess, saveError, sendMailSuccess, updateError, updateSuccess, verifyDone, verifyError, verifySuccess } from '../../services/error-handler.service';
+import { ReqQuery, RequestId } from '../../types/types';
+import { passwordRecoveryMail, userEmailUpdateMail, userVerificationMail } from '../mail/mail.service';
+import { spamHandler } from '../mail/spam.service';
+import { comparePasswords, createEmailUpdateToken, createLoginTokens, createVerificationToken, decodeToken, verifyEmailUpdateToken, verifyToken } from './users.authentication';
+import { deleteMany, deleteTempUser, deleteUser, findTransactions, findUserLean, findUsers, saveTempUser, saveTransactions, saveUser, updateMany, updateUser } from './users.database';
 import { PasswordRecovery } from './users.types';
-import {
-  passwordLengthError, duplicateError, blockedError, mailVerifyError, loginError, saveError,
-  verifyError, updateError, deleteError, loginSuccess, updateSuccess, sendMailSuccess,
-  actionSuccess, registrationSuccess, verifyDone, verifySuccess, accountDeleteSuccess,
-} from '../../services/error-handler.service';
-import { RequestId, ReqQuery } from '../../types/types';
 
 // ------------- functions --------------
 
@@ -70,7 +60,7 @@ export async function logIn(req: Request, res: Response) {
   const user = await findUserLean({ email: loginForm.email }) as UserDocumentLean;
 
   if (user.type.rank < 0) { throw blockedError; }
-  if (user.type.rank ===  userTypes.tempUser.rank) { throw mailVerifyError; }
+  if (user.type.rank === userTypes.tempUser.rank) { throw mailVerifyError; }
 
   const password = await comparePasswords(loginForm.password, user.password);
   if (!password) { throw loginError; }
