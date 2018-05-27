@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Observable, Subscription, of } from 'rxjs';
@@ -16,7 +16,7 @@ import { NewPageComponent } from './new-page/new-page.component';
   templateUrl: './content-management.component.html',
   styleUrls: ['./content-management.component.css'],
 })
-export class ContentManagementComponent implements OnDestroy {
+export class ContentManagementComponent implements AfterViewInit, OnDestroy {
 
   // Variables
   public progressBar = false;
@@ -315,9 +315,13 @@ export class ContentManagementComponent implements OnDestroy {
     private contentService: ContentService,
     private snackbarComponent: SnackbarComponent,
     private userService: UserService,
+    public changeDetectorRef: ChangeDetectorRef,
   ) {
     this.getUserType = this.userService.userType$.subscribe(type => { this.userType = type; });
     this.getForm();
+  }
+
+  ngAfterViewInit() {
   }
 
   ngOnDestroy() {

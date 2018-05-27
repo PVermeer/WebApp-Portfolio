@@ -36,9 +36,7 @@
                     <mat-form-field [formGroupName]="j" floatLabel="always">
                       <input matInput [type]="text.typeHeader" formControlName="header" [placeholder]="text.placeholderHeader"
                         [value]="contentForm[i].controls.texts.controls[j].controls.header.value">
-                      <mat-error *ngIf="(contentForm[i].controls.texts.controls[j].controls.header.errors | json | slice:5:6) !== '0'
-                                && !contentForm[i].controls.texts.controls[j].controls.header.valid
-                                && (contentForm[i].controls.texts.controls[j].controls.header.touched || contentForm[i].controls.texts.controls[j].controls.header.dirty)">
+                      <mat-error *ngIf="contentForm[i].controls.texts.controls[j].controls.header.errors">
                         {{ text.alertHeader }}
                       </mat-error>
                     </mat-form-field>
@@ -57,9 +55,7 @@
                   <mat-form-field [formGroupName]="j" floatLabel="always">
                     <textarea matTextareaAutosize matAutosizeMinRows="10" matInput [type]="text.typeText" formControlName="text"
                       [placeholder]="text.placeholderText" [value]="contentForm[i].controls.texts.controls[j].controls.text.value"></textarea>
-                    <mat-error *ngIf="(contentForm[i].controls.texts.controls[j].controls.text.errors | json | slice:5:6) !== '0'
-                          && !contentForm[i].controls.texts.controls[j].controls.text.valid
-                          && (contentForm[i].controls.texts.controls[j].controls.text.touched || contentForm[i].controls.texts.controls[j].controls.text.dirty)">
+                    <mat-error *ngIf="contentForm[i].controls.texts.controls[j].controls.text.errors">
                       {{ text.alertText }}
                     </mat-error>
                   </mat-form-field>
@@ -92,9 +88,7 @@
                       <mat-form-field floatLabel="always">
                         <input matInput [type]="image.typeTitle" formControlName="title" [placeholder]="image.placeholderTitle"
                           [value]="contentForm[i].controls.images.controls[k].controls.title.value">
-                        <mat-error *ngIf="(contentForm[i].controls.images.controls[k].controls.title.errors | json | slice:5:6) !== '0'
-                                  && !contentForm[i].controls.images.controls[k].controls.title.valid
-                                  && (contentForm[i].controls.images.controls[k].controls.title.touched || contentForm[i].controls.images.controls[k].controls.title.dirty)">
+                        <mat-error *ngIf="contentForm[i].controls.images.controls[k].controls.title.errors">
                           {{ image.alertTitle }}
                         </mat-error>
                       </mat-form-field>
@@ -115,7 +109,7 @@
                     </ng-template>
 
                     <br>
-                    <img mat-card-image [appPreviewImage]="imgFileInput.files">
+                    <img *ngIf="imgFileInput.value" mat-card-image [appPreviewImage]="imgFileInput.files">
                   </div>
 
                   <input hidden type="file" #imgFileInput (change)="contentForm[i].controls.images.controls[k].controls.imageUpdate.setValue(imgFileInput.files[0])">
@@ -128,9 +122,12 @@
                         <br>
                         <br>
                       </div>
+
                       <mat-chip-list>
-                        <mat-chip color="accent" selected="true" (click)="imgFileInput.click()">
-                          <mat-icon>file_upload</mat-icon>Upload new image</mat-chip>
+                        <mat-chip color="accent" selected="true" (click)="imgFileInput.click()" matTooltip="Select a new image" matTooltipPosition="above" matTooltipShowDelay="500">
+                          <mat-icon>file_upload</mat-icon></mat-chip>
+                        <mat-chip *ngIf="imgFileInput.value" selected="true" (click)="imgFileInput.value = null; contentForm[i].controls.images.controls[k].controls.imageUpdate.setValue(null)" matTooltip="Remove new image" matTooltipPosition="above" matTooltipShowDelay="500">
+                          <mat-icon>delete</mat-icon></mat-chip>
                       </mat-chip-list>
 
                     </div>
@@ -151,7 +148,7 @@
       <mat-divider></mat-divider>
       <br>
       <br>
-      <div class="flex-row-between">
+      <div class="flex-row-right button-margin">
         <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)">
           Submit changes
         </button>
