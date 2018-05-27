@@ -172,7 +172,7 @@ export async function updatePassword(req: RequestId) {
 
   const user = await findUserLean({ email: decodedToken.email }) as UserDocumentLean;
 
-  const verifiedToken = await verifyRefreshToken(token, user);
+  const verifiedToken = await verifyToken(token);
   if (!verifiedToken) { throw verifyError; }
 
   req._id = user._id; // Input for userUpdate function

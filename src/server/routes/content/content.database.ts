@@ -1,14 +1,14 @@
-import { gridFsBucket } from '../../database/connection';
-import { createReadStream, unlink, createWriteStream, existsSync, stat } from 'fs';
 import { Response } from 'express';
-import {
-  ContentPageModel, GridFsDocument, ContentQuery, ContentFetch, ContentPageDocumentLean
-} from '../../database/models/content/content.types';
-import { ContentPage } from '../../database/models/content/content.schema';
-import { saveError, deleteError, findError } from '../../services/error-handler.service';
-import { QueryResult } from './content.types';
+import { createReadStream, createWriteStream, existsSync, readFile, unlink, writeFile } from 'fs';
 import { ObjectId } from 'mongodb';
-import { config, appRoot } from '../../services/server.service';
+import { gridFsBucket } from '../../database/connection';
+import { ContentPage } from '../../database/models/content/content.schema';
+import {
+  ContentFetch, ContentPageDocumentLean, ContentPageModel, ContentQuery, GridFsDocument
+} from '../../database/models/content/content.types';
+import { deleteError, findError, saveError } from '../../services/error-handler.service';
+import { appRoot, config } from '../../services/server.service';
+import { QueryResult } from './content.types';
 
 // GridFs upload
 export async function uploadFiles(files: Express.Multer.File[]) {
@@ -56,10 +56,14 @@ export function deleteFileDb(_id: string): Promise<boolean> {
 export function contentFile(_id: string, res: Response): Promise<void> {
   return new Promise((resolve, reject) => {
 
-    stat(appRoot + config.cacheDirFiles + _id, (error, stats) => {
+    readFile(appRoot + config.cacheDirJson + _id + '.json', (error, data) => {
 
-      if (error || stats.size === 0) { return isNotCached(); }
+      if (error) { return isNotCached(); }
 
+      const file = data.toString();
+      const fileType = JSON.parse(file as string).contentType;
+
+      res.contentType(fileType);
       return isCached();
     });
 
@@ -69,7 +73,6 @@ export function contentFile(_id: string, res: Response): Promise<void> {
       readStreamFs.pipe(res);
 
       readStreamFs.on('error', error => reject(error));
-      readStreamFs.on('file', file => res.contentType(file.contentType));
       readStreamFs.on('close', () => resolve());
     }
 
@@ -78,13 +81,17 @@ export function contentFile(_id: string, res: Response): Promise<void> {
       const id = new ObjectId(_id);
 
       const readStream = gridFsBucket.openDownloadStream(id);
-      const writeStreamFs = createWriteStream(appRoot + config.cacheDirFiles + id);
+      const writeStreamFsFile = createWriteStream(appRoot + config.cacheDirFiles + id);
+      const writeFsJson = appRoot + config.cacheDirJson + id + '.json';
 
-      readStream.pipe(writeStreamFs);
+      readStream.pipe(writeStreamFsFile);
       readStream.pipe(res);
 
       readStream.on('error', error => reject(error));
-      readStream.on('file', file => res.contentType(file.contentType));
+      readStream.on('file', file => {
+        res.contentType(file.contentType);
+        writeFile(writeFsJson, JSON.stringify(file), () => { });
+      });
       readStream.on('close', () => resolve());
     }
   });
