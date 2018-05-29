@@ -58,7 +58,7 @@ export function cacheJson(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-// Cache json clear middleware
+// Cache clear middleware
 export function clearCache(_req: Request, _res: Response, next: NextFunction) {
 
   startUpServer();

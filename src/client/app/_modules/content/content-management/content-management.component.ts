@@ -1,9 +1,8 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Observable, Subscription, of } from 'rxjs';
 import { ContentPageDocumentLean } from '../../../../../server/database/models/content/content.types';
-import { UserType } from '../../../../../server/database/models/users/user.types';
 import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
 import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
 import { UserService } from '../../users/user.service';
@@ -16,7 +15,7 @@ import { NewPageComponent } from './new-page/new-page.component';
   templateUrl: './content-management.component.html',
   styleUrls: ['./content-management.component.css'],
 })
-export class ContentManagementComponent implements OnDestroy {
+export class ContentManagementComponent implements OnInit, OnDestroy {
 
   // Variables
   public progressSpinner = false;
@@ -24,12 +23,12 @@ export class ContentManagementComponent implements OnDestroy {
   public pages: Observable<ContentPageDocumentExt[]>;
   private pagesResponse: ContentPageDocumentLean[];
   private initFlag = true;
-  public userType: UserType;
   private maxImageSize = 204800; // Bytes
   private maxFileSize = 2097152; // Bytes
+  public isDeveloper = false;
 
   // Subscriptions
-  private getUserType: Subscription;
+  private subscriptions = new Subscription;
 
   // Methods
   public async getForm() {
@@ -290,14 +289,14 @@ export class ContentManagementComponent implements OnDestroy {
   }
   private initTextField(header: string, text: string, _id: string) {
     return this.formBuilder.group({
-      header: [header, []],
+      header: [{ value: header, disabled: !this.isDeveloper }, []],
       text: [text, []],
       _id: [_id, []],
     });
   }
   private initImageField(title: string, image: any, imageUpdate: File, _id: string) {
     return this.formBuilder.group({
-      title: [title, []],
+      title: [{ value: title, disabled: !this.isDeveloper }, []],
       image: [image, []],
       imageUpdate: [imageUpdate, []],
       _id: [_id, []],
@@ -305,7 +304,7 @@ export class ContentManagementComponent implements OnDestroy {
   }
   private initFileField(title: string, file: any, fileUpdate: File, _id: string) {
     return this.formBuilder.group({
-      title: [title, []],
+      title: [{ value: title, disabled: !this.isDeveloper }, []],
       file: [file, []],
       fileUpdate: [fileUpdate, []],
       _id: [_id, []],
@@ -409,12 +408,18 @@ export class ContentManagementComponent implements OnDestroy {
     private snackbarComponent: SnackbarComponent,
     private userService: UserService,
   ) {
-    this.getUserType = this.userService.userType$.subscribe(type => { this.userType = type; });
     this.getForm();
   }
 
+  ngOnInit() {
+    const getUserType = this.userService.userType$.subscribe(type => {
+      if (type.value === 'developer') { this.isDeveloper = true; }
+    });
+    this.subscriptions.add(getUserType);
+  }
+
   ngOnDestroy() {
-    this.getUserType.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
 }

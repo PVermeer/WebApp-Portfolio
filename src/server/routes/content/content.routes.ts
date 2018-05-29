@@ -1,4 +1,3 @@
-import { json, urlencoded } from 'body-parser';
 import { Router } from 'express';
 import { DbConnectionError, upload } from '../../database/connection';
 import { userTypes } from '../../database/models/users/user.schema';
@@ -8,13 +7,10 @@ import { requiresUserAuth } from '../users/users.authentication';
 // import { userTypes } from '../database/models/users/user.schema';
 import { contentPageDelete, contentPageGetAll, contentPageNew, contentPageUpdate, getFile, getPage } from './content.controller';
 
-
 const router = Router();
 
 // Middleware
 router.use(DbConnectionError);
-router.use(urlencoded({ extended: false }));
-router.use(json());
 
 // -----------Routes-------------------
 

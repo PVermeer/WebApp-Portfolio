@@ -1,7 +1,7 @@
 <!-- The loading spinner componenent -->
 <app-dialog-spinner *ngIf="progressSpinner"></app-dialog-spinner>
 
-<div class="flex-row-right button-margin">
+<div *ngIf="isDeveloper" class="flex-row-right button-margin">
   <button mat-raised-button (click)="newPageForm()">Add new page</button>
 </div>
 
@@ -35,15 +35,14 @@
                 <mat-card-header class="flex-row-between-nowrap">
                   <mat-card-title>
                     <mat-form-field [formGroupName]="j" floatLabel="always">
-                      <input matInput [type]="text.typeHeader" formControlName="header" [placeholder]="text.placeholderHeader"
-                        [value]="contentForm[i].controls.texts.controls[j].controls.header.value">
+                      <input matInput [type]="text.typeHeader" formControlName="header" [value]="contentForm[i].controls.texts.controls[j].controls.header.value">
                       <mat-error *ngIf="contentForm[i].controls.texts.controls[j].controls.header.errors">
                         {{ text.alertHeader }}
                       </mat-error>
                     </mat-form-field>
                   </mat-card-title>
 
-                  <button type="button" mat-icon-button (click)="textFieldRemove(i, j)" matTooltip="Remove this card" matTooltipPosition="above"
+                  <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="textFieldRemove(i, j)" matTooltip="Remove this card" matTooltipPosition="above"
                     matTooltipShowDelay="500">
                     <mat-icon>delete</mat-icon>
                   </button>
@@ -67,7 +66,7 @@
           </div>
 
           <br>
-          <div class="flex-row-around">
+          <div *ngIf="isDeveloper" class="flex-row-around">
             <button mat-button type="button" color="accent" (click)="textFieldAdd(i)">Add text field</button>
           </div>
 
@@ -87,12 +86,11 @@
 
                     <mat-card-title>
                       <mat-form-field floatLabel="always">
-                        <input matInput [type]="image.typeTitle" formControlName="title" [placeholder]="image.placeholderTitle"
-                          [value]="contentForm[i].controls.images.controls[k].controls.title.value">
+                        <input matInput [type]="image.typeTitle" formControlName="title" [value]="contentForm[i].controls.images.controls[k].controls.title.value">
                       </mat-form-field>
                     </mat-card-title>
 
-                    <button type="button" mat-icon-button (click)="imageFieldRemove(i, k)" matTooltip="Remove this card"
+                    <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="imageFieldRemove(i, k)" matTooltip="Remove this card"
                       matTooltipPosition="above" matTooltipShowDelay="500">
                       <mat-icon>delete</mat-icon>
                     </button>
@@ -143,7 +141,7 @@
           </div>
 
           <br>
-          <div class="flex-row-around">
+          <div *ngIf="isDeveloper" class="flex-row-around">
             <button mat-button color="accent" type="button" (click)="imageFieldAdd(i)">Add image field</button>
           </div>
 
@@ -163,15 +161,14 @@
 
                     <mat-card-title>
                       <mat-form-field floatLabel="always">
-                        <input matInput [type]="file.typeTitle" formControlName="title" [placeholder]="file.placeholderTitle"
-                          [value]="contentForm[i].controls.files.controls[l].controls.title.value">
+                        <input matInput [type]="file.typeTitle" formControlName="title" [value]="contentForm[i].controls.files.controls[l].controls.title.value">
                         <mat-error *ngIf="contentForm[i].controls.files.controls[l].controls.title.errors">
                           {{ file.alertTitle }}
                         </mat-error>
                       </mat-form-field>
                     </mat-card-title>
 
-                    <button type="button" mat-icon-button (click)="fileFieldRemove(i, l)" matTooltip="Remove this card" matTooltipPosition="above"
+                    <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="fileFieldRemove(i, l)" matTooltip="Remove this card" matTooltipPosition="above"
                       matTooltipShowDelay="500">
                       <mat-icon>delete</mat-icon>
                     </button>
@@ -219,7 +216,7 @@
           </div>
 
           <br>
-          <div class="flex-row-around">
+          <div *ngIf="isDeveloper" class="flex-row-around">
             <button mat-button color="accent" type="button" (click)="fileFieldAdd(i)">Add file field</button>
           </div>
         </form>
@@ -233,7 +230,7 @@
         <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)" [disabled]="!contentForm[i]?.valid">
           Submit changes
         </button>
-        <button type="submit" mat-raised-button color="warn" (click)="removePage(i)">
+        <button *ngIf="isDeveloper" type="submit" mat-raised-button color="warn" (click)="removePage(i)">
           Remove page
         </button>
       </div>

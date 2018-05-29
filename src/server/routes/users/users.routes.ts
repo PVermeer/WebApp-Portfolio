@@ -1,23 +1,13 @@
 import { Router } from 'express';
-import { urlencoded, json } from 'body-parser';
-
-import {
-  checkDuplicate, logIn, loginCheck, mockUser, passwordRecovery, registerUser, updatePassword,
-  userDelete, userDeleteMany, userGetAll, userInfo, userMany,
-  userUpdate, verifyEmail, updateEmail, userBlockMany, userUnblockMany, resendEmailVerification,
-  makeAdminMany,
-  makeUserMany,
-} from './users.controller';
-import { requiresUserAuth } from './users.authentication';
-import { disableCache } from '../../services/cache-control.service';
 import { DbConnectionError } from '../../database/connection';
 import { userTypes } from '../../database/models/users/user.schema';
+import { disableCache } from '../../services/cache-control.service';
+import { requiresUserAuth } from './users.authentication';
+import { checkDuplicate, logIn, loginCheck, makeAdminMany, makeUserMany, mockUser, passwordRecovery, registerUser, resendEmailVerification, updateEmail, updatePassword, userBlockMany, userDelete, userDeleteMany, userGetAll, userInfo, userMany, userUnblockMany, userUpdate, verifyEmail } from './users.controller';
 
 const router = Router();
 
 // Middleware
-router.use(urlencoded({ extended: false }));
-router.use(json());
 router.use(disableCache);
 router.use(DbConnectionError);
 
@@ -45,13 +35,15 @@ router.delete('/delete/:id', requiresUserAuth(401, userTypes.user), userDelete);
 router.get('/getall', requiresUserAuth(401, userTypes.admin), userGetAll);
 router.post('/many', requiresUserAuth(401, userTypes.admin), userMany);
 router.delete('/deletemany/:id', requiresUserAuth(401, userTypes.admin), userDeleteMany);
-router.post('/registermock', requiresUserAuth(401, userTypes.admin), mockUser);
 router.put('/blockmany/:id', requiresUserAuth(401, userTypes.admin), userBlockMany);
 router.put('/unblockmany/:id', requiresUserAuth(401, userTypes.admin), userUnblockMany);
 
 // SuperAdmin
 router.put('/makeadminmany/:id', requiresUserAuth(401, userTypes.superAdmin), makeAdminMany);
 router.put('/makeusermany/:id', requiresUserAuth(401, userTypes.superAdmin), makeUserMany);
+
+// Developer
+router.post('/registermock', requiresUserAuth(401, userTypes.developer), mockUser);
 
 // Catch all
 router.use('*', (_req, res) => res.status(403).send('Users: What are you asking for?'));

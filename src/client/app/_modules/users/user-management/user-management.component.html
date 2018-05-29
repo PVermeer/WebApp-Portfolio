@@ -4,7 +4,7 @@
   <div class="flex-row-between-nowrap">
 
     <div class="flex-row-left-center button-margin">
-      <div class="flex-column-around">
+      <div *ngIf="isDeveloper" class="flex-column-around">
         <button mat-raised-button (click)="mockUser()" [(disabled)]="disableButtons">Create Mock Users</button>
       </div>
     </div>

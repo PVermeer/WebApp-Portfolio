@@ -2,12 +2,10 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Subscription } from 'rxjs';
-import { UserType } from '../../../../../server/database/models/users/user.types';
 import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
 import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
 import { UserService } from '../user.service';
 import { UserManyDialogComponent } from './many-dialog/user-many-dialog.component';
-
 
 @Component({
   selector: 'app-user-management',
@@ -27,7 +25,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   public progressBar = false;
   public disableButtons = false;
   public searchInput: string;
-  private userType: UserType;
+  public isDeveloper = false;
 
   public columnsToDisplay = ['select', 'username', 'firstName', 'lastName', 'type', 'email', 'created_at'];
   public options = [
@@ -36,7 +34,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     { action: 'unblockUser', view: 'Unblock user(s)' },
   ];
 
-  private subscription = new Subscription;
+  private subscriptions = new Subscription;
 
   // Methods
   private getUsers() {
@@ -165,28 +163,25 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     private snackbarComponent: SnackbarComponent,
     public matDialog: MatDialog,
   ) {
-    const subscription = this.userService.userType$.subscribe(type => {
-      this.userType = type;
-    });
-    this.subscription.add(subscription);
-
     this.getUsers();
   }
 
   ngOnInit() {
-    // Add features to the table dataSource
+    const userType = this.userService.userType$.subscribe(type => {
+      if (type.rank > 3) {
+        this.options.push({ action: 'makeAdmin', view: 'Promote to admin' });
+        this.options.push({ action: 'makeUser', view: 'Demote to user' });
+      }
+      if (type.value === 'developer') { this.isDeveloper = true; }
+    });
+    this.subscriptions.add(userType);
+
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-
-    // Add features if SuperAdmin
-    if (this.userType.rank > 3) {
-      this.options.push({ action: 'makeAdmin', view: 'Promote to admin' });
-      this.options.push({ action: 'makeUser', view: 'Demote to user' });
-    }
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
 }

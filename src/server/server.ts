@@ -7,6 +7,7 @@ import { mail } from './routes/mail/mail.routes';
 import { users } from './routes/users/users.routes';
 import { content } from './routes/content/content.routes';
 import { startUpServer, appRoot } from './services/server.service';
+import { urlencoded, json } from 'body-parser';
 
 startUpServer();
 
@@ -15,7 +16,8 @@ export const app = express();
 // Middleware
 app.use(compression());
 app.use(express.static(appRoot + 'dist/client'));
-app.use(express.static(appRoot + 'node_modules/material-design-icons'));
+app.use(urlencoded({ extended: false }));
+app.use(json());
 
 // -----------------Routes--------------------
 
