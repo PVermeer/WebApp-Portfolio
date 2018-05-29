@@ -233,4 +233,13 @@ th.mat-header-cell, td.mat-cell {
 
 .hide {
   opacity: 0;
+}hide {
+  opacity: 0;
+}
+
+/* Make mat-dialog transparent for usage with progress-spinner */
+
+#DialogSpinnerComponent {
+  box-shadow: none !important;
+  background: transparent !important;
 }
