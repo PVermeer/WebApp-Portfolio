@@ -19,22 +19,33 @@ export interface ContentImage {
 export interface ContentImageDocument extends ContentImage, Document { _id: string | ObjectID; }
 export interface ContentImageDocumentLean extends ContentImage { _id: string | ObjectID; }
 
+// File
+export interface ContentFile {
+  title: string;
+  file: string | ObjectID | Blob;
+}
+export interface ContentFileDocument extends ContentFile, Document { _id: string | ObjectID; }
+export interface ContentFileDocumentLean extends ContentFile { _id: string | ObjectID; }
+
 // Page
 export interface ContentPageModel {
   title: string;
   description: string;
   texts: ContentText[];
   images: ContentImage[];
+  files: ContentFile[];
 }
 export interface ContentPageDocument extends ContentPageModel, Document {
   _id: string | ObjectID;
   texts: ContentTextDocument[];
   images: ContentImageDocument[];
+  files: ContentFileDocument[];
 }
 export interface ContentPageDocumentLean extends ContentPageModel {
   _id: string | ObjectID;
   texts: ContentTextDocumentLean[];
   images: ContentImageDocumentLean[];
+  files: ContentFileDocumentLean[];
 }
 
 export type ContentQuery = { [P in keyof ContentPageDocumentLean]?: ContentPageDocumentLean[P] };

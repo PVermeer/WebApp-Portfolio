@@ -60,8 +60,8 @@ export function contentFile(_id: string, res: Response): Promise<void> {
 
       if (error) { return isNotCached(); }
 
-      const file = data.toString();
-      const fileType = JSON.parse(file as string).contentType;
+      const file: GridFsDocument = JSON.parse(data.toString());
+      const fileType = file.contentType;
 
       res.contentType(fileType);
       return isCached();
@@ -112,6 +112,9 @@ export function deleteContentPage(query: ContentQuery) {
 
     await Promise.all(document.images.map(async x => {
       if (x.image) { await deleteFileDb(x.image as string); }
+    }));
+    await Promise.all(document.files.map(async x => {
+      if (x.file) { await deleteFileDb(x.file as string); }
     }));
   });
 }

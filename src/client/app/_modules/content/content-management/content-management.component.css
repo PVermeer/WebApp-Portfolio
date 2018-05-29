@@ -4,9 +4,13 @@
   flex-basis: 50%;
 }
 
+.image-card, .file-card {
+  max-width: 300px;
+}
+
 /* Images */
 
-#no-image {
+.icon-big {
   height: 100px;
   width: 100%;
   font-size: 100px;

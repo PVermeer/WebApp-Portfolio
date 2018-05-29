@@ -1,11 +1,11 @@
+import { HTTP_INTERCEPTORS, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
-
+import { ErrorMessage } from '../../server/types/types';
 import { SnackbarComponent } from './_modules/_shared/components/snackbar/snackbar.component';
 import { UserService } from './_modules/users/user.service';
-import { ErrorMessage } from '../../server/types/types';
+
 
 
 @Injectable()
@@ -42,6 +42,9 @@ export class ErrorInterceptor implements HttpInterceptor {
         // Handle some errors special
         if (status === 401) {
           this.userService.login();
+
+        } else if (status === 400) {
+          this.snackbarComponent.snackbarError(error.message);
 
         } else if (status === 403) { // Do nothing
 

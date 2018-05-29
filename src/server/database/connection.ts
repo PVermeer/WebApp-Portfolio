@@ -78,5 +78,6 @@ export const upload = multer({
   storage: diskStorage({
     destination: appRoot + config.uploadDir,
     filename: (_req, file, cb) => cb(null, file.originalname)
-  })
+  }),
+  limits: { fileSize: 2097152 }
 });

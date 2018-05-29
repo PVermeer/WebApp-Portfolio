@@ -1,3 +1,6 @@
+<!-- The loading spinner componenent -->
+<app-dialog-spinner *ngIf="progressSpinner"></app-dialog-spinner>
+
 <div class="flex-row-right button-margin">
   <button mat-raised-button (click)="newPageForm()">Add new page</button>
 </div>
@@ -7,13 +10,11 @@
 
     <mat-tab [label]="page.title">
       <div *ngIf="contentForm[i]">
-        <mat-progress-bar mode="indeterminate" *ngIf="progressBar"></mat-progress-bar>
-
         <br>
         <div class="flex-row-between-nowrap">
           <h3>{{ page.title }}</h3>
           <div class="flex-column-around">
-            <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)">
+            <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)" [disabled]="!contentForm[i].valid">
               Submit changes
             </button>
           </div>
@@ -78,7 +79,7 @@
           <div formArrayName="images" class="flex-row-left">
             <div *ngFor="let image of page.images; let k = index">
 
-              <mat-card class="image-card" #images floatLabel="always" *ngIf="contentForm[i].controls.images.controls[k]">
+              <mat-card class="image-card" *ngIf="contentForm[i].controls.images.controls[k]">
 
                 <div [formGroupName]="k">
                   <!-- Header -->
@@ -88,9 +89,6 @@
                       <mat-form-field floatLabel="always">
                         <input matInput [type]="image.typeTitle" formControlName="title" [placeholder]="image.placeholderTitle"
                           [value]="contentForm[i].controls.images.controls[k].controls.title.value">
-                        <mat-error *ngIf="contentForm[i].controls.images.controls[k].controls.title.errors">
-                          {{ image.alertTitle }}
-                        </mat-error>
                       </mat-form-field>
                     </mat-card-title>
 
@@ -105,33 +103,40 @@
                     <img mat-card-image [appViewImage]="image.image" *ngIf="image.image; else noImage" [class.image-grey]="imgFileInput.files[0]">
 
                     <ng-template #noImage>
-                      <mat-icon id="no-image" color="warn">broken_image</mat-icon>
+                      <mat-icon class="icon-big" color="warn">broken_image</mat-icon>
                     </ng-template>
 
                     <br>
                     <img *ngIf="imgFileInput.value" mat-card-image [appPreviewImage]="imgFileInput.files">
                   </div>
 
-                  <input hidden type="file" #imgFileInput (change)="contentForm[i].controls.images.controls[k].controls.imageUpdate.setValue(imgFileInput.files[0])">
 
-                  <mat-card-actions>
-                    <div class="flex-column-around-center">
+                  <input hidden type="file" accept="image/*" #imgFileInput (change)="contentForm[i].controls.images.controls[k].controls.imageUpdate.setValue(imgFileInput.files[0]); validateImageSize(i, k, imgFileInput.files[0])">
 
-                      <div *ngIf="contentForm[i].controls.images.controls[k].controls.imageUpdate.value">
-                        {{ contentForm[i].controls.images.controls[k].controls.imageUpdate.value.name }}
-                        <br>
-                        <br>
-                      </div>
+                  <div class="flex-column-around-center">
 
-                      <mat-chip-list>
-                        <mat-chip color="accent" selected="true" (click)="imgFileInput.click()" matTooltip="Select a new image" matTooltipPosition="above" matTooltipShowDelay="500">
-                          <mat-icon>file_upload</mat-icon></mat-chip>
-                        <mat-chip *ngIf="imgFileInput.value" selected="true" (click)="imgFileInput.value = null; contentForm[i].controls.images.controls[k].controls.imageUpdate.setValue(null)" matTooltip="Remove new image" matTooltipPosition="above" matTooltipShowDelay="500">
-                          <mat-icon>delete</mat-icon></mat-chip>
-                      </mat-chip-list>
-
+                    <div *ngIf="contentForm[i].controls.images.controls[k].controls.imageUpdate.value">
+                      {{ contentForm[i].controls.images.controls[k].controls.imageUpdate.value.name }}
+                      <br>
+                      <br>
                     </div>
-                  </mat-card-actions>
+
+                    <mat-error *ngIf="!contentForm[i].controls.images.controls[k]?.valid">
+                      {{ image.alert }}
+                    </mat-error>
+                    <br>
+                    <br>
+
+                    <div class="flex-row-between button-margin">
+                      <button mat-fab type="button" (click)="imgFileInput.click()" matTooltip="Select a new image" matTooltipShowDelay="500">
+                        <mat-icon>add_photo_alternate</mat-icon>
+                      </button>
+                      <button mat-fab type="button" *ngIf="imgFileInput.value" (click)="imgFileInput.value = null; contentForm[i].controls.images.controls[k].controls.imageUpdate.setValue(null)"
+                        matTooltip="Remove new image" matTooltipShowDelay="500">
+                        <mat-icon>replay</mat-icon>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </mat-card>
             </div>
@@ -141,6 +146,82 @@
           <div class="flex-row-around">
             <button mat-button color="accent" type="button" (click)="imageFieldAdd(i)">Add image field</button>
           </div>
+
+          <br>
+          <mat-divider [inset]="true"></mat-divider>
+          <h4>Files</h4>
+
+          <!-- Files -->
+          <div formArrayName="files" class="flex-row-left">
+            <div *ngFor="let file of page.files; let l = index">
+
+              <mat-card class="file-card" floatLabel="always" *ngIf="contentForm[i].controls.files.controls[l]">
+
+                <div [formGroupName]="l">
+                  <!-- Header -->
+                  <mat-card-header class="flex-row-between-nowrap">
+
+                    <mat-card-title>
+                      <mat-form-field floatLabel="always">
+                        <input matInput [type]="file.typeTitle" formControlName="title" [placeholder]="file.placeholderTitle"
+                          [value]="contentForm[i].controls.files.controls[l].controls.title.value">
+                        <mat-error *ngIf="contentForm[i].controls.files.controls[l].controls.title.errors">
+                          {{ file.alertTitle }}
+                        </mat-error>
+                      </mat-form-field>
+                    </mat-card-title>
+
+                    <button type="button" mat-icon-button (click)="fileFieldRemove(i, l)" matTooltip="Remove this card" matTooltipPosition="above"
+                      matTooltipShowDelay="500">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </mat-card-header>
+
+                  <br>
+                  <div class="flex-column-between-center">
+                    <mat-icon class="icon-big" *ngIf="file.file; else noFile" [class.image-grey]="fileInput.files[0]">insert_drive_file</mat-icon>
+
+                    <ng-template #noFile>
+                      <mat-icon class="icon-big" color="warn">broken_image</mat-icon>
+                    </ng-template>
+                  </div>
+
+                  <input hidden type="file" #fileInput (change)="contentForm[i].controls.files.controls[l].controls.fileUpdate.setValue(fileInput.files[0]); validateFileSize(i, l, fileInput.files[0])">
+
+                  <br>
+                  <div class="flex-column-around-center">
+
+                    <div *ngIf="contentForm[i].controls.files.controls[l].controls.fileUpdate.value">
+                      {{ contentForm[i].controls.files.controls[l].controls.fileUpdate.value.name }}
+                      <br>
+                      <br>
+                    </div>
+
+                    <mat-error *ngIf="!contentForm[i].controls.files.controls[l]?.valid">
+                      {{ file.alert }}
+                    </mat-error>
+                    <br>
+                    <br>
+
+                    <div class="flex-row-between button-margin">
+                      <button mat-fab type="button" (click)="fileInput.click()" matTooltip="Select a new file" matTooltipShowDelay="500">
+                        <mat-icon>note_add</mat-icon>
+                      </button>
+                      <button mat-fab type="button" *ngIf="fileInput.value" (click)="fileInput.value = null; contentForm[i].controls.files.controls[l].controls.fileUpdate.setValue(null)"
+                        matTooltip="Remove new image" matTooltipShowDelay="500">
+                        <mat-icon>replay</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </mat-card>
+            </div>
+          </div>
+
+          <br>
+          <div class="flex-row-around">
+            <button mat-button color="accent" type="button" (click)="fileFieldAdd(i)">Add file field</button>
+          </div>
         </form>
       </div>
 
@@ -149,7 +230,7 @@
       <br>
       <br>
       <div class="flex-row-right button-margin">
-        <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)">
+        <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)" [disabled]="!contentForm[i]?.valid">
           Submit changes
         </button>
         <button type="submit" mat-raised-button color="warn" (click)="removePage(i)">

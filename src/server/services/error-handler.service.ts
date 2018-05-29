@@ -8,6 +8,7 @@ export function errorHandler(err: ErrorMessage, _req: Request, res: Response, _n
   let error = err;
 
   if (err.stack) { error = { message: err.message, status: 500 }; }
+  if (err.code === 'LIMIT_FILE_SIZE') { error = { message: err.message, status: 400 }; }
 
   if (!error.status) { error.status = 500; }
 

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Observable, Subscription, of } from 'rxjs';
@@ -8,7 +8,7 @@ import { DialogComponent, DialogContent } from '../../_shared/components/dialog/
 import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
 import { UserService } from '../../users/user.service';
 import { ContentService } from '../content.service';
-import { ContentImageExt, ContentPageDocumentExt, ContentPageLeanSubmit, ContentTextExt } from './content-management.types.d';
+import { ContentFileExt, ContentImageExt, ContentPageDocumentExt, ContentPageLeanSubmit, ContentTextExt } from './content-management.types.d';
 import { NewPageComponent } from './new-page/new-page.component';
 
 @Component({
@@ -16,15 +16,17 @@ import { NewPageComponent } from './new-page/new-page.component';
   templateUrl: './content-management.component.html',
   styleUrls: ['./content-management.component.css'],
 })
-export class ContentManagementComponent implements AfterViewInit, OnDestroy {
+export class ContentManagementComponent implements OnDestroy {
 
   // Variables
-  public progressBar = false;
+  public progressSpinner = false;
   public contentForm: FormGroup[] = [];
   public pages: Observable<ContentPageDocumentExt[]>;
   private pagesResponse: ContentPageDocumentLean[];
   private initFlag = true;
   public userType: UserType;
+  private maxImageSize = 204800; // Bytes
+  private maxFileSize = 2097152; // Bytes
 
   // Subscriptions
   private getUserType: Subscription;
@@ -32,7 +34,9 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
   // Methods
   public async getForm() {
 
+    this.progressSpinner = true;
     this.contentService.getAllContentPages().subscribe(response => {
+      this.progressSpinner = false;
 
       // Map new array for form options
       const newArray = response.map((x: ContentPageDocumentExt, i) => {
@@ -67,6 +71,18 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
           this.updateImageField(z.title, z.image, null, z._id as string, i, k);
         });
 
+        // Map files array
+        x.files.map((a, j) => {
+
+          if (this.initFlag) {
+            this.addFileField(a.title, a.file, null, a._id as string, i);
+          }
+
+          // Text options + data
+          this.formFiles(a);
+          this.updateFileField(a.title, a.file, null, a._id as string, i, j);
+        });
+
         return x;
       });
 
@@ -76,15 +92,18 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
       this.initFlag = false;
 
       // On server errors
-    }, () => { } // Avoid loop
+    }, () => {
+      this.progressSpinner = false;
+    } // Avoid loop
     );
   }
 
   public updateForm(value: ContentPageLeanSubmit): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
 
       // Create formData
       const formData = new FormData;
+
       value.images.map(x => {
         if (x.imageUpdate) {
 
@@ -94,10 +113,21 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
           x._id = id;
         }
       });
+      value.files.map(x => {
+        if (x.fileUpdate) {
+
+          const id = <string>x._id || 'newId-' + x.title + '-' + Math.random().toString(36).slice(-10);
+
+          formData.append('files', x.fileUpdate, id);
+          x._id = id;
+        }
+      });
       formData.append('content', JSON.stringify(value));
 
       // Send formdata
+      this.progressSpinner = true;
       this.contentService.updateContentPage(formData).subscribe(res => {
+        this.progressSpinner = false;
 
         // On success
         this.snackbarComponent.snackbarSuccess(res);
@@ -105,9 +135,9 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
 
         // Errors
       }, () => {
-        this.errorHandler(); reject();
-      }
-      );
+        this.progressSpinner = false;
+        this.errorHandler(); resolve();
+      });
     });
   }
 
@@ -150,15 +180,21 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
       this.addTitleField(title, index);
       this.addTextField('Header 1', 'Some text', null, index);
       this.addImageField('New image', null, null, null, index);
+      this.addFileField('New file', null, null, null, index);
 
+      this.progressSpinner = true;
       this.contentService.newContentPage(this.contentForm[index].value).subscribe(response => {
+        this.progressSpinner = false;
 
         // Success
         this.snackbarComponent.snackbarSuccess(response);
         this.getForm();
 
         // Errors
-      }, () => { this.errorHandler(); }
+      }, () => {
+        this.progressSpinner = false;
+        this.errorHandler();
+      }
       );
     });
   }
@@ -186,14 +222,20 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
       const _id = this.pagesResponse[i]._id;
       this.removeFormGroup(i);
 
+      this.progressSpinner = true;
       this.contentService.deleteContentPage(_id as string).subscribe(response => {
+        this.progressSpinner = false;
+
 
         // Success
         this.snackbarComponent.snackbarSuccess(response);
         this.getForm();
 
         // Errors
-      }, () => { this.errorHandler(); }
+      }, () => {
+        this.progressSpinner = false;
+        this.errorHandler();
+      }
       );
     });
   }
@@ -204,11 +246,15 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
     this.addTextField('New header', 'Some text', null, i);
     this.pagesResponse[i].texts.push({ _id: null, header: 'New header', text: 'Some text' });
   }
-
   public async imageFieldAdd(i: number) {
 
     this.addImageField('New image', null, null, null, i);
     this.pagesResponse[i].images.push({ _id: null, title: 'New image', image: null });
+  }
+  public async fileFieldAdd(i: number) {
+
+    this.addFileField('New file', null, null, null, i);
+    this.pagesResponse[i].files.push({ _id: null, title: 'New file', file: null });
   }
 
   public async textFieldRemove(i: number, j: number) {
@@ -216,11 +262,15 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
     this.removeTextField(i, j);
     this.pagesResponse[i].texts.splice(j, 1);
   }
-
   public async imageFieldRemove(i: number, j: number) {
 
     this.removeImageField(i, j);
     this.pagesResponse[i].images.splice(j, 1);
+  }
+  public async fileFieldRemove(i: number, j: number) {
+
+    this.removeFileField(i, j);
+    this.pagesResponse[i].files.splice(j, 1);
   }
 
   public errorHandler() {
@@ -235,6 +285,7 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
     return this.formBuilder.group({
       texts: this.formBuilder.array([]),
       images: this.formBuilder.array([]),
+      files: this.formBuilder.array([]),
     });
   }
   private initTextField(header: string, text: string, _id: string) {
@@ -251,6 +302,31 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
       imageUpdate: [imageUpdate, []],
       _id: [_id, []],
     });
+  }
+  private initFileField(title: string, file: any, fileUpdate: File, _id: string) {
+    return this.formBuilder.group({
+      title: [title, []],
+      file: [file, []],
+      fileUpdate: [fileUpdate, []],
+      _id: [_id, []],
+    });
+  }
+
+  public validateImageSize(i: number, k: number, file: File) {
+
+    if (file.size > this.maxImageSize) {
+      const control = <FormArray>this.contentForm[i].controls['images'];
+      control.controls[k].get('imageUpdate').setErrors({ 'Size exceeded': true });
+    }
+  }
+  public validateFileSize(i: number, l: number, file: File) {
+
+    if (file.size > this.maxFileSize) {
+      const control = <FormArray>this.contentForm[i].controls['files'];
+      console.log(control);
+      control.controls[l].get('fileUpdate').setErrors({ 'Size exceeded': true });
+      console.log(control.controls[l]);
+    }
   }
 
   /**
@@ -271,6 +347,10 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
     const control = <FormArray>this.contentForm[i].controls['images'];
     control.push(this.initImageField(title, image, imageUpdate, _id));
   }
+  private addFileField(title: string, file: any, fileUpdate: File, _id: string, i: number) {
+    const control = <FormArray>this.contentForm[i].controls['files'];
+    control.push(this.initFileField(title, file, fileUpdate, _id));
+  }
 
   private updateTextField(header: string, text: string, _id: string, i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['texts'];
@@ -279,6 +359,10 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
   private updateImageField(title: string, image: any, imageUpdate: File, _id: string, i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['images'];
     control.setControl(j, this.initImageField(title, image, imageUpdate, _id as string));
+  }
+  private updateFileField(title: string, file: any, fileUpdate: File, _id: string, i: number, j: number) {
+    const control = <FormArray>this.contentForm[i].controls['files'];
+    control.setControl(j, this.initFileField(title, file, fileUpdate, _id as string));
   }
 
   private removeFormGroup(i: number) {
@@ -290,6 +374,10 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
   }
   private removeImageField(i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['images'];
+    control.removeAt(j);
+  }
+  private removeFileField(i: number, j: number) {
+    const control = <FormArray>this.contentForm[i].controls['files'];
     control.removeAt(j);
   }
 
@@ -305,7 +393,12 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
   private formImages(z: ContentImageExt) {
     z.placeholderTitle = 'Edit the title here';
     z.typeTitle = 'text';
-    z.alertTitle = '';
+    z.alert = `Maximum image size of ${Math.floor(this.maxImageSize / 1000)} Kb exceeded. Please convert the image or choose another image`;
+  }
+  private formFiles(a: ContentFileExt) {
+    a.placeholderTitle = 'Edit the title here';
+    a.typeTitle = 'text';
+    a.alert = `Maximum image size of ${Math.floor(this.maxImageSize / 1024)} Kb exceeded. Please convert the image or choose another image`;
   }
 
   // Lifecycle
@@ -315,13 +408,9 @@ export class ContentManagementComponent implements AfterViewInit, OnDestroy {
     private contentService: ContentService,
     private snackbarComponent: SnackbarComponent,
     private userService: UserService,
-    public changeDetectorRef: ChangeDetectorRef,
   ) {
     this.getUserType = this.userService.userType$.subscribe(type => { this.userType = type; });
     this.getForm();
-  }
-
-  ngAfterViewInit() {
   }
 
   ngOnDestroy() {

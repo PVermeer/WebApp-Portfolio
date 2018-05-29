@@ -37,6 +37,11 @@ const ContentPageSchema = new Schema({
     _id: { type: Schema.Types.ObjectId, required: true },
     title: { type: String, trim: true, required: true },
     image: { type: Schema.Types.ObjectId, ref: 'content.files' }
+  }],
+  files: [{
+    _id: { type: Schema.Types.ObjectId, required: true },
+    title: { type: String, trim: true, required: true },
+    file: { type: Schema.Types.ObjectId, ref: 'content.files' }
   }]
 
 }, { timestamps: { createdAt: 'created_at' } });
