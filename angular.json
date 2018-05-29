@@ -18,7 +18,8 @@
             "polyfills": "src/client/polyfills.ts",
             "assets": [
               "src/client/assets",
-              "src/client/favicon.ico"
+              "src/client/favicon.ico",
+              "src/manifest.json"
             ],
             "styles": [
               "src/client/themes/theme.scss"
@@ -41,7 +42,8 @@
                   "replace": "src/client/environments/environment.ts",
                   "with": "src/client/environments/environment.prod.ts"
                 }
-              ]
+              ],
+              "serviceWorker": true
             }
           }
         },
@@ -75,7 +77,8 @@
             ],
             "assets": [
               "src/client/assets",
-              "src/client/favicon.ico"
+              "src/client/favicon.ico",
+              "src/manifest.json"
             ]
           }
         },

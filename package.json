@@ -31,6 +31,7 @@
     "@angular/material": "^6.1.0",
     "@angular/platform-browser": "6.0.2",
     "@angular/platform-browser-dynamic": "6.0.2",
+    "@angular/pwa": "^0.6.5",
     "@angular/router": "6.0.2",
     "@types/bcryptjs": "^2.4.1",
     "@types/compression": "0.0.36",
@@ -63,7 +64,8 @@
     "rxjs": "^6.2.0",
     "typescript": "2.7.2",
     "web-animations-js": "^2.3.1",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.8.26",
+    "@angular/service-worker": "6.0.2"
   },
   "devDependencies": {
     "codelyzer": "^4.0.1",

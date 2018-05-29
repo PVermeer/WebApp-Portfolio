@@ -17,6 +17,8 @@ import { ContentModule } from './_modules/content/content.module';
 import { ErrorInterceptorProvider } from './error.interceptor';
 import { SidenavService } from './sidenav/sidenav.service';
 import { AdminComponent } from './pages/user/admin/admin.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,7 @@ import { AdminComponent } from './pages/user/admin/admin.component';
     ContactModule,
     UsersModule,
     ContentModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [ErrorInterceptorProvider, SidenavService],
   bootstrap: [AppComponent]
