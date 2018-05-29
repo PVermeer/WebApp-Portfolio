@@ -47,6 +47,7 @@ section {
   flex-flow: column;
   justify-content: space-around;
   align-items: center;
+  text-align: center;
 }
 
 .flex-column-between {
@@ -201,7 +202,8 @@ form {
 
 .table-container {
   display: inline-block;
-  padding-left: 6px; /* Checkbox animation won't overflow */
+  padding-left: 6px;
+  /* Checkbox animation won't overflow */
 }
 
 th.mat-header-cell, td.mat-cell {
@@ -232,8 +234,6 @@ th.mat-header-cell, td.mat-cell {
 /* Hide an element (used by CssAnimateInviewService */
 
 .hide {
-  opacity: 0;
-}hide {
   opacity: 0;
 }
 
