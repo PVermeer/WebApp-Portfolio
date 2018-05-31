@@ -3,8 +3,6 @@ import { DbConnectionError, upload } from '../../database/connection';
 import { userTypes } from '../../database/models/users/user.schema';
 import { cacheJson, clearCache } from '../../services/cache-control.service';
 import { requiresUserAuth } from '../users/users.authentication';
-// import { requiresUserAuth } from '../users/users.authentication';
-// import { userTypes } from '../database/models/users/user.schema';
 import { contentPageDelete, contentPageGetAll, contentPageNew, contentPageUpdate, getFile, getPage } from './content.controller';
 
 const router = Router();
@@ -16,6 +14,7 @@ router.use(DbConnectionError);
 
 // No authentication
 router.get('/page', cacheJson, getPage);
+router.get('/image', getFile); // Separation for client cache support (images may be cached, files may not)
 router.get('/file', getFile);
 
 // Admin authentication
