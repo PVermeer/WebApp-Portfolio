@@ -1,9 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
 import { createHash } from 'crypto';
-import { writeFile, unlink } from 'fs';
+import { NextFunction, Request, Response } from 'express';
+import { unlink, writeFile } from 'fs';
 import { Glob } from 'glob';
-
-import { config, startUpServer, appRoot } from './server.service';
+import { appRoot, config, startUpServer } from './server.service';
 
 // Cache headers middleware
 export function disableCache(_req: Request, res: Response, next: NextFunction) {
@@ -36,7 +35,9 @@ export function cacheJson(req: Request, res: Response, next: NextFunction) {
 
     function jsonHook(this: any, json: any) {
 
-      writeFile(newFile, JSON.stringify(json), () => { });
+      if (json && !json.status) {
+        writeFile(newFile, JSON.stringify(json), () => { });
+      }
 
       return original.call(this, json);
     }
