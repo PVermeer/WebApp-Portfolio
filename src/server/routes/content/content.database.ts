@@ -63,17 +63,13 @@ export function contentFile(_id: string, res: Response): Promise<void> {
       const file: GridFsDocument = JSON.parse(data.toString());
       const fileType = file.contentType;
 
-      res.contentType(fileType);
-      return isCached();
+      return isCached(fileType);
     });
 
-    function isCached() {
+    function isCached(fileType: string) {
 
-      const readStreamFs = createReadStream(appRoot + config.cacheDirFiles + _id);
-      readStreamFs.pipe(res);
-
-      readStreamFs.on('error', error => reject(error));
-      readStreamFs.on('close', () => resolve());
+      res.contentType(fileType);
+      res.sendFile(appRoot + config.cacheDirFiles + _id);
     }
 
     function isNotCached() {
