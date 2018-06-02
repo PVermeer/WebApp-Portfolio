@@ -2,14 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Observable, Subscription, of } from 'rxjs';
-import { ContentPageDocumentLean } from '../../../../../../server/database/models/content/content.types';
 import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
 import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
 import { UserService } from '../../users/user.service';
 import { ContentService } from '../content.service';
-import { ContentFileExt, ContentImageExt, ContentPageDocumentExt, ContentPageLeanSubmit, ContentTextExt } from './content-management.types.d';
+import { ContentPageDocumentExt, ContentPageLeanSubmit } from './content-management.types.d';
 import { NewPageComponent } from './new-page/new-page.component';
-import { SwUpdate } from '@angular/service-worker';
 
 @Component({
   selector: 'app-content-management',
@@ -22,7 +20,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   public progressSpinner = false;
   public contentForm: FormGroup[] = [];
   public pages: Observable<ContentPageDocumentExt[]>;
-  private pagesResponse: ContentPageDocumentLean[];
+  private pagesResponse: ContentPageDocumentExt[];
   private initFlag = true;
   private maxImageSize = 204800; // Bytes
   private maxFileSize = 2097152; // Bytes
@@ -40,55 +38,42 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
 
       // Map new array for form options
       const newArray = response.map((x: ContentPageDocumentExt, i) => {
-
-        // Basic init
         if (this.initFlag) {
           this.addFormGroup();
           this.addTitleField(x.title, i);
         }
 
-        // Map texts array
         x.texts.map((y, j) => {
-
           if (this.initFlag) {
             this.addTextField(y.header, y.text, null, i);
           }
-
-          // Text options + data
-          this.formText(y);
           this.updateTextField(y.header, y.text, y._id as string, i, j);
+          y = { ...y, ...this.formTextsAttributes() };
         });
 
-        // Map images array, async to get images
         x.images.map((z, k) => {
-
           if (this.initFlag) {
             this.addImageField(z.title, z.image, null, z._id as string, i);
           }
-
-          // Image options + data
-          this.formImages(z);
           this.updateImageField(z.title, z.image, null, z._id as string, i, k);
+          z = { ...z, ...this.formImagesAttributes() };
         });
 
         // Map files array
         x.files.map((a, j) => {
-
           if (this.initFlag) {
             this.addFileField(a.title, a.file, null, a._id as string, i);
           }
-
-          // Text options + data
-          this.formFiles(a);
           this.updateFileField(a.title, a.file, null, a._id as string, i, j);
+          a = { ...a, ...this.formFilesAttributes() };
         });
 
         return x;
       });
 
       // Pages as observable along with the FormGroup
-      this.pages = of(newArray as ContentPageDocumentExt[]);
-      this.pagesResponse = newArray as ContentPageDocumentExt[];
+      this.pages = of(newArray);
+      this.pagesResponse = newArray;
       this.initFlag = false;
 
       // On server errors
@@ -101,12 +86,10 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   public updateForm(value: ContentPageLeanSubmit): Promise<void> {
     return new Promise(resolve => {
 
-      // Create formData
       const formData = new FormData;
 
       value.images.map(x => {
         if (x.imageUpdate) {
-
           const id = <string>x._id || 'newId-' + x.title + '-' + Math.random().toString(36).slice(-10);
 
           formData.append('images', x.imageUpdate, id);
@@ -115,7 +98,6 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       });
       value.files.map(x => {
         if (x.fileUpdate) {
-
           const id = <string>x._id || 'newId-' + x.title + '-' + Math.random().toString(36).slice(-10);
 
           formData.append('files', x.fileUpdate, id);
@@ -131,7 +113,6 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
 
         // On success
         this.snackbarComponent.snackbarSuccess(res);
-        console.log(this.swUpdate);
         resolve();
 
         // Errors
@@ -245,17 +226,26 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   public async textFieldAdd(i: number) {
 
     this.addTextField('New header', 'Some text', null, i);
-    this.pagesResponse[i].texts.push({ _id: null, header: 'New header', text: 'Some text' });
+    this.pagesResponse[i].texts.push({
+      ...{ _id: null, header: 'New header', text: 'Some text' },
+      ...this.formTextsAttributes()
+    });
   }
   public async imageFieldAdd(i: number) {
 
     this.addImageField('New image', null, null, null, i);
-    this.pagesResponse[i].images.push({ _id: null, title: 'New image', image: null });
+    this.pagesResponse[i].images.push({
+      ...{ _id: null, title: 'New image', image: null },
+      ...this.formImagesAttributes()
+    });
   }
   public async fileFieldAdd(i: number) {
 
     this.addFileField('New file', null, null, null, i);
-    this.pagesResponse[i].files.push({ _id: null, title: 'New file', file: null });
+    this.pagesResponse[i].files.push({
+      ...{ _id: null, title: 'New file', file: null },
+      ...this.formFilesAttributes()
+    });
   }
 
   public async textFieldRemove(i: number, j: number) {
@@ -383,23 +373,27 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   }
 
   // Form context
-  private formText(y: ContentTextExt) {
-    y.placeholderHeader = 'Edit the header here';
-    y.typeHeader = 'text';
-    y.alertHeader = '';
-    y.placeholderText = 'Edit the text here';
-    y.typeText = 'text';
-    y.alertText = '';
+  private formTextsAttributes() {
+    return {
+      typeHeader: 'text',
+      alertHeader: '',
+      placeholderText: 'Edit the text here',
+      typeText: 'text',
+      alertText: '',
+    };
   }
-  private formImages(z: ContentImageExt) {
-    z.placeholderTitle = 'Edit the title here';
-    z.typeTitle = 'text';
-    z.alert = `Maximum image size of ${Math.floor(this.maxImageSize / 1000)} Kb exceeded. Please convert the image or choose another image`;
+  private formImagesAttributes() {
+    return {
+      typeTitle: 'text',
+      // tslint:disable-next-line:max-line-length
+      alert: `Maximum image size of ${Math.floor(this.maxImageSize / 1000)} Kb exceeded. Please convert the image to a smaller format or choose another image`,
+    };
   }
-  private formFiles(a: ContentFileExt) {
-    a.placeholderTitle = 'Edit the title here';
-    a.typeTitle = 'text';
-    a.alert = `Maximum image size of ${Math.floor(this.maxImageSize / 1024)} Kb exceeded. Please convert the image or choose another image`;
+  private formFilesAttributes() {
+    return {
+      typeTitle: 'text',
+      alert: `Maximum file size of ${Math.floor(this.maxImageSize / 1024)} Kb exceeded.`,
+    };
   }
 
   // Lifecycle
@@ -409,7 +403,6 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     private contentService: ContentService,
     private snackbarComponent: SnackbarComponent,
     private userService: UserService,
-    private swUpdate: SwUpdate,
   ) {
     this.getForm();
   }
