@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "install": "tsc -p ./src/server/tsconfig.server.json && cd ./src/angular && npm install && ng build --prod",
+    "install": "tsc -p ./src/server/tsconfig.server.json && cd ./src/angular && npm install && cd ./node_modules/.bin && ng build --prod",
     "start": "node ./dist/server/server.js",
     "build": "tsc -p ./src/server/tsconfig.server.json && cd ./src/angular && ng build --prod",
     "build-dev": "tsc -p ./src/server/tsconfig.server.json && cd ./src/angular && ng build",
