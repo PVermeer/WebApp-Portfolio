@@ -47,7 +47,7 @@ export class HomeComponent implements OnInit {
       this.sidenavService.passSidenavContent(this.sidenavContent);
       this.sidenavService.passExpansionToggle(this.expansionToggle);
       this.sidenavService.passSidenavToggle(this.sidenavToggle);
-    });
+    }, () => {});
   }
 
 }
