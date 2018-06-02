@@ -91,18 +91,18 @@ export class RegisterComponent {
   // Form validation
   private validateRegister() {
     return this.formBuilder.group({
-      firstName: ['asd', [
+      firstName: ['', [
         Validators.required, Validators.minLength(1),
         Validators.maxLength(50)
       ]],
 
-      lastName: ['asd', [
+      lastName: ['', [
         Validators.required,
         Validators.minLength(1),
         Validators.maxLength(50),
       ]],
 
-      username: ['asd', [
+      username: ['', [
         Validators.required,
         AppValidators.matchPattern({ noSpecialCharacters: true, minLength: 3, maxLength: 50 }),
       ], [
@@ -110,7 +110,7 @@ export class RegisterComponent {
         ]
       ],
 
-      email: ['asd@asd', [
+      email: ['', [
         Validators.required,
         Validators.email
       ], [
@@ -122,14 +122,14 @@ export class RegisterComponent {
         Validators.maxLength(50),
       ]],
 
-      password: ['password', [
+      password: ['', [
         Validators.required,
         AppValidators.matchPattern({ minLength: 8, maxLength: 50 }),
       ]],
 
-      passwordConfirm: ['password', [
+      passwordConfirm: ['', [
         Validators.required,
-        AppValidators.matchControl('password'),
+        AppValidators.matchControl(''),
       ]],
     });
   }

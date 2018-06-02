@@ -16,7 +16,7 @@ export class LoginComponent {
 
   // Variables
   public loginForm: FormGroup;
-  private username = 'asd@asd'; // Dev setting
+  private username = 'developer@develop.org'; // Dev setting
   public usernameDisable = false;
   public disableButtons = false;
 
