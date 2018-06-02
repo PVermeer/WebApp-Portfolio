@@ -57,7 +57,7 @@ export async function logIn(req: Request, res: Response) {
   // Spam check
   if (loginForm.lname) { spamHandler('Login'); return loginSuccess; }
 
-  const user = await findUserLean({ email: loginForm.email }) as UserDocumentLean;
+  const user = await findUserLean({ email: loginForm.email }).catch(() => { throw loginError; }) as UserDocumentLean;
 
   if (user.type.rank < 0) { throw blockedError; }
   if (user.type.rank === userTypes.tempUser.rank) { throw mailVerifyError; }
@@ -331,6 +331,9 @@ export async function userGetAll(req: RequestId) {
 
   if (req.type.rank === userTypes.superAdmin.rank) {
     return findUsers({ 'type.rank': { $lt: userTypes.superAdmin.rank } }, { password: 0, usernameIndex: 0 });
+
+  } else if (req.type.rank === userTypes.developer.rank) {
+    return findUsers({ 'type.rank': { $lt: userTypes.developer.rank } }, { password: 0, usernameIndex: 0 });
   }
 
   return findUsers({ 'type.rank': { $lt: userTypes.admin.rank } }, { password: 0, usernameIndex: 0 });

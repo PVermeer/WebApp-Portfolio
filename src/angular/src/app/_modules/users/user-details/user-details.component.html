@@ -1,35 +1,38 @@
+<div class="progress-wrapper">
   <mat-progress-bar mode="indeterminate" *ngIf="progressBar"></mat-progress-bar>
-  <mat-card-header>
-    <h3>{{userTitle}}</h3>
-  </mat-card-header>
-  <mat-card-content>
+</div>
+<mat-card-header>
+  <h3>{{userTitle}}</h3>
+</mat-card-header>
+<mat-card-content>
 
-    <form [formGroup]="userForm" (ngSubmit)="confirmUpdate()">
+  <form [formGroup]="userForm" (ngSubmit)="confirmUpdate()">
 
-      <mat-form-field *ngFor="let field of (userFormFields | async)" floatLabel="always">
-        <mat-label>{{field.label}}</mat-label>
-        <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder" (keyup)="userForm.get(field.formControlName).markAsTouched()">
-        <mat-error *ngIf="userForm.get(field.formControlName).hasError('async'); else sync">
-          {{ field.asyncAlert }}
+    <mat-form-field *ngFor="let field of (userFormFields | async)" floatLabel="always">
+      <mat-label>{{field.label}}</mat-label>
+      <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder"
+        (keyup)="userForm.get(field.formControlName).markAsTouched()">
+      <mat-error *ngIf="userForm.get(field.formControlName).hasError('async'); else sync">
+        {{ field.asyncAlert }}
+      </mat-error>
+      <ng-template #sync>
+        <mat-error *ngIf="userForm.get(field.formControlName).errors">
+          {{ field.alert }}
         </mat-error>
-        <ng-template #sync>
-          <mat-error *ngIf="userForm.get(field.formControlName).errors">
-            {{ field.alert }}
-          </mat-error>
-        </ng-template>
-        </mat-form-field>
+      </ng-template>
+    </mat-form-field>
 
-      <br>
-      <div class="flex-row-between-nowrap button-margin">
-        <button mat-raised-button color="primary" type="submit" [disabled]="!slideToggle.checked || !userForm.valid || userFormEmpty">Update</button>
-        <mat-slide-toggle #slideToggle (change)="toggleDisabled(slideToggle.checked)">Edit your details</mat-slide-toggle>
-      </div>
-      <br>
-      <div class="flex-row-between-nowrap button-margin">
-        <button mat-raised-button color="warn" type="button" (click)="deleteAccount()" [disabled]="!slideToggleDelete.checked">Delete</button>
-        <mat-slide-toggle #slideToggleDelete>Delete my account</mat-slide-toggle>
-      </div>
+    <br>
+    <div class="flex-row-between-nowrap button-margin">
+      <button mat-raised-button color="primary" type="submit" [disabled]="!slideToggle.checked || !userForm.valid || userFormEmpty">Update</button>
+      <mat-slide-toggle #slideToggle (change)="toggleDisabled(slideToggle.checked)">Edit your details</mat-slide-toggle>
+    </div>
+    <br>
+    <div class="flex-row-between-nowrap button-margin">
+      <button mat-raised-button color="warn" type="button" (click)="deleteAccount()" [disabled]="!slideToggleDelete.checked">Delete</button>
+      <mat-slide-toggle #slideToggleDelete>Delete my account</mat-slide-toggle>
+    </div>
 
-    </form>
+  </form>
 
-  </mat-card-content>
+</mat-card-content>

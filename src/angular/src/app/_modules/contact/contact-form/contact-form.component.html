@@ -1,33 +1,35 @@
+<div class="progress-wrapper">
   <mat-progress-bar mode="indeterminate" *ngIf="progressBar"></mat-progress-bar>
-  <mat-card-header>
-    <h3>Contact form</h3>
-  </mat-card-header>
-  <mat-card-content>
+</div>
+<mat-card-header>
+  <h3>Contact form</h3>
+</mat-card-header>
+<mat-card-content>
 
-    <form [formGroup]="contactForm" (ngSubmit)="sendForm(contactForm.value)" #contactFormRef="ngForm">
+  <form [formGroup]="contactForm" (ngSubmit)="sendForm(contactForm.value)" #contactFormRef="ngForm">
 
-      <mat-form-field *ngFor="let field of contactFormInputfields" (keyup)="contactForm.get(field.formControlName).markAsTouched()">
-        <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
-        <mat-error *ngIf="contactForm.get(field.formControlName).errors">
-          {{ field.alert }}
-        </mat-error>
-      </mat-form-field>
+    <mat-form-field *ngFor="let field of contactFormInputfields" (keyup)="contactForm.get(field.formControlName).markAsTouched()">
+      <input matInput [type]="field.type" [formControlName]="field.formControlName" [placeholder]="field.placeholder">
+      <mat-error *ngIf="contactForm.get(field.formControlName).errors">
+        {{ field.alert }}
+      </mat-error>
+    </mat-form-field>
 
-      <mat-form-field *ngFor="let field of contactFormTextfields" (keyup)="contactForm.get(field.formControlName).markAsTouched()">
-        <textarea matTextareaAutosize matAutosizeMinRows="5" matInput [type]="field.type"
-          [formControlName]="field.formControlName" [placeholder]="field.placeholder"></textarea>
-        <mat-error *ngIf="contactForm.get(field.formControlName).errors">
-          {{ field.alert }}
-        </mat-error>
-      </mat-form-field>
+    <mat-form-field *ngFor="let field of contactFormTextfields" (keyup)="contactForm.get(field.formControlName).markAsTouched()">
+      <textarea matTextareaAutosize matAutosizeMinRows="5" matInput [type]="field.type" [formControlName]="field.formControlName"
+        [placeholder]="field.placeholder"></textarea>
+      <mat-error *ngIf="contactForm.get(field.formControlName).errors">
+        {{ field.alert }}
+      </mat-error>
+    </mat-form-field>
 
-      <mat-form-field class="lname">
-        <input matInput type="text" formControlName="lname" placeholder="Last name...">
-      </mat-form-field>
+    <mat-form-field class="lname">
+      <input matInput type="text" formControlName="lname" placeholder="Last name...">
+    </mat-form-field>
 
-      <br>
-      <div class="flex-row-around">
-        <button mat-raised-button color="primary" type="submit" [disabled]="!contactForm.valid">Send</button>
-      </div>
-    </form>
-  </mat-card-content>
+    <br>
+    <div class="flex-row-around">
+      <button mat-raised-button color="primary" type="submit" [disabled]="!contactForm.valid">Send</button>
+    </div>
+  </form>
+</mat-card-content>
