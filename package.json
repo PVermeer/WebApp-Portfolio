@@ -11,6 +11,7 @@
     "build": "tsc -p ./src/server/tsconfig.server.json && cd ./src/angular && ng build --prod",
     "build-dev": "tsc -p ./src/server/tsconfig.server.json && cd ./src/angular && ng build",
     "client": "cd ./src/angular && ng build --watch",
+    "client-prod": "cd ./src/angular && ng build --prod",
     "server": "tsc -p ./src/server/tsconfig.server.json --watch"
   },
   "dependencies": {
