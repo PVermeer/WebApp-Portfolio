@@ -1,11 +1,11 @@
-import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, OnDestroy } from '@angular/core';
 import { Subscription, fromEvent } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
 @Directive({
   selector: '[appAnimateInview]'
 })
-export class AnimateInviewDirective implements OnInit, OnDestroy {
+export class AnimateInviewDirective implements AfterViewInit, OnDestroy {
 
   private contentDiv: HTMLElement;
   private subscriptions = new Subscription;
@@ -16,7 +16,6 @@ export class AnimateInviewDirective implements OnInit, OnDestroy {
 
     const animation = this.appAnimateInview;
     const element = this.elementRef.nativeElement;
-
     const elementRec = element.getBoundingClientRect();
     const contentDivRec = this.contentDiv.getBoundingClientRect();
 
@@ -50,7 +49,7 @@ export class AnimateInviewDirective implements OnInit, OnDestroy {
   ) {
     this.contentDiv = document.getElementById('sidenav-content');
   }
-  ngOnInit() {
+  ngAfterViewInit() {
     this.checkInView();
 
     const scroll = fromEvent(this.contentDiv, 'scroll').pipe(auditTime(100)).subscribe(() => this.checkInView());
