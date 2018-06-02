@@ -129,7 +129,7 @@ export class RegisterComponent {
 
       passwordConfirm: ['', [
         Validators.required,
-        AppValidators.matchControl(''),
+        AppValidators.matchControl('password'),
       ]],
     });
   }
