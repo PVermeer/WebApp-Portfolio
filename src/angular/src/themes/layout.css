@@ -1,0 +1,244 @@
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+body * {
+  box-sizing: border-box;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.container {
+  max-width: 1150px;
+  padding: 10px;
+  width: 100%;
+  align-self: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .container {
+    padding: 5px;
+  }
+}
+
+/* --------- Flex box ---------- */
+
+.flex1-all>*, .flex1 {
+  flex: 1
+}
+
+/* Flex column */
+
+.flex-column-around {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.flex-column-around-center {
+  display: flex;
+  height: 100%;
+  flex-flow: column;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+}
+
+.flex-column-between {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flex-column-between-center {
+  display: flex;
+  height: 100%;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-column-left {
+  display: flex;
+  height: 100%;
+  flex-flow: column;
+  justify-content: left;
+}
+
+/* Flex row */
+
+.flex-row-center {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.flex-row-between {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+  justify-content: space-between;
+}
+
+.flex-row-between-nowrap {
+  display: flex;
+  width: 100%;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.flex-row-around {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  flex-flow: row wrap;
+}
+
+.flex-row-left {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+}
+
+.flex-row-left-start {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+  align-items: flex-start;
+}
+
+.flex-row-left-center {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.flex-row-right {
+  display: flex;
+  width: 100%;
+  flex-flow: row-reverse wrap;
+}
+
+.flex-row-right-center {
+  display: flex;
+  width: 100%;
+  flex-flow: row-reverse wrap;
+  align-items: center;
+}
+
+/* ---------- Columns ---------- */
+
+.columnblock {
+  display: block;
+  columns: 2 320px;
+  column-gap: 40px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.columnblock>*, .columnblock>div>p {
+  display: block;
+  width: auto;
+  max-width: 500px;
+  margin: 0 auto 20px auto;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* -------------- Block ------------- */
+
+.block {
+  display: block;
+  width: 100%;
+  margin: 0 auto 20px auto;
+}
+
+/* ---------- Material design ---------- */
+
+/* Buttons */
+
+.button-margin>* {
+  margin: 5px !important;
+}
+
+/* Card */
+
+.mat-card {
+  margin: 10px;
+}
+
+.mat-card-content {
+  height: 100%;
+}
+
+/* Form */
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-form-field {
+  width: 100%;
+  flex: 1;
+}
+
+.lname {
+  display: none !important;
+}
+
+/* Table  */
+
+.table-container {
+  display: inline-block;
+  padding-left: 6px;
+  /* Checkbox animation won't overflow */
+}
+
+th.mat-header-cell, td.mat-cell {
+  padding: 0 10px !important;
+}
+
+.mat-column-select {
+  overflow: initial;
+}
+
+/* Progess indicators  */
+
+.progress-wrapper {
+  height: 5px;
+}
+
+.mat-progress-bar {
+  top: -5px;
+}
+
+#DialogSpinnerComponent {
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Cursor settings */
+
+.mat-slide-toggle-label, .mat-slide-toggle-thumb-container, .mat-icon-button, .mat-checkbox {
+  cursor: default !important;
+}
+
+/* ---------- Control ----------- */
+
+/* Hide an element (used by CssAnimateInviewService */
+
+.hide {
+  opacity: 0;
+}

@@ -1,2 +1,6 @@
-MEAN-boilerplate.code-workspace
+WebApp-MeanTemplate.code-workspace
+node_modules/
 .vscode/
+config.json
+_temp/
+dist/

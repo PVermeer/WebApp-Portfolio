@@ -1,0 +1,15 @@
+/* Mat card */
+mat-card {
+  max-width: 400px;
+}
+
+/* Material form */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-form-field {
+  flex: 1;
+}
+

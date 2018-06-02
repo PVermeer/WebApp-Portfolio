@@ -1,0 +1,27 @@
+{
+  "appName": "",
+  "mongoDb": "",
+  "secret1": "",
+  "secret2": "",
+  "loginTokenExpires": "",
+  "refreshTokenExpires": "",
+  "verificationTokenExpires": "",
+  "passwordRecoveryTokenExpires": "",
+  "emailTo": "",
+  "gmailConfig": {
+    "host": "",
+    "port": 0,
+    "secure": false,
+    "auth": {
+      "user": "",
+      "pass": ""
+    }
+  },
+  "tempDir": "",
+  "cacheDir": "",
+  "cacheDirFiles": "",
+  "cacheDirJson": "",
+  "uploadDir": "",
+  "spamLogDir": "",
+  "maxDiskCache": 0
+}
