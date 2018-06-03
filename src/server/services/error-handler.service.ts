@@ -1,11 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { createTransport } from 'nodemailer';
-
-import { ErrorMessage } from '../types/types';
+import { dbReadOnlyError } from '../database/connection';
 import { config } from '../services/server.service';
+import { ErrorMessage } from '../types/types';
+
+const readOnlyError: ErrorMessage = { status: 503, message: 'Database is set to read only' };
 
 export function errorHandler(err: ErrorMessage, _req: Request, res: Response, _next: NextFunction) {
   let error = err;
+
+  if (dbReadOnlyError()) { return res.status(readOnlyError.status).send(readOnlyError); }
 
   if (err.stack) { error = { message: err.message, status: 500 }; }
   if (err.code === 'LIMIT_FILE_SIZE') { error = { message: err.message, status: 400 }; }

@@ -11,13 +11,12 @@ import { app } from '../server';
 // ---------------- Mongoose connection ---------------
 
 let connectionFlag = false;
+let readOnlyFlag = false;
 const options = {
   reconnectTries: Number.MAX_VALUE,
   reconnectInterval: 2000, // Reconnect every 2s
   bufferMaxEntries: 0
 };
-
-const error: ErrorMessage = { status: 503, message: 'Database is not up' };
 
 const connectWithRetry = () => {
   connect(config.mongoDb, options).then(
@@ -37,6 +36,12 @@ connectWithRetry();
 connection.on('open', () => {
   connectionFlag = true;
   console.log('Mongoose default connection open');
+
+  connection.db.command({ connectionStatus: 1, showPrivileges: false })
+    .then(result => {
+      if (result.authInfo.authenticatedUserRoles[0].role === 'read') { readOnlyFlag = true; }
+    });
+
   app.emit('ready');
 });
 
@@ -59,12 +64,18 @@ process.on('SIGINT', () => {
 });
 
 // Connection middleware
-export function DbConnectionError(_req: Request, res: Response, next: NextFunction): void | Response {
+const connectionError: ErrorMessage = { status: 503, message: 'Database is not up' };
 
-  if (!connectionFlag) { return res.status(error.status).send(error); }
+export function dbConnectionError(_req: Request, res: Response, next: NextFunction) {
+
+  if (!connectionFlag) { return res.status(connectionError.status).send(connectionError); }
 
   return next();
 }
+export function dbReadOnlyError() {
+  return readOnlyFlag;
+}
+
 
 // ---------------- GridFs connection ---------------------
 

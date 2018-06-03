@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { DbConnectionError } from '../../database/connection';
+import { dbConnectionError } from '../../database/connection';
 import { userTypes } from '../../database/models/users/user.schema';
 import { disableCache } from '../../services/cache-control.service';
 import { requiresUserAuth } from './users.authentication';
@@ -9,7 +9,7 @@ const router = Router();
 
 // Middleware
 router.use(disableCache);
-router.use(DbConnectionError);
+router.use(dbConnectionError);
 
 // -----------Routes-------------------
 
