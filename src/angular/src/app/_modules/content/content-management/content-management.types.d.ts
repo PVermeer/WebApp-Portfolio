@@ -1,7 +1,14 @@
-import { ContentTextDocumentLean, ContentImageDocumentLean, ContentPageDocumentLean, ContentFileDocumentLean } from "../../../../../../server/database/models/content/content.types";
+import { ContentTextDocumentLean, ContentImageDocumentLean, ContentPageDocumentLean, ContentFileDocumentLean, ContentListDocumentLean } from "../../../../../../server/database/models/content/content.types";
 
 // Extend interfaces for Form options
 export interface ContentTextExt extends ContentTextDocumentLean {
+  placeholderText: string;
+  typeText: string;
+  alertText: string;
+  typeHeader: string;
+  alertHeader: string;
+}
+export interface ContentListExt extends ContentListDocumentLean {
   placeholderText: string;
   typeText: string;
   alertText: string;
@@ -24,6 +31,7 @@ export interface ContentFileSubmit extends ContentFileDocumentLean {
 }
 export interface ContentPageDocumentExt extends ContentPageDocumentLean {
   texts: ContentTextExt[];
+  lists: ContentListExt[];
   images: ContentImageExt[];
   files: ContentFileExt[];
 }

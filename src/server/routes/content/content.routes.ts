@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { DbConnectionError, upload } from '../../database/connection';
+import { dbConnectionError, upload } from '../../database/connection';
 import { userTypes } from '../../database/models/users/user.schema';
 import { cacheJson, clearCache } from '../../services/cache-control.service';
 import { requiresUserAuth } from '../users/users.authentication';
@@ -8,7 +8,7 @@ import { contentPageDelete, contentPageGetAll, contentPageNew, contentPageUpdate
 const router = Router();
 
 // Middleware
-router.use(DbConnectionError);
+router.use(dbConnectionError);
 
 // -----------Routes-------------------
 

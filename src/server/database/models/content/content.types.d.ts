@@ -11,6 +11,14 @@ export interface ContentText {
 export interface ContentTextDocument extends ContentText, Document { _id: string | ObjectID; }
 export interface ContentTextDocumentLean extends ContentText { _id: string | ObjectID; }
 
+// List
+export interface ContentList {
+  header: string;
+  list: string[];
+}
+export interface ContentListDocument extends ContentList, Document { _id: string | ObjectID; }
+export interface ContentListDocumentLean extends ContentList { _id: string | ObjectID; }
+
 // Image
 export interface ContentImage {
   title: string;
@@ -32,18 +40,21 @@ export interface ContentPageModel {
   title: string;
   description: string;
   texts: ContentText[];
+  lists: ContentList[];
   images: ContentImage[];
   files: ContentFile[];
 }
 export interface ContentPageDocument extends ContentPageModel, Document {
   _id: string | ObjectID;
   texts: ContentTextDocument[];
+  lists: ContentListDocument[];
   images: ContentImageDocument[];
   files: ContentFileDocument[];
 }
 export interface ContentPageDocumentLean extends ContentPageModel {
   _id: string | ObjectID;
   texts: ContentTextDocumentLean[];
+  lists: ContentListDocumentLean[];
   images: ContentImageDocumentLean[];
   files: ContentFileDocumentLean[];
 }

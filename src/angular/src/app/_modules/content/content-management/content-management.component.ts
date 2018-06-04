@@ -30,7 +30,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription;
 
   // Methods
-  public async getForm() {
+  public getForm() {
 
     this.progressSpinner = true;
     this.contentService.getAllContentPages().subscribe(response => {
@@ -49,6 +49,15 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
           }
           this.updateTextField(y.header, y.text, y._id as string, i, j);
           y = { ...y, ...this.formTextsAttributes() };
+        });
+
+        x.lists.map((b, j) => {
+          if (this.initFlag) {
+            this.addListField(b.header, null, i);
+          }
+          this.updateListField(b.header, b._id as string, i, j);
+          b.list.map((c, d) => { this.updateListItemField(c, i, j, d); });
+          b = { ...b, ...this.formListAttributes() };
         });
 
         x.images.map((z, k) => {
@@ -223,7 +232,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   }
 
   // Form buttons
-  public async textFieldAdd(i: number) {
+  public textFieldAdd(i: number) {
 
     this.addTextField('New header', 'Some text', null, i);
     this.pagesResponse[i].texts.push({
@@ -231,7 +240,21 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       ...this.formTextsAttributes()
     });
   }
-  public async imageFieldAdd(i: number) {
+  public listFieldAdd(i: number) {
+
+    this.addListField('New header', null, i);
+    const index = this.pagesResponse[i].lists.push({
+      ...{ _id: null, header: 'New header', list: [] },
+      ...this.formListAttributes()
+    }) - 1;
+    this.listAddItem(i, index);
+  }
+  public listAddItem(i: number, j: number) {
+
+    this.addListItemField('', i, j);
+    this.pagesResponse[i].lists[j].list.push('');
+  }
+  public imageFieldAdd(i: number) {
 
     this.addImageField('New image', null, null, null, i);
     this.pagesResponse[i].images.push({
@@ -239,7 +262,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       ...this.formImagesAttributes()
     });
   }
-  public async fileFieldAdd(i: number) {
+  public fileFieldAdd(i: number) {
 
     this.addFileField('New file', null, null, null, i);
     this.pagesResponse[i].files.push({
@@ -248,17 +271,29 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  public async textFieldRemove(i: number, j: number) {
+  public textFieldRemove(i: number, j: number) {
 
     this.removeTextField(i, j);
     this.pagesResponse[i].texts.splice(j, 1);
   }
-  public async imageFieldRemove(i: number, j: number) {
+  public listFieldRemove(i: number, j: number) {
+
+    this.removeListField(i, j);
+    this.pagesResponse[i].lists.splice(j, 1);
+  }
+  public listRemoveItem(i: number, j: number, m: number) {
+
+    if (this.pagesResponse[i].lists[j].list.length === 1) { return this.listFieldRemove(i, j); }
+
+    this.removeListItemField(i, j, m);
+    this.pagesResponse[i].lists[j].list.splice(j, 1);
+  }
+  public imageFieldRemove(i: number, j: number) {
 
     this.removeImageField(i, j);
     this.pagesResponse[i].images.splice(j, 1);
   }
-  public async fileFieldRemove(i: number, j: number) {
+  public fileFieldRemove(i: number, j: number) {
 
     this.removeFileField(i, j);
     this.pagesResponse[i].files.splice(j, 1);
@@ -275,6 +310,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   private initFormGroup() {
     return this.formBuilder.group({
       texts: this.formBuilder.array([]),
+      lists: this.formBuilder.array([]),
       images: this.formBuilder.array([]),
       files: this.formBuilder.array([]),
     });
@@ -285,6 +321,16 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       text: [text, []],
       _id: [_id, []],
     });
+  }
+  private initListField(header: string, _id: string) {
+    return this.formBuilder.group({
+      header: [{ value: header, disabled: !this.isDeveloper }, []],
+      list: this.formBuilder.array([]),
+      _id: [_id, []],
+    });
+  }
+  private initListItemField(listItem: string) {
+    return this.formBuilder.control(listItem);
   }
   private initImageField(title: string, image: any, imageUpdate: File, _id: string) {
     return this.formBuilder.group({
@@ -334,6 +380,16 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const control = <FormArray>this.contentForm[i].controls['texts'];
     control.push(this.initTextField(header, text, _id));
   }
+  private addListField(header: string, _id: string, i: number) {
+    const control = <FormArray>this.contentForm[i].controls['lists'];
+    control.push(this.initListField(header, _id));
+  }
+  private addListItemField(listItem: string, i: number, j: number) {
+    const controlLists = <FormArray>this.contentForm[i].controls['lists'];
+    const controlListsItems = <FormGroup>controlLists.controls[j];
+    const itemsArray = <FormArray>controlListsItems.controls['list'];
+    itemsArray.push(this.initListItemField(listItem));
+  }
   private addImageField(title: string, image: any, imageUpdate: File, _id: string, i: number) {
     const control = <FormArray>this.contentForm[i].controls['images'];
     control.push(this.initImageField(title, image, imageUpdate, _id));
@@ -346,6 +402,16 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   private updateTextField(header: string, text: string, _id: string, i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['texts'];
     control.setControl(j, this.initTextField(header, text, _id as string));
+  }
+  private updateListField(header: string, _id: string, i: number, j: number) {
+    const control = <FormArray>this.contentForm[i].controls['lists'];
+    control.setControl(j, this.initListField(header, _id as string));
+  }
+  private updateListItemField(listItem: string, i: number, j: number, k: number) {
+    const controlLists = <FormArray>this.contentForm[i].controls['lists'];
+    const controlListsItems = <FormGroup>controlLists.controls[j];
+    const itemsArray = <FormArray>controlListsItems.controls['list'];
+    itemsArray.setControl(k, this.initListItemField(listItem));
   }
   private updateImageField(title: string, image: any, imageUpdate: File, _id: string, i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['images'];
@@ -363,6 +429,16 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const control = <FormArray>this.contentForm[i].controls['texts'];
     control.removeAt(j);
   }
+  private removeListField(i: number, j: number) {
+    const control = <FormArray>this.contentForm[i].controls['lists'];
+    control.removeAt(j);
+  }
+  private removeListItemField(i: number, j: number, m: number) {
+    const controlLists = <FormArray>this.contentForm[i].controls['lists'];
+    const controlListsItems = <FormGroup>controlLists.controls[j];
+    const itemsArray = <FormArray>controlListsItems.controls['list'];
+    itemsArray.removeAt(m);
+  }
   private removeImageField(i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['images'];
     control.removeAt(j);
@@ -374,6 +450,15 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
 
   // Form context
   private formTextsAttributes() {
+    return {
+      typeHeader: 'text',
+      alertHeader: '',
+      placeholderText: 'Edit the text here',
+      typeText: 'text',
+      alertText: '',
+    };
+  }
+  private formListAttributes() {
     return {
       typeHeader: 'text',
       alertHeader: '',

@@ -1,6 +1,6 @@
 import { uploadFiles, deleteFileDb } from './content.database';
 import {
-  GridFsDocument, ContentPageDocumentLean, ContentTextDocumentLean, ContentPageModel
+  GridFsDocument, ContentPageDocumentLean, ContentTextDocumentLean, ContentPageModel, ContentListDocumentLean
 } from '../../database/models/content/content.types';
 import { ContentImageSubmit, ContentPageLeanInput, ContentFileSubmit } from './content.types';
 import { ObjectId } from 'mongodb';
@@ -8,6 +8,11 @@ import { ObjectId } from 'mongodb';
 export function prepareArray(pageForm: ContentPageLeanInput) {
 
   const texts = pageForm.texts.map(x => {
+    if (!x._id) { x._id = new ObjectId; }
+    return x;
+  });
+
+  const lists = pageForm.lists.map(x => {
     if (!x._id) { x._id = new ObjectId; }
     return x;
   });
@@ -24,7 +29,7 @@ export function prepareArray(pageForm: ContentPageLeanInput) {
     return x;
   });
 
-  return { texts, images, files };
+  return { texts, lists, images, files };
 }
 
 export function deleteOldImagesFromDb(pageDocument: Partial<ContentPageDocumentLean>, imagesArray: ContentImageSubmit[]) {
@@ -108,13 +113,14 @@ export async function uploadFileHandler(files: Express.Multer.File[], filesArray
 }
 
 
-export function processToDbInput(pageForm: ContentPageLeanInput, textArray: ContentTextDocumentLean[], imageArray: ContentImageSubmit[], fileArray: ContentFileSubmit[]
+export function processToDbInput(pageForm: ContentPageLeanInput, textArray: ContentTextDocumentLean[], listArray: ContentListDocumentLean[], imageArray: ContentImageSubmit[], fileArray: ContentFileSubmit[]
 ): ContentPageModel {
 
   return {
     title: pageForm.title,
     description: pageForm.description,
     texts: textArray,
+    lists: listArray,
     images: imageArray,
     files: fileArray,
   };
@@ -122,7 +128,7 @@ export function processToDbInput(pageForm: ContentPageLeanInput, textArray: Cont
 
 export async function updateContentErrorHandler(fileArray: GridFsDocument[], error: any) {
 
-  if (fileArray) {
+  if (fileArray && fileArray.length > 0) {
     await Promise.all(fileArray.map(x => new Promise(async (resolve) => {
       if (x === null) { return resolve(); } // Catch from uploadFiles()
 

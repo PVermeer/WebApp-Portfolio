@@ -12,10 +12,11 @@ export async function contentPageNew(req: Request) {
 
   const newArray = prepareArray(pageForm);
   const textArray = newArray.texts;
+  const listArray = newArray.lists;
   const imageArray = newArray.images;
   const fileArray = newArray.files;
 
-  const dbInput = processToDbInput(pageForm, textArray, imageArray, fileArray);
+  const dbInput = processToDbInput(pageForm, textArray, listArray, imageArray, fileArray);
 
   await saveContentPage(dbInput);
 
@@ -33,6 +34,7 @@ export async function contentPageUpdate(req: Request) {
 
   const newArray = prepareArray(pageForm);
   const textArray = newArray.texts;
+  const listArray = newArray.lists;
   const imageArray = newArray.images;
   const fileArray = newArray.files;
 
@@ -42,7 +44,7 @@ export async function contentPageUpdate(req: Request) {
   const uploadImageArray = await uploadImageHandler(images, imageArray);
   const uploadFileArray = await uploadFileHandler(files, fileArray);
 
-  const pageModel = processToDbInput(pageForm, textArray, imageArray, fileArray);
+  const pageModel = processToDbInput(pageForm, textArray, listArray, imageArray, fileArray);
 
   const result = await updateContentPage({ title: pageModel.title }, pageModel)
 
