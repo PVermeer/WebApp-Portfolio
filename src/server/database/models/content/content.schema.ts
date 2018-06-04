@@ -33,6 +33,11 @@ const ContentPageSchema = new Schema({
     header: { type: String, trim: true, required: true },
     text: { type: String, trim: true, required: true }
   }],
+  lists: [{
+    _id: { type: Schema.Types.ObjectId, required: true },
+    header: { type: String, trim: true, required: true },
+    list: [{ type: String, trim: true }]
+  }],
   images: [{
     _id: { type: Schema.Types.ObjectId, required: true },
     title: { type: String, trim: true, required: true },

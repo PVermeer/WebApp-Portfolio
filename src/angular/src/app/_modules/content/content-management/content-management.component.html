@@ -20,13 +20,13 @@
           </div>
         </div>
 
-        <br>
-        <mat-divider></mat-divider>
-        <h4>Texts</h4>
 
         <form [formGroup]="contentForm[i]" (ngSubmit)="confirmUpdateForm(i)">
 
-          <!-- Texts -->
+          <br>
+          <mat-divider></mat-divider>
+          <h4>Texts</h4>
+
           <div formArrayName="texts" class="flex-row-left text-container">
             <div *ngFor="let text of page.texts; let j = index">
 
@@ -53,8 +53,8 @@
                 <mat-card-content>
 
                   <mat-form-field [formGroupName]="j" floatLabel="always">
-                    <textarea matTextareaAutosize matAutosizeMinRows="10" matInput [type]="text.typeText" formControlName="text"
-                      [placeholder]="text.placeholderText" [value]="contentForm[i].controls.texts.controls[j].controls.text.value"></textarea>
+                    <textarea matTextareaAutosize matAutosizeMinRows="10" matInput [type]="text.typeText" formControlName="text" [placeholder]="text.placeholderText"
+                      [value]="contentForm[i].controls.texts.controls[j].controls.text.value"></textarea>
                     <mat-error *ngIf="contentForm[i].controls.texts.controls[j].controls.text.errors">
                       {{ text.alertText }}
                     </mat-error>
@@ -71,10 +71,67 @@
           </div>
 
           <br>
+          <mat-divider></mat-divider>
+          <h4>Lists</h4>
+
+          <div formArrayName="lists" class="flex-row-left text-container">
+            <div *ngFor="let list of page.lists; let l = index">
+
+              <mat-card *ngIf="contentForm[i].controls.lists.controls[l]" [formGroupName]="l">
+                <!-- Header -->
+                <mat-card-header class="flex-row-between-nowrap">
+                  <mat-card-title>
+                    <mat-form-field floatLabel="always">
+                      <input matInput [type]="list.typeHeader" formControlName="header" [value]="contentForm[i].controls.lists.controls[l].controls.header.value">
+                      <mat-error *ngIf="contentForm[i].controls.lists.controls[l].controls.header.errors">
+                        {{ list.alertHeader }}
+                      </mat-error>
+                    </mat-form-field>
+                  </mat-card-title>
+
+                  <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="listFieldRemove(i, l)" matTooltip="Remove this card" matTooltipPosition="above"
+                    matTooltipShowDelay="500">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+
+                </mat-card-header>
+
+                <!-- List fields -->
+                <mat-card-content>
+                  <div formArrayName="list">
+                    <div *ngFor="let listItem of list.list; let m = index">
+                      <mat-form-field>
+                        <span matPrefix>{{ m + 1 }} &nbsp;</span>
+                        <input matInput type="text" [value]="contentForm[i].controls.lists.controls[l].controls.list.controls[m].value" [formControlName]="m">
+                        <button type="button" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="listRemoveItem(i, l, m)">
+                          <mat-icon>close</mat-icon>
+                        </button>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </mat-card-content>
+
+                <div class="flex-row-between button-margin">
+                  <button mat-fab type="button" (click)="listAddItem(i, l)" matTooltip="Add a new line" matTooltipShowDelay="500">
+                    <mat-icon>list</mat-icon>
+                  </button>
+                </div>
+
+
+              </mat-card>
+            </div>
+          </div>
+
+          <br>
+          <div *ngIf="isDeveloper" class="flex-row-around">
+            <button mat-button type="button" color="accent" (click)="listFieldAdd(i)">Add list field</button>
+          </div>
+
+
+          <br>
           <mat-divider [inset]="true"></mat-divider>
           <h4>Images</h4>
 
-          <!-- Images -->
           <div formArrayName="images" class="flex-row-left">
             <div *ngFor="let image of page.images; let k = index">
 
@@ -149,7 +206,6 @@
           <mat-divider [inset]="true"></mat-divider>
           <h4>Files</h4>
 
-          <!-- Files -->
           <div formArrayName="files" class="flex-row-left">
             <div *ngFor="let file of page.files; let l = index">
 
