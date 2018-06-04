@@ -13,7 +13,7 @@ Personal Mean template for creating WebApps.
     - Admin: manage users
   - Content management:
     - Developer: easy uploads and easy editing or implementing pages with content from the database
-    - Admin: easy editing of texts and changing images
+    - Admin: easy editing of texts, lists and changing images
 - Local cache provided by service worker with offline support
 - Material Design
 - Theme switcher provided by Angular Material Design
