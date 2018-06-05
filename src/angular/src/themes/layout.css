@@ -101,6 +101,13 @@ section {
   justify-content: space-around;
   flex-flow: row wrap;
 }
+.flex-row-around-center {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+  flex-flow: row wrap;
+}
 
 .flex-row-left {
   display: flex;
