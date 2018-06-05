@@ -35,7 +35,7 @@ const ContentPageSchema = new Schema({
   }],
   lists: [{
     _id: { type: Schema.Types.ObjectId, required: true },
-    header: { type: String, trim: true, required: true },
+    title: { type: String, trim: true, required: true },
     list: [{ type: String, trim: true }]
   }],
   images: [{

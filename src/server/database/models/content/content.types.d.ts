@@ -13,7 +13,7 @@ export interface ContentTextDocumentLean extends ContentText { _id: string | Obj
 
 // List
 export interface ContentList {
-  header: string;
+  title: string;
   list: string[];
 }
 export interface ContentListDocument extends ContentList, Document { _id: string | ObjectID; }

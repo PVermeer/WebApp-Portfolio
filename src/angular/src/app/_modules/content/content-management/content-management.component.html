@@ -71,7 +71,7 @@
           </div>
 
           <br>
-          <mat-divider></mat-divider>
+          <mat-divider [inset]="true"></mat-divider>
           <h4>Lists</h4>
 
           <div formArrayName="lists" class="flex-row-left text-container">
@@ -82,9 +82,9 @@
                 <mat-card-header class="flex-row-between-nowrap">
                   <mat-card-title>
                     <mat-form-field floatLabel="always">
-                      <input matInput [type]="list.typeHeader" formControlName="header" [value]="contentForm[i].controls.lists.controls[l].controls.header.value">
-                      <mat-error *ngIf="contentForm[i].controls.lists.controls[l].controls.header.errors">
-                        {{ list.alertHeader }}
+                      <input matInput [type]="list.typeTitle" formControlName="title" [value]="contentForm[i].controls.lists.controls[l].controls.title.value">
+                      <mat-error *ngIf="contentForm[i].controls.lists.controls[l].controls.title.errors">
+                        {{ list.alertTitle }}
                       </mat-error>
                     </mat-form-field>
                   </mat-card-title>
