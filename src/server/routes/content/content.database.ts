@@ -3,9 +3,7 @@ import { createReadStream, createWriteStream, existsSync, readFile, unlink, writ
 import { ObjectId } from 'mongodb';
 import { gridFsBucket } from '../../database/connection';
 import { ContentPage } from '../../database/models/content/content.schema';
-import {
-  ContentFetch, ContentPageDocumentLean, ContentPageModel, ContentQuery, GridFsDocument
-} from '../../database/models/content/content.types';
+import { ContentFetch, ContentPageDocumentLean, ContentPageModel, ContentQuery, GridFsDocument } from '../../database/models/content/content.types';
 import { deleteError, findError, saveError } from '../../services/error-handler.service';
 import { appRoot, config } from '../../services/server.service';
 import { QueryResult } from './content.types';
@@ -68,8 +66,12 @@ export function contentFile(_id: string, res: Response): Promise<void> {
 
     function isCached(fileType: string) {
 
-      res.contentType(fileType);
-      res.sendFile(appRoot + config.cacheDirFiles + _id);
+      try {
+        res.contentType(fileType);
+        res.sendFile(appRoot + config.cacheDirFiles + _id, (error: Error) => {
+          if (error) { return isNotCached(); }
+        });
+      } catch { isNotCached(); }
     }
 
     function isNotCached() {
