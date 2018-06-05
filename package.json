@@ -5,14 +5,13 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "ng": "ng",
-    "install": "tsc -p ./src/server/tsconfig.server.json && cd ./src/angular && npm install && cd ./node_modules/.bin && ng build --prod",
+    "install": "tsc -p src/server/tsconfig.server.json && cd ./src/angular && npm install",
     "start": "node ./dist/server/server.js",
-    "build": "tsc -p ./src/server/tsconfig.server.json && cd ./src/angular && ng build --prod",
-    "build-dev": "tsc -p ./src/server/tsconfig.server.json && cd ./src/angular && ng build",
-    "client": "cd ./src/angular && ng build --watch",
-    "client-prod": "cd ./src/angular && ng build --prod",
-    "server": "tsc -p ./src/server/tsconfig.server.json --watch"
+    "build": "tsc -p src/server/tsconfig.server.json && cd ./src/angular && npm run build",
+    "build-dev": "tsc -p src/server/tsconfig.server.json && cd ./src/angular && npm run build-dev",
+    "client": "cd ./src/angular && npm run client",
+    "client-prod": "cd ./src/angular && npm run build",
+    "server": "tsc -p src/server/tsconfig.server.json --watch"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.1",
