@@ -12,8 +12,8 @@ export interface ContentListExt extends ContentListDocumentLean {
   placeholderText: string;
   typeText: string;
   alertText: string;
-  typeHeader: string;
-  alertHeader: string;
+  typeTitle: string;
+  alertTitle: string;
 }
 export interface ContentImageExt extends ContentImageDocumentLean {
   typeTitle: string;

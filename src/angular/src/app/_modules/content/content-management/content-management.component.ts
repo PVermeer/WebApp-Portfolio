@@ -53,9 +53,9 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
 
         x.lists.map((b, j) => {
           if (this.initFlag) {
-            this.addListField(b.header, null, i);
+            this.addListField(b.title, null, i);
           }
-          this.updateListField(b.header, b._id as string, i, j);
+          this.updateListField(b.title, b._id as string, i, j);
           b.list.map((c, d) => { this.updateListItemField(c, i, j, d); });
           b = { ...b, ...this.formListAttributes() };
         });
@@ -242,9 +242,9 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   }
   public listFieldAdd(i: number) {
 
-    this.addListField('New header', null, i);
+    this.addListField('New title', null, i);
     const index = this.pagesResponse[i].lists.push({
-      ...{ _id: null, header: 'New header', list: [] },
+      ...{ _id: null, title: 'New title', list: [] },
       ...this.formListAttributes()
     }) - 1;
     this.listAddItem(i, index);
@@ -322,9 +322,9 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       _id: [_id, []],
     });
   }
-  private initListField(header: string, _id: string) {
+  private initListField(title: string, _id: string) {
     return this.formBuilder.group({
-      header: [{ value: header, disabled: !this.isDeveloper }, []],
+      title: [{ value: title, disabled: !this.isDeveloper }, []],
       list: this.formBuilder.array([]),
       _id: [_id, []],
     });
@@ -380,9 +380,9 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const control = <FormArray>this.contentForm[i].controls['texts'];
     control.push(this.initTextField(header, text, _id));
   }
-  private addListField(header: string, _id: string, i: number) {
+  private addListField(title: string, _id: string, i: number) {
     const control = <FormArray>this.contentForm[i].controls['lists'];
-    control.push(this.initListField(header, _id));
+    control.push(this.initListField(title, _id));
   }
   private addListItemField(listItem: string, i: number, j: number) {
     const controlLists = <FormArray>this.contentForm[i].controls['lists'];
@@ -403,9 +403,9 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const control = <FormArray>this.contentForm[i].controls['texts'];
     control.setControl(j, this.initTextField(header, text, _id as string));
   }
-  private updateListField(header: string, _id: string, i: number, j: number) {
+  private updateListField(title: string, _id: string, i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['lists'];
-    control.setControl(j, this.initListField(header, _id as string));
+    control.setControl(j, this.initListField(title, _id as string));
   }
   private updateListItemField(listItem: string, i: number, j: number, k: number) {
     const controlLists = <FormArray>this.contentForm[i].controls['lists'];
@@ -460,8 +460,8 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   }
   private formListAttributes() {
     return {
-      typeHeader: 'text',
-      alertHeader: '',
+      typeTitle: 'text',
+      alertTitle: '',
       placeholderText: 'Edit the text here',
       typeText: 'text',
       alertText: '',
