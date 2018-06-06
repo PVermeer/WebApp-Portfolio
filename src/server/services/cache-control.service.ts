@@ -2,7 +2,7 @@ import { createHash } from 'crypto';
 import { NextFunction, Request, Response } from 'express';
 import { unlink, writeFile } from 'fs';
 import { Glob } from 'glob';
-import { appRoot, config, startUpServer } from './server.service';
+import { appRoot, clearCacheDirs, config } from './server.service';
 
 // Cache headers middleware
 export function disableCache(_req: Request, res: Response, next: NextFunction) {
@@ -60,9 +60,9 @@ export function cacheJson(req: Request, res: Response, next: NextFunction) {
 }
 
 // Cache clear middleware
-export function clearCache(_req: Request, _res: Response, next: NextFunction) {
+export async function clearCache(_req: Request, _res: Response, next: NextFunction) {
 
-  startUpServer();
+  await clearCacheDirs();
 
   return next();
 }

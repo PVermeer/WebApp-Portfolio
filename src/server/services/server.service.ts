@@ -1,10 +1,10 @@
-import * as rimraf from 'rimraf';
 import * as mkdirp from 'mkdirp';
+import { join, resolve as resolvePath, sep } from 'path';
+import * as rimraf from 'rimraf';
 import { Config } from '../types/types';
-import { resolve, sep, join } from 'path';
 
 // Define a global root path
-export const appRoot = resolve(join(__dirname, '../../../')) + sep;
+export const appRoot = resolvePath(join(__dirname, '../../../')) + sep;
 console.log('appRoot = ' + appRoot);
 
 // ----------------- Config file ---------------------
@@ -22,25 +22,41 @@ const configReadOnly: Readonly<Config> = Object.freeze(config);
 export { configReadOnly as config };
 
 // ------------------ Functions ----------------
-export function startUpServer() {
+
+export async function clearCacheDirs() {
 
   try {
-    rimraf.sync(appRoot + config.cacheDir);
-    rimraf.sync(appRoot + config.uploadDir);
-
-    mkdirp.sync(appRoot + config.tempDir);
-    mkdirp.sync(appRoot + config.cacheDir);
-    mkdirp.sync(appRoot + config.cacheDirFiles);
-    mkdirp.sync(appRoot + config.cacheDirJson);
-    mkdirp.sync(appRoot + config.uploadDir);
-
-  } catch (error) {
-
+    await new Promise((resolve, reject) => {
+      rimraf(appRoot + config.cacheDir, (error) => { if (error) { return reject(); } resolve(); });
+    });
+    await new Promise((resolve, reject) => {
+      rimraf(appRoot + config.uploadDir, (error) => { if (error) { return reject(); } resolve(); });
+    });
+    await new Promise((resolve, reject) => {
+      mkdirp(appRoot + config.tempDir, (error) => { if (error) { return reject(); } resolve(); });
+    });
+    await new Promise((resolve, reject) => {
+      mkdirp(appRoot + config.cacheDir, (error) => { if (error) { return reject(); } resolve(); });
+    });
+    await new Promise((resolve, reject) => {
+      mkdirp(appRoot + config.cacheDirFiles, (error) => { if (error) { return reject(); } resolve(); });
+    });
+    await new Promise((resolve, reject) => {
+      mkdirp(appRoot + config.cacheDirJson, (error) => { if (error) { return reject(); } resolve(); });
+    });
+    await new Promise((resolve, reject) => {
+      mkdirp(appRoot + config.uploadDir, (error) => { if (error) { return reject(); } resolve(); });
+    });
+  } catch {
     setTimeout(() => {
-      startUpServer();
-    }, 1000
-    );
+      clearCacheDirs();
+    }, 1000);
   }
+}
+
+export async function startUpServer() {
+
+  await clearCacheDirs();
 }
 
 function convertDayToMs(day: number) {

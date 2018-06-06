@@ -27,7 +27,7 @@ router.post('/updatepage',
 );
 
 // Developer authentication
-router.post('/newpage', requiresUserAuth(401, userTypes.developer), contentPageNew);
+router.post('/newpage', requiresUserAuth(401, userTypes.developer), clearCache, contentPageNew);
 router.delete('/deletepage/:_id', requiresUserAuth(401, userTypes.developer), clearCache, contentPageDelete);
 
 // Catch all

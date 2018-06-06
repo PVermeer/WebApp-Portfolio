@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { deleteSuccess, findError, pageSaveSuccess, pageUpdateSuccess, saveError, updateErrorDetected } from '../../services/error-handler.service';
-import { startUpServer } from '../../services/server.service';
+import { clearCacheDirs } from '../../services/server.service';
 import { RequestId } from '../../types/types';
 import { contentFile, deleteContentPage, findAllContentPagesLean, findContentPageLean, saveContentPage, updateContentPage } from './content.database';
 import { deleteOldFilesFromDb, deleteOldImagesFromDb, prepareArray, processToDbInput, updateContentErrorHandler, uploadFileHandler, uploadImageHandler } from './content.helpers';
@@ -51,8 +51,8 @@ export async function contentPageUpdate(req: Request) {
     // On errors revert back
     .catch(async error => await updateContentErrorHandler({ ...uploadImageArray, ...uploadFileArray }, error));
 
-  if (result && result.ok !== 1) { startUpServer(); throw saveError; }
-  if (fileArray && fileArray.some(x => !x)) { startUpServer(); throw updateErrorDetected; }
+  if (result && result.ok !== 1) { clearCacheDirs(); throw saveError; }
+  if (fileArray && fileArray.some(x => !x)) { clearCacheDirs(); throw updateErrorDetected; }
 
   return pageUpdateSuccess;
 }
