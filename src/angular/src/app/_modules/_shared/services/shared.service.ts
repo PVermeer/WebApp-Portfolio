@@ -12,6 +12,7 @@ export class SharedService {
 
     return array;
   }
+  public isEven(i: number) { return i % 2 === 0; }
 
   constructor() { }
 }
