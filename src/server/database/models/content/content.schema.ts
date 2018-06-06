@@ -1,8 +1,6 @@
 import { Model, Schema, model } from 'mongoose';
 import { ContentPageDocument, GridFsDocument } from './content.types';
 
-
-
 // ------- Mongoose middleware User functions --------
 // Shared
 
@@ -59,4 +57,3 @@ const ContentPageSchema = new Schema({
 // Export models
 export const ContentPage: Model<ContentPageDocument> = model('ContentPage', ContentPageSchema);
 export const GridFs: Model<GridFsDocument> = model('content.files', GridFsSchema);
-

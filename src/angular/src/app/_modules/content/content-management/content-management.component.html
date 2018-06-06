@@ -46,12 +46,10 @@
                     matTooltipShowDelay="500">
                     <mat-icon>delete</mat-icon>
                   </button>
-
                 </mat-card-header>
 
                 <!-- Text field -->
                 <mat-card-content>
-
                   <mat-form-field [formGroupName]="j" floatLabel="always">
                     <textarea matTextareaAutosize matAutosizeMinRows="10" matInput [type]="text.typeText" formControlName="text" [placeholder]="text.placeholderText"
                       [value]="contentForm[i].controls.texts.controls[j].controls.text.value"></textarea>
@@ -59,8 +57,17 @@
                       {{ text.alertText }}
                     </mat-error>
                   </mat-form-field>
-
                 </mat-card-content>
+                <mat-card-footer *ngIf="isDeveloper">
+                  <div class="flex-row-between-nowrap">
+                    <button mat-icon-button type="button" (click)="moveItemBack(i, 'texts', j)" matTooltip="Move item back" matTooltipShowDelay="500">
+                      <mat-icon>chevron_left</mat-icon>
+                    </button>
+                    <button mat-icon-button type="button" (click)="moveItemForward(i, 'texts', j)" matTooltip="Move item forward" matTooltipShowDelay="500">
+                      <mat-icon>chevron_right</mat-icon>
+                    </button>
+                  </div>
+                </mat-card-footer>
               </mat-card>
             </div>
           </div>
@@ -116,8 +123,16 @@
                     <mat-icon>list</mat-icon>
                   </button>
                 </div>
-
-
+                <mat-card-footer *ngIf="isDeveloper">
+                  <div class="flex-row-between-nowrap">
+                    <button mat-icon-button type="button" (click)="moveItemBack(i, 'lists', l)" matTooltip="Move item back" matTooltipShowDelay="500">
+                      <mat-icon>chevron_left</mat-icon>
+                    </button>
+                    <button mat-icon-button type="button" (click)="moveItemForward(i, 'lists', l)" matTooltip="Move item forward" matTooltipShowDelay="500">
+                      <mat-icon>chevron_right</mat-icon>
+                    </button>
+                  </div>
+                </mat-card-footer>
               </mat-card>
             </div>
           </div>
@@ -192,6 +207,16 @@
                       </button>
                     </div>
                   </div>
+                  <mat-card-footer *ngIf="isDeveloper">
+                    <div class="flex-row-between-nowrap">
+                      <button mat-icon-button type="button" (click)="moveItemBack(i, 'images', k)" matTooltip="Move item back" matTooltipShowDelay="500">
+                        <mat-icon>chevron_left</mat-icon>
+                      </button>
+                      <button mat-icon-button type="button" (click)="moveItemForward(i, 'images', k)" matTooltip="Move item forward" matTooltipShowDelay="500">
+                        <mat-icon>chevron_right</mat-icon>
+                      </button>
+                    </div>
+                  </mat-card-footer>
                 </div>
               </mat-card>
             </div>
@@ -266,6 +291,16 @@
                       </button>
                     </div>
                   </div>
+                  <mat-card-footer *ngIf="isDeveloper">
+                    <div class="flex-row-between-nowrap">
+                      <button mat-icon-button type="button" (click)="moveItemBack(i, 'files', l)" matTooltip="Move item back" matTooltipShowDelay="500">
+                        <mat-icon>chevron_left</mat-icon>
+                      </button>
+                      <button mat-icon-button type="button" (click)="moveItemForward(i, 'files', l)" matTooltip="Move item forward" matTooltipShowDelay="500">
+                        <mat-icon>chevron_right</mat-icon>
+                      </button>
+                    </div>
+                  </mat-card-footer>
                 </div>
               </mat-card>
             </div>

@@ -1,5 +1,5 @@
-import { Document } from 'mongoose';
 import { ObjectID } from 'bson';
+import { Document } from 'mongoose';
 
 // ------------ Mongoose -------------
 
@@ -36,14 +36,17 @@ export interface ContentFileDocument extends ContentFile, Document { _id: string
 export interface ContentFileDocumentLean extends ContentFile { _id: string | ObjectID; }
 
 // Page
-export interface ContentPageModel {
+export interface ContentPageInfo {
   title: string;
   description: string;
+}
+export interface ContentPageArrays {
   texts: ContentText[];
   lists: ContentList[];
   images: ContentImage[];
   files: ContentFile[];
 }
+export interface ContentPageModel extends ContentPageInfo, ContentPageArrays { }
 export interface ContentPageDocument extends ContentPageModel, Document {
   _id: string | ObjectID;
   texts: ContentTextDocument[];

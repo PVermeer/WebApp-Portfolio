@@ -2,8 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Observable, Subscription, of } from 'rxjs';
+import { ContentPageArrays } from '../../../../../../server/database/models/content/content.types';
 import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
 import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
+import { SharedService } from '../../_shared/services/shared.service';
 import { UserService } from '../../users/user.service';
 import { ContentService } from '../content.service';
 import { ContentPageDocumentExt, ContentPageLeanSubmit } from './content-management.types.d';
@@ -127,7 +129,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
         // Errors
       }, () => {
         this.progressSpinner = false;
-        this.errorHandler(); resolve();
+        this.resetContentManager(); resolve();
       });
     });
   }
@@ -151,7 +153,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       // Do nothing on cancel
       if (!response) { return; }
 
-      await this.updateForm(value).catch(() => { this.errorHandler(); return; });
+      await this.updateForm(value).catch(() => { this.resetContentManager(); return; });
       this.getForm();
     });
   }
@@ -179,12 +181,12 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
 
         // Success
         this.snackbarComponent.snackbarSuccess(response);
-        this.getForm();
+        this.resetContentManager();
 
         // Errors
       }, () => {
         this.progressSpinner = false;
-        this.errorHandler();
+        this.resetContentManager();
       }
       );
     });
@@ -225,10 +227,39 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
         // Errors
       }, () => {
         this.progressSpinner = false;
-        this.errorHandler();
+        this.resetContentManager();
       }
       );
     });
+  }
+
+  public moveItemBack(i: number, control: keyof ContentPageArrays, index: number) {
+
+    if (index === 0) { return; }
+
+    const indexA = index;
+    const indexB = index - 1;
+    const formControl = <FormArray>this.contentForm[i].controls[control];
+    const array = formControl.controls;
+    formControl.patchValue(this.sharedService.swapIndexArray(array, indexA, indexB));
+
+    const form = this.pagesResponse[i];
+    const array2 = form[control];
+    this.sharedService.swapIndexArray(array2, indexA, indexB);
+  }
+  public moveItemForward(i: number, control: keyof ContentPageArrays, index: number) {
+
+    const indexA = index;
+    const indexB = index + 1;
+    const formControl = <FormArray>this.contentForm[i].controls[control];
+    const array = formControl.controls;
+
+    if (array.length === index + 1) { return; }
+    formControl.patchValue(this.sharedService.swapIndexArray(array, indexA, indexB));
+
+    const form = this.pagesResponse[i];
+    const array2 = form[control];
+    this.sharedService.swapIndexArray(array2, indexA, indexB);
   }
 
   // Form buttons
@@ -299,7 +330,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     this.pagesResponse[i].files.splice(j, 1);
   }
 
-  public errorHandler() {
+  public resetContentManager() {
 
     this.contentForm = [];
     this.initFlag = true;
@@ -488,6 +519,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     private contentService: ContentService,
     private snackbarComponent: SnackbarComponent,
     private userService: UserService,
+    private sharedService: SharedService,
   ) {
     this.getForm();
   }
