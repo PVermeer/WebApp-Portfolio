@@ -105,7 +105,7 @@ export function processToDbInput(pageForm: ContentPageLeanInput, textArray: Cont
 ): ContentPageModel {
 
   return {
-    title: pageForm.title,
+    page: pageForm.page,
     info: pageForm.info,
     texts: textArray,
     lists: listArray,

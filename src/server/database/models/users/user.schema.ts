@@ -1,7 +1,6 @@
-import { hash } from 'bcryptjs';
-import { HookNextFunction, Model, Schema, model } from 'mongoose';
-import { QueryPre } from '../model.service';
+import { Model, Schema, model } from 'mongoose';
 import { UserDocument, UserTypes } from './user.types';
+import { saveOnePre, QueryPre } from './users.middleware';
 
 // User types
 export const userTypes: Readonly<UserTypes> = {
@@ -13,29 +12,6 @@ export const userTypes: Readonly<UserTypes> = {
   superAdmin: { rank: 4, value: 'superAdmin' },
   developer: { rank: 10, value: 'developer' }
 };
-
-
-// Specific
-async function saveOnePre(context: any, next: HookNextFunction): Promise<void> {
-
-  let document: UserDocument = context;
-  if (context._update) { document = context._update.$set; }
-
-  if (document.username) {
-    document.usernameIndex = document.username;
-  }
-
-  if (document.password) {
-    if (document.password.length !== 60) { // Excluded a length of > 59 at server validation
-      const password = document.password;
-      const hashPassword = await hash(password, 10).catch(error => { throw next(error); });
-      document.password = hashPassword;
-    }
-  }
-  if (document._id) {
-    delete document._id;
-  }
-}
 
 // ------------- Mongoose user schema's -------------
 const UserSchema = new Schema({

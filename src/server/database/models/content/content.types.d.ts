@@ -31,7 +31,7 @@ export interface ContentFile {
 
 // Page model
 export interface ContentPageInfo {
-  title: string;
+  page: string;
   info: ContentInfo;
 }
 export interface ContentPageArrays {
@@ -43,6 +43,7 @@ export interface ContentPageArrays {
 export interface ContentPageModel extends ContentPageInfo, ContentPageArrays { }
 export interface ContentPageDocumentLean extends ContentPageModel { _id: string | ObjectID; }
 export interface ContentPageDocument extends ContentPageModel, Document { }
+export interface ContentPageModelIndex extends ContentPageModel { pageIndex: string }
 
 export type ContentQuery = { [P in keyof ContentPageDocumentLean]?: ContentPageDocumentLean[P] };
 export type ContentFetch = { [K in keyof ContentPageDocumentLean]?: 1 | 0 };

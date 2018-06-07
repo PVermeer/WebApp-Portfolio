@@ -42,7 +42,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       const newArray = response.map((x: ContentPageDocumentExt, i) => {
         if (this.initFlag) {
           this.addFormGroup();
-          this.addTitleField(x.title, i);
+          this.addTitleField(x.page, i);
           this.addInfoField(x.info, i);
         }
         this.updateInfoField(x.info, i);

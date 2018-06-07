@@ -35,7 +35,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       let error: ErrorMessage;
       if (responseError.error) {
         error = responseError.error;
-      } else { error = { status: 504, message: 'No internet connection detected' }; }
+      } else { error = { status: 504, message: 'Could not connect to the server' }; }
 
       // Handle errors
       if (responseError instanceof HttpErrorResponse) {

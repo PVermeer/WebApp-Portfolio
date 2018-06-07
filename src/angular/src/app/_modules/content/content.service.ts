@@ -26,8 +26,8 @@ export class ContentService {
   }
 
   // Backend http requests
-  public getContentPage(title: string) {
-    return this.http.get<ContentPageDocumentLean>('/content/page?title=' + title);
+  public getContentPage(page: string) {
+    return this.http.get<ContentPageDocumentLean>('/content/page?page=' + page);
   }
   public newContentPage(page: ContentPageModel) {
     return this.http.post<string>('/content/newpage', page);

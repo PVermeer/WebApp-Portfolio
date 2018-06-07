@@ -30,7 +30,7 @@ export async function contentPageUpdate(req: Request) {
   const images: Express.Multer.File[] = uploads.images;
   const files: Express.Multer.File[] = uploads.files;
   const pageForm: ContentPageLeanInput = JSON.parse(req.body.content);
-  const pageDocument = await findContentPageLean({ title: pageForm.title });
+  const pageDocument = await findContentPageLean({ page: pageForm.page });
 
   const newArray = prepareArray(pageForm);
   const textArray = newArray.texts;
@@ -46,7 +46,7 @@ export async function contentPageUpdate(req: Request) {
 
   const pageModel = processToDbInput(pageForm, textArray, listArray, imageArray, fileArray);
 
-  const result = await updateContentPage({ title: pageModel.title }, pageModel)
+  const result = await updateContentPage({ page: pageModel.page }, pageModel)
 
     // On errors revert back
     .catch(async error => await updateContentErrorHandler({ ...uploadImageArray, ...uploadFileArray }, error));
@@ -83,8 +83,8 @@ export async function getFile(req: Request, res: Response) {
 
 export function getPage(req: Request) {
 
-  const { title } = req.query;
+  const { page } = req.query;
 
-  return findContentPageLean({ title });
+  return findContentPageLean({ page });
 
 }

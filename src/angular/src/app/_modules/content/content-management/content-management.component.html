@@ -8,11 +8,11 @@
 <mat-tab-group [@.disabled]="true">
   <div *ngFor="let page of (pages | async); let i = index">
 
-    <mat-tab [label]="page.title">
+    <mat-tab [label]="page.page">
       <div *ngIf="contentForm[i]">
         <br>
         <div class="flex-row-between-nowrap">
-          <h3>{{ page.title }}</h3>
+          <h3>{{ page.page }}</h3>
           <div class="flex-column-around">
             <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)" [disabled]="!contentForm[i].valid">
               Submit changes

@@ -1,10 +1,6 @@
 import { Model, Schema, model } from 'mongoose';
 import { ContentPageDocument, GridFsDocument } from './content.types';
-
-// ------- Mongoose middleware User functions --------
-// Shared
-
-// Specific
+import { saveOnePre, QueryPre } from './content.middleware';
 
 // ------------- Mongoose content schema's -------------
 
@@ -20,11 +16,17 @@ const GridFsSchema = new Schema({
 
 // Page
 const ContentPageSchema = new Schema({
-  title: {
+  page: {
     type: String,
     trim: true,
     required: true,
-    unique: true,
+  },
+  pageIndex: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: true,
+    unique: true
   },
   info: {
     title: { type: String, trim: true, required: true },
@@ -57,6 +59,14 @@ const ContentPageSchema = new Schema({
 // Expire collections
 
 // Middleware validation
+const mustMatch = ['_id', 'pageIndex'];
+
+ContentPageSchema.pre('validate', function (next): Promise<void> { return saveOnePre(this, next); });
+ContentPageSchema.pre('update', function (next): Promise<void> { return saveOnePre(this, next); });
+
+ContentPageSchema.pre('findOne', function (next): void { return QueryPre(this, next, mustMatch); });
+ContentPageSchema.pre('remove', function (next): void { return QueryPre(this, next, mustMatch); });
+
 
 // Export models
 export const ContentPage: Model<ContentPageDocument> = model('ContentPage', ContentPageSchema);

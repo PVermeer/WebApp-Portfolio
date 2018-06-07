@@ -19,6 +19,8 @@ import { SidenavService } from './sidenav/sidenav.service';
 import { AdminComponent } from './pages/user/admin/admin.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { PageResolver } from './pages/page-resolver.service';
+import { ErrorComponent } from './pages/error/error.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { environment } from '../environments/environment';
     ContactComponent,
     UserComponent,
     AdminComponent,
+    ErrorComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,7 +42,7 @@ import { environment } from '../environments/environment';
     ContentModule,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
   ],
-  providers: [ErrorInterceptorProvider, SidenavService],
+  providers: [ErrorInterceptorProvider, SidenavService, PageResolver],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
