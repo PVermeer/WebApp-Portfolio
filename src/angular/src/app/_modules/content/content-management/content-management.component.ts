@@ -409,7 +409,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
 
   public validateImageSize(i: number, k: number, file: File) {
 
-    if (file.size > this.maxImageSize) {
+    if (file && file.size > this.maxImageSize) {
       const control = <FormArray>this.contentForm[i].controls['images'];
       control.controls[k].get('imageUpdate').setErrors({ 'Size exceeded': true });
     }
