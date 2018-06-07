@@ -1,6 +1,18 @@
 <section>
+  <mat-card [ngStyle]="{'max-width.px':400}">
+    <mat-card-header>
+      <mat-card-title> {{ page?.info.title }} </mat-card-title>
+      <mat-card-subtitle> {{ page?.info.subtitle }} </mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image [appViewImage]="getImageId('Image 1')"> {{ page?.info.text }}
+    <ul>
+      <li *ngFor="let item of page?.info.list"> {{ item }} </li>
+    </ul>
+    <mat-card-content>
+    </mat-card-content>
+  </mat-card>
+
   <div class="container">
-    <img [appViewImage]="getImageId('Image 1')">
     <div *ngFor="let text of (page$ | async)?.texts" appAnimateInview="bounceInLeft">
       <h3 [id]="text.header">{{ text.header }}</h3>
       <p>{{ text.text }}</p>

@@ -26,13 +26,17 @@ const ContentPageSchema = new Schema({
     required: true,
     unique: true,
   },
+  info: {
+    title: { type: String, trim: true, required: true },
+    subtitle: { type: String, trim: true },
+    text: { type: String, trim: true },
+    list: [{ type: String, trim: true }],
+  },
   texts: [{
-    _id: { type: Schema.Types.ObjectId, required: true },
     header: { type: String, trim: true, required: true },
     text: { type: String, trim: true }
   }],
   lists: [{
-    _id: { type: Schema.Types.ObjectId, required: true },
     title: { type: String, trim: true, required: true },
     list: [{ type: String, trim: true }]
   }],

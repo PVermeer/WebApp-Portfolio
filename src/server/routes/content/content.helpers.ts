@@ -1,21 +1,9 @@
-import { uploadFiles, deleteFileDb } from './content.database';
-import {
-  GridFsDocument, ContentPageDocumentLean, ContentTextDocumentLean, ContentPageModel, ContentListDocumentLean
-} from '../../database/models/content/content.types';
-import { ContentImageSubmit, ContentPageLeanInput, ContentFileSubmit } from './content.types';
 import { ObjectId } from 'mongodb';
+import { ContentList, ContentPageDocumentLean, ContentPageModel, ContentText, GridFsDocument } from '../../database/models/content/content.types';
+import { deleteFileDb, uploadFiles } from './content.database';
+import { ContentFileSubmit, ContentImageSubmit, ContentPageLeanInput } from './content.types';
 
 export function prepareArray(pageForm: ContentPageLeanInput) {
-
-  const texts = pageForm.texts.map(x => {
-    if (!x._id) { x._id = new ObjectId; }
-    return x;
-  });
-
-  const lists = pageForm.lists.map(x => {
-    if (!x._id) { x._id = new ObjectId; }
-    return x;
-  });
 
   const images = pageForm.images.map(x => {
     if (!x._id) { x._id = (new ObjectId).toString(); }
@@ -29,7 +17,7 @@ export function prepareArray(pageForm: ContentPageLeanInput) {
     return x;
   });
 
-  return { texts, lists, images, files };
+  return { ...pageForm, images, files };
 }
 
 export function deleteOldImagesFromDb(pageDocument: Partial<ContentPageDocumentLean>, imagesArray: ContentImageSubmit[]) {
@@ -113,12 +101,12 @@ export async function uploadFileHandler(files: Express.Multer.File[], filesArray
 }
 
 
-export function processToDbInput(pageForm: ContentPageLeanInput, textArray: ContentTextDocumentLean[], listArray: ContentListDocumentLean[], imageArray: ContentImageSubmit[], fileArray: ContentFileSubmit[]
+export function processToDbInput(pageForm: ContentPageLeanInput, textArray: ContentText[], listArray: ContentList[], imageArray: ContentImageSubmit[], fileArray: ContentFileSubmit[]
 ): ContentPageModel {
 
   return {
     title: pageForm.title,
-    description: pageForm.description,
+    info: pageForm.info,
     texts: textArray,
     lists: listArray,
     images: imageArray,
