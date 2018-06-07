@@ -66,7 +66,7 @@ export class AnimateInviewDirective implements OnInit, AfterViewInit, OnDestroy 
     }, 100);
 
     const scroll = fromEvent(this.contentDiv, 'scroll').pipe(auditTime(100)).subscribe(() => this.checkInView());
-    const resize = fromEvent(this.contentDiv, 'resize').pipe(auditTime(100)).subscribe(() => this.checkInView());
+    const resize = fromEvent(window, 'resize').pipe(auditTime(100)).subscribe(() => this.checkInView());
 
     this.subscriptions.add(scroll);
     this.subscriptions.add(resize);
