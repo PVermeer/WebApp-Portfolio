@@ -201,10 +201,6 @@ form {
   flex: 1;
 }
 
-.lname {
-  display: none !important;
-}
-
 /* Table  */
 
 .table-container {
@@ -244,8 +240,16 @@ th.mat-header-cell, td.mat-cell {
 
 /* ---------- Control ----------- */
 
-/* Hide an element (used by CssAnimateInviewService */
+/* Hide an element */
 
 .hide {
   opacity: 0;
+}
+
+.lname {
+  display: none !important;
+}
+
+.display-none {
+  display: none !important;
 }

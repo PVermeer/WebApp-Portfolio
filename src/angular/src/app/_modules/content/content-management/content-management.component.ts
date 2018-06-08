@@ -97,9 +97,10 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     );
   }
 
-  public updateForm(value: ContentPageLeanSubmit): Promise<void> {
+  public updateForm(i: number): Promise<void> {
     return new Promise(resolve => {
 
+      const value: ContentPageLeanSubmit = this.contentForm[i].getRawValue();
       const formData = new FormData;
 
       value.images.map(x => {
@@ -139,8 +140,6 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
 
   public confirmUpdateForm(i: number) {
 
-    const value: ContentPageLeanSubmit = this.contentForm[i].value;
-
     // Open dialog to confirm the changes
     const data: DialogContent = {
       dialogData: {
@@ -156,7 +155,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       // Do nothing on cancel
       if (!response) { return; }
 
-      await this.updateForm(value).catch(() => { this.resetContentManager(); return; });
+      await this.updateForm(i).catch(() => { this.resetContentManager(); return; });
       this.getForm();
     });
   }
@@ -240,33 +239,11 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  public moveItemBack(i: number, control: keyof ContentPageArrays, index: number) {
+  public resetContentManager() {
 
-    if (index === 0) { return; }
-
-    const indexA = index;
-    const indexB = index - 1;
-    const formControl = <FormArray>this.contentForm[i].controls[control];
-    const array = formControl.controls;
-    formControl.patchValue(this.sharedService.swapIndexArray(array, indexA, indexB));
-
-    const form = this.pagesResponse[i];
-    const array2 = form[control];
-    this.sharedService.swapIndexArray(array2, indexA, indexB);
-  }
-  public moveItemForward(i: number, control: keyof ContentPageArrays, index: number) {
-
-    const indexA = index;
-    const indexB = index + 1;
-    const formControl = <FormArray>this.contentForm[i].controls[control];
-    const array = formControl.controls;
-
-    if (array.length === index + 1) { return; }
-    formControl.patchValue(this.sharedService.swapIndexArray(array, indexA, indexB));
-
-    const form = this.pagesResponse[i];
-    const array2 = form[control];
-    this.sharedService.swapIndexArray(array2, indexA, indexB);
+    this.contentForm = [];
+    this.initFlag = true;
+    this.getForm();
   }
 
   // Form buttons
@@ -316,11 +293,11 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
 
   public infoRemovelistItem(i: number, n: number) {
 
-    this.removeInfoListItemField(i, n);
-
     if (this.pagesResponse[i].info.list.length === 1) {
+      this.setValueInfoListItemField(i, '');
       this.pagesResponse[i].info.list[0] = '';
     } else {
+      this.removeInfoListItemField(i, n);
       this.pagesResponse[i].info.list.splice(n, 1);
     }
   }
@@ -336,10 +313,13 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   }
   public listRemoveItem(i: number, j: number, m: number) {
 
-    if (this.pagesResponse[i].lists[j].list.length === 1) { return this.listFieldRemove(i, j); }
-
-    this.removeListItemField(i, j, m);
-    this.pagesResponse[i].lists[j].list.splice(j, 1);
+    if (this.pagesResponse[i].lists[j].list.length === 1) {
+      this.setValueListItemField(i, j, '');
+      this.pagesResponse[i].lists[j].list[0] = '';
+    } else {
+      this.removeListItemField(i, j, m);
+      this.pagesResponse[i].lists[j].list.splice(j, 1);
+    }
   }
   public imageFieldRemove(i: number, j: number) {
 
@@ -352,11 +332,33 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     this.pagesResponse[i].files.splice(j, 1);
   }
 
-  public resetContentManager() {
+  public moveItemBack(i: number, control: keyof ContentPageArrays, index: number) {
 
-    this.contentForm = [];
-    this.initFlag = true;
-    this.getForm();
+    if (index === 0) { return; }
+
+    const indexA = index;
+    const indexB = index - 1;
+    const formControl = <FormArray>this.contentForm[i].controls[control];
+    const array = formControl.controls;
+    formControl.patchValue(this.sharedService.swapIndexArray(array, indexA, indexB));
+
+    const form = this.pagesResponse[i];
+    const array2 = form[control];
+    this.sharedService.swapIndexArray(array2, indexA, indexB);
+  }
+  public moveItemForward(i: number, control: keyof ContentPageArrays, index: number) {
+
+    const indexA = index;
+    const indexB = index + 1;
+    const formControl = <FormArray>this.contentForm[i].controls[control];
+    const array = formControl.controls;
+
+    if (array.length === index + 1) { return; }
+    formControl.patchValue(this.sharedService.swapIndexArray(array, indexA, indexB));
+
+    const form = this.pagesResponse[i];
+    const array2 = form[control];
+    this.sharedService.swapIndexArray(array2, indexA, indexB);
   }
 
   // Form methods
@@ -539,6 +541,18 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     control.removeAt(j);
   }
 
+  private setValueInfoListItemField(i: number, value: string) {
+    const control = <FormGroup>this.contentForm[i].controls['info'];
+    const itemsArray = <FormArray>control.controls['list'];
+    itemsArray.at(0).setValue(value);
+  }
+  private setValueListItemField(i: number, j: number, value: '') {
+    const controlLists = <FormArray>this.contentForm[i].controls['lists'];
+    const controlListsItems = <FormGroup>controlLists.controls[j];
+    const itemsArray = <FormArray>controlListsItems.controls['list'];
+    itemsArray.at(0).setValue(value);
+  }
+
   // Form context
   private formInfoAttributes() {
     return {
@@ -564,7 +578,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       placeholderText: 'Text',
       typeText: 'text',
       alertText: '',
-      placeholderRef: 'Reference (developer)',
+      placeholderRef: 'Reference',
       typeRef: 'text',
       alertRef: '',
     };
@@ -577,7 +591,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       placeholderItem: 'List item',
       typeItem: 'text',
       alertItem: '',
-      placeholderRef: 'Reference (developer)',
+      placeholderRef: 'Reference',
       typeRef: 'text',
       alertRef: '',
     };
@@ -589,7 +603,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       alertTitle: 'Field is required',
       // tslint:disable-next-line:max-line-length
       alertFile: `Maximum image size of ${Math.floor(this.maxImageSize / 1000)} Kb exceeded. Please convert the image to a smaller format or choose another image`,
-      placeholderRef: 'Reference (developer)',
+      placeholderRef: 'Reference',
       typeRef: 'text',
       alertRef: '',
     };
@@ -600,7 +614,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       typeTitle: 'text',
       alertTitle: 'Field is required',
       alertFile: `Maximum file size of ${Math.floor(this.maxImageSize / 1024)} Kb exceeded.`,
-      placeholderRef: 'Reference (developer)',
+      placeholderRef: 'Reference',
       typeRef: 'text',
       alertRef: '',
     };

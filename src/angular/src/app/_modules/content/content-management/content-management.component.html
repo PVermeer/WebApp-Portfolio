@@ -24,7 +24,7 @@
 
           <br>
           <mat-divider></mat-divider>
-          <h4>Page header info</h4>
+          <h4>Page header</h4>
 
           <mat-card *ngIf="contentForm[i].controls.info" formGroupName="info">
             <!-- Header -->
@@ -109,7 +109,7 @@
                     </mat-error>
                   </mat-form-field>
                   <!-- Reference field -->
-                  <mat-form-field *ngIf="isDeveloper">
+                  <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
                     <input matInput [type]="text.typeRef" formControlName="ref" [placeholder]="text.placeholderRef" [value]="contentForm[i].controls.texts.controls[j].controls.ref.value">
                     <mat-error *ngIf="contentForm[i].controls.texts.controls[j].controls.ref.errors">
                       {{ text.alertRef }}
@@ -172,7 +172,7 @@
                       </mat-form-field>
                     </div>
                   </div>
-                  <mat-form-field *ngIf="isDeveloper">
+                  <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
                     <input matInput [type]="list.typeRef" formControlName="ref" [placeholder]="list.placeholderRef" [value]="contentForm[i].controls.lists.controls[l].controls.ref.value">
                     <mat-error *ngIf="contentForm[i].controls.lists.controls[l].controls.ref.errors">
                       {{ list.alertRef }}
@@ -268,7 +268,7 @@
                   </div>
                   <br>
                   <mat-card-content>
-                    <mat-form-field *ngIf="isDeveloper">
+                    <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
                       <input matInput [type]="image.typeRef" formControlName="ref" [placeholder]="image.placeholderRef" [value]="contentForm[i].controls.images.controls[k].controls.ref.value">
                       <mat-error *ngIf="contentForm[i].controls.images.controls[k].controls.ref.errors">
                         {{ image.alertRef }}
@@ -355,7 +355,7 @@
                   </div>
                   <br>
                   <mat-card-content>
-                    <mat-form-field *ngIf="isDeveloper">
+                    <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
                       <input matInput [type]="file.typeRef" formControlName="ref" [placeholder]="file.placeholderRef" [value]="contentForm[i].controls.files.controls[l].controls.ref.value">
                       <mat-error *ngIf="contentForm[i].controls.files.controls[l].controls.ref.errors">
                         {{ file.alertRef }}
