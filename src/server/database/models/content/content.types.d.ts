@@ -11,20 +11,24 @@ export interface ContentInfo {
   list: string[];
 }
 export interface ContentText {
+  ref: string;
   header: string;
   text: string;
 }
 export interface ContentList {
+  ref: string;
   title: string;
   list: string[];
 }
 export interface ContentImage {
   _id: string | ObjectID;
+  ref: string;
   title: string;
   image: string | ObjectID | Blob;
 }
 export interface ContentFile {
   _id: string | ObjectID;
+  ref: string;
   title: string;
   file: string | ObjectID | Blob;
 }

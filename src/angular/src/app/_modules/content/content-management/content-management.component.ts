@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { ContentInfo, ContentPageArrays } from '../../../../../../server/database/models/content/content.types';
+import { UserService } from '../../users/user.service';
 import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
 import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
 import { SharedService } from '../../_shared/services/shared.service';
-import { UserService } from '../../users/user.service';
 import { ContentService } from '../content.service';
 import { ContentPageDocumentExt, ContentPageLeanSubmit } from './content-management.types.d';
 import { NewPageComponent } from './new-page/new-page.component';
@@ -51,34 +51,34 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
 
         x.texts = x.texts.map((y, j) => {
           if (this.initFlag) {
-            this.addTextField(y.header, y.text, i);
+            this.addTextField(y.header, y.text, y.ref, i);
           }
-          this.updateTextField(y.header, y.text, i, j);
+          this.updateTextField(y.header, y.text, y.ref, i, j);
           return { ...y, ...this.formTextsAttributes() };
         });
 
         x.lists = x.lists.map((b, j) => {
           if (this.initFlag) {
-            this.addListField(b.title, i);
+            this.addListField(b.title, b.ref, i);
           }
-          this.updateListField(b.title, i, j);
+          this.updateListField(b.title, b.ref, i, j);
           b.list.map((c, d) => { this.updateListItemField(c, i, j, d); });
           return { ...b, ...this.formListAttributes() };
         });
 
         x.images = x.images.map((z, k) => {
           if (this.initFlag) {
-            this.addImageField(z.title, z.image, null, z._id as string, i);
+            this.addImageField(z.title, z.image as string, null, z._id as string, z.ref, i);
           }
-          this.updateImageField(z.title, z.image, null, z._id as string, i, k);
+          this.updateImageField(z.title, z.image as string, null, z._id as string, z.ref, i, k);
           return { ...z, ...this.formImagesAttributes() };
         });
 
         x.files = x.files.map((a, j) => {
           if (this.initFlag) {
-            this.addFileField(a.title, a.file, null, a._id as string, i);
+            this.addFileField(a.title, a.file as string, null, a._id as string, a.ref, i);
           }
-          this.updateFileField(a.title, a.file, null, a._id as string, i, j);
+          this.updateFileField(a.title, a.file as string, null, a._id as string, a.ref, i, j);
           return { ...a, ...this.formFilesAttributes() };
         });
 
@@ -167,7 +167,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const data: DialogContent = { component: NewPageComponent };
     const dialog = this.matDialog.open(DialogComponent, { data });
 
-    dialog.afterClosed().subscribe(page => {
+    dialog.afterClosed().subscribe((page: string) => {
 
       if (!page) { return; }
 
@@ -176,11 +176,11 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       this.addTitleField(page, index);
       this.addInfoField({ title: 'New title', subtitle: 'New subtitle', text: 'Some text', list: [] }, index);
       this.addInfoListItemField('New list item', index);
-      this.addTextField('Header 1', 'Some text', index);
-      this.addListField('New list', index);
+      this.addTextField('Header 1', 'Some text', '', index);
+      this.addListField('New list', '', index);
       this.addListItemField('New item', index, 0);
-      this.addImageField('New image', null, null, null, index);
-      this.addFileField('New file', null, null, null, index);
+      this.addImageField('New image', null, null, null, '', index);
+      this.addFileField('New file', null, null, null, '', index);
 
       this.progressSpinner = true;
       this.contentService.newContentPage(this.contentForm[index].value).subscribe(response => {
@@ -277,17 +277,17 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   }
   public textFieldAdd(i: number) {
 
-    this.addTextField('New header', 'Some text', i);
+    this.addTextField('New header', 'Some text', '', i);
     this.pagesResponse[i].texts.push({
-      ...{ header: 'New header', text: 'Some text' },
+      ...{ header: 'New header', text: 'Some text', ref: '' },
       ...this.formTextsAttributes()
     });
   }
   public listFieldAdd(i: number) {
 
-    this.addListField('New title', i);
+    this.addListField('New title', '', i);
     const index = this.pagesResponse[i].lists.push({
-      ...{ title: 'New title', list: [] },
+      ...{ title: 'New title', list: [], ref: '' },
       ...this.formListAttributes()
     }) - 1;
     this.listAddItem(i, index);
@@ -299,17 +299,17 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   }
   public imageFieldAdd(i: number) {
 
-    this.addImageField('New image', null, null, null, i);
+    this.addImageField('New image', null, null, null, '', i);
     this.pagesResponse[i].images.push({
-      ...{ _id: null, title: 'New image', image: null },
+      ...{ _id: null, title: 'New image', image: null, ref: '' },
       ...this.formImagesAttributes()
     });
   }
   public fileFieldAdd(i: number) {
 
-    this.addFileField('New file', null, null, null, i);
+    this.addFileField('New file', null, null, null, '', i);
     this.pagesResponse[i].files.push({
-      ...{ _id: null, title: 'New file', file: null },
+      ...{ _id: null, title: 'New file', file: null, ref: '' },
       ...this.formFilesAttributes()
     });
   }
@@ -375,35 +375,39 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     group.addControl('text', new FormControl(info.text));
     group.addControl('list', new FormArray([]));
   }
-  private initTextField(header: string, text: string) {
+  private initTextField(header: string, text: string, ref: string) {
     return this.formBuilder.group({
-      header: [{ value: header, disabled: !this.isDeveloper }, []],
+      header: [header, []],
       text: [text, []],
+      ref: [{ value: ref, disabled: !this.isDeveloper }, []],
     });
   }
-  private initListField(title: string) {
+  private initListField(title: string, ref: string) {
     return this.formBuilder.group({
-      title: [{ value: title, disabled: !this.isDeveloper }, []],
+      title: [title, []],
       list: this.formBuilder.array([]),
+      ref: [{ value: ref, disabled: !this.isDeveloper }, []],
     });
   }
   private initListItemField(listItem: string) {
     return this.formBuilder.control(listItem);
   }
-  private initImageField(title: string, image: any, imageUpdate: File, _id: string) {
+  private initImageField(title: string, image: string, imageUpdate: File, _id: string, ref: string) {
     return this.formBuilder.group({
-      title: [{ value: title, disabled: !this.isDeveloper }, []],
+      title: [title, [Validators.required]],
       image: [image, []],
       imageUpdate: [imageUpdate, []],
       _id: [_id, []],
+      ref: [{ value: ref, disabled: !this.isDeveloper }, []],
     });
   }
-  private initFileField(title: string, file: any, fileUpdate: File, _id: string) {
+  private initFileField(title: string, file: string, fileUpdate: File, _id: string, ref: string) {
     return this.formBuilder.group({
-      title: [{ value: title, disabled: !this.isDeveloper }, []],
+      title: [title, [Validators.required]],
       file: [file, []],
       fileUpdate: [fileUpdate, []],
       _id: [_id, []],
+      ref: [{ value: ref, disabled: !this.isDeveloper }, []],
     });
   }
 
@@ -436,13 +440,13 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const group = <FormGroup>this.contentForm[i].controls['info'];
     this.initInfoField(info, group);
   }
-  private addTextField(header: string, text: string, i: number) {
+  private addTextField(header: string, text: string, ref: string, i: number) {
     const control = <FormArray>this.contentForm[i].controls['texts'];
-    control.push(this.initTextField(header, text));
+    control.push(this.initTextField(header, text, ref));
   }
-  private addListField(title: string, i: number) {
+  private addListField(title: string, ref: string, i: number) {
     const control = <FormArray>this.contentForm[i].controls['lists'];
-    control.push(this.initListField(title));
+    control.push(this.initListField(title, ref));
   }
   private addListItemField(listItem: string, i: number, j: number) {
     const controlLists = <FormArray>this.contentForm[i].controls['lists'];
@@ -455,13 +459,13 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const itemsArray = <FormArray>group.controls['list'];
     itemsArray.push(this.initListItemField(listItem));
   }
-  private addImageField(title: string, image: any, imageUpdate: File, _id: string, i: number) {
+  private addImageField(title: string, image: string, imageUpdate: File, _id: string, ref: string, i: number) {
     const control = <FormArray>this.contentForm[i].controls['images'];
-    control.push(this.initImageField(title, image, imageUpdate, _id));
+    control.push(this.initImageField(title, image, imageUpdate, _id, ref));
   }
-  private addFileField(title: string, file: any, fileUpdate: File, _id: string, i: number) {
+  private addFileField(title: string, file: string, fileUpdate: File, _id: string, ref: string, i: number) {
     const control = <FormArray>this.contentForm[i].controls['files'];
-    control.push(this.initFileField(title, file, fileUpdate, _id));
+    control.push(this.initFileField(title, file, fileUpdate, _id, ref));
   }
 
   private updateInfoField(info: ContentInfo, i: number) {
@@ -476,13 +480,13 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const itemsArray = <FormArray>group.controls['list'];
     itemsArray.setControl(f, this.initListItemField(listItem));
   }
-  private updateTextField(header: string, text: string, i: number, j: number) {
+  private updateTextField(header: string, text: string, ref: string, i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['texts'];
-    control.setControl(j, this.initTextField(header, text));
+    control.setControl(j, this.initTextField(header, text, ref));
   }
-  private updateListField(title: string, i: number, j: number) {
+  private updateListField(title: string, ref: string, i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['lists'];
-    control.setControl(j, this.initListField(title));
+    control.setControl(j, this.initListField(title, ref));
   }
   private updateListItemField(listItem: string, i: number, j: number, k: number) {
     const controlLists = <FormArray>this.contentForm[i].controls['lists'];
@@ -490,13 +494,13 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const itemsArray = <FormArray>controlListsItems.controls['list'];
     itemsArray.setControl(k, this.initListItemField(listItem));
   }
-  private updateImageField(title: string, image: any, imageUpdate: File, _id: string, i: number, j: number) {
+  private updateImageField(title: string, image: string, imageUpdate: File, _id: string, ref: string, i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['images'];
-    control.setControl(j, this.initImageField(title, image, imageUpdate, _id as string));
+    control.setControl(j, this.initImageField(title, image, imageUpdate, _id as string, ref));
   }
-  private updateFileField(title: string, file: any, fileUpdate: File, _id: string, i: number, j: number) {
+  private updateFileField(title: string, file: string, fileUpdate: File, _id: string, ref: string, i: number, j: number) {
     const control = <FormArray>this.contentForm[i].controls['files'];
-    control.setControl(j, this.initFileField(title, file, fileUpdate, _id as string));
+    control.setControl(j, this.initFileField(title, file, fileUpdate, _id as string, ref));
   }
 
   private removeFormGroup(i: number) {
@@ -538,49 +542,67 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   // Form context
   private formInfoAttributes() {
     return {
-      placeholderTitle: 'Edit title',
+      placeholderTitle: 'Title',
       typeTitle: 'text',
       alertTitle: '',
-      placeholderSubtitle: 'Edit subtitle',
+      placeholderSubtitle: 'Subtitle',
       typeSubtitle: 'text',
       alertSubtitle: '',
-      placeholderText: 'Edit the text',
+      placeholderText: 'Text',
       typeText: 'text',
       alertText: '',
-      placeholderList: 'Edit list item',
+      placeholderList: 'List item',
       typeList: 'text',
       alertList: '',
     };
   }
   private formTextsAttributes() {
     return {
+      placeholderHeader: 'Header',
       typeHeader: 'text',
       alertHeader: '',
-      placeholderText: 'Edit the text',
+      placeholderText: 'Text',
       typeText: 'text',
       alertText: '',
+      placeholderRef: 'Reference (developer)',
+      typeRef: 'text',
+      alertRef: '',
     };
   }
   private formListAttributes() {
     return {
+      placeholderTitle: 'Title',
       typeTitle: 'text',
       alertTitle: '',
-      placeholderText: 'Edit list item',
-      typeText: 'text',
-      alertText: '',
+      placeholderItem: 'List item',
+      typeItem: 'text',
+      alertItem: '',
+      placeholderRef: 'Reference (developer)',
+      typeRef: 'text',
+      alertRef: '',
     };
   }
   private formImagesAttributes() {
     return {
+      placeholderTitle: 'Title',
       typeTitle: 'text',
+      alertTitle: 'Field is required',
       // tslint:disable-next-line:max-line-length
-      alert: `Maximum image size of ${Math.floor(this.maxImageSize / 1000)} Kb exceeded. Please convert the image to a smaller format or choose another image`,
+      alertFile: `Maximum image size of ${Math.floor(this.maxImageSize / 1000)} Kb exceeded. Please convert the image to a smaller format or choose another image`,
+      placeholderRef: 'Reference (developer)',
+      typeRef: 'text',
+      alertRef: '',
     };
   }
   private formFilesAttributes() {
     return {
+      placeholderTitle: 'Title',
       typeTitle: 'text',
-      alert: `Maximum file size of ${Math.floor(this.maxImageSize / 1024)} Kb exceeded.`,
+      alertTitle: 'Field is required',
+      alertFile: `Maximum file size of ${Math.floor(this.maxImageSize / 1024)} Kb exceeded.`,
+      placeholderRef: 'Reference (developer)',
+      typeRef: 'text',
+      alertRef: '',
     };
   }
 

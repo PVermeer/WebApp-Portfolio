@@ -29,26 +29,30 @@ const ContentPageSchema = new Schema({
     unique: true
   },
   info: {
-    title: { type: String, trim: true, required: true },
+    title: { type: String, trim: true },
     subtitle: { type: String, trim: true },
     text: { type: String, trim: true },
     list: [{ type: String, trim: true }],
   },
   texts: [{
-    header: { type: String, trim: true, required: true },
+    ref: { type: String, trim: true },
+    header: { type: String, trim: true },
     text: { type: String, trim: true }
   }],
   lists: [{
-    title: { type: String, trim: true, required: true },
+    ref: { type: String, trim: true },
+    title: { type: String, trim: true },
     list: [{ type: String, trim: true }]
   }],
   images: [{
-    _id: { type: Schema.Types.ObjectId, required: true },
+    ref: { type: String, trim: true },
+    _id: { type: Schema.Types.ObjectId },
     title: { type: String, trim: true, required: true },
     image: { type: Schema.Types.ObjectId, ref: 'content.files' }
   }],
   files: [{
-    _id: { type: Schema.Types.ObjectId, required: true },
+    ref: { type: String, trim: true },
+    _id: { type: Schema.Types.ObjectId },
     title: { type: String, trim: true, required: true },
     file: { type: Schema.Types.ObjectId, ref: 'content.files' }
   }]

@@ -1,6 +1,13 @@
 import { ContentFile, ContentImage, ContentInfo, ContentList, ContentPageDocumentLean, ContentText } from "../../../../../../server/database/models/content/content.types";
 
 // Extend interfaces for Form options
+
+interface Reference {
+  placeholderRef: string;
+  typeRef: string;
+  alertRef: string;
+}
+
 export interface ContentInfoExt extends ContentInfo {
   placeholderTitle: string,
   typeTitle: string;
@@ -15,27 +22,33 @@ export interface ContentInfoExt extends ContentInfo {
   typeList: string,
   alertList: string,
 }
-export interface ContentTextExt extends ContentText {
+export interface ContentTextExt extends ContentText, Reference {
   placeholderText: string;
   typeText: string;
   alertText: string;
+  placeholderHeader: string;
   typeHeader: string;
   alertHeader: string;
 }
-export interface ContentListExt extends ContentList {
-  placeholderText: string;
-  typeText: string;
-  alertText: string;
+export interface ContentListExt extends ContentList, Reference {
+  placeholderTitle: string;
   typeTitle: string;
   alertTitle: string;
+  placeholderItem: string;
+  typeItem: string;
+  alertItem: string;
 }
-export interface ContentImageExt extends ContentImage {
+export interface ContentImageExt extends ContentImage, Reference {
+  placeholderTitle: string;
   typeTitle: string;
-  alert: string;
+  alertTitle: string;
+  alertFile: string;
 }
-export interface ContentFileExt extends ContentFile {
+export interface ContentFileExt extends ContentFile, Reference {
+  placeholderTitle: string;
   typeTitle: string;
-  alert: string;
+  alertTitle: string;
+  alertFile: string;
 }
 export interface ContentImageSubmit extends ContentImage {
   imageUpdate: Blob;
