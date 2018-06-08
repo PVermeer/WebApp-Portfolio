@@ -167,13 +167,13 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const data: DialogContent = { component: NewPageComponent };
     const dialog = this.matDialog.open(DialogComponent, { data });
 
-    dialog.afterClosed().subscribe(title => {
+    dialog.afterClosed().subscribe(page => {
 
-      if (!title) { return; }
+      if (!page) { return; }
 
       // New page
       const index = this.addFormGroup();
-      this.addTitleField(title, index);
+      this.addTitleField(page, index);
       this.addInfoField({ title: 'New title', subtitle: 'New subtitle', text: 'Some text', list: [] }, index);
       this.addInfoListItemField('New list item', index);
       this.addTextField('Header 1', 'Some text', index);
@@ -429,8 +429,8 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     this.contentForm.push(this.initFormGroup());
     return this.contentForm.length - 1;
   }
-  private addTitleField(title: string, i: number) {
-    this.contentForm[i].addControl('title', new FormControl(title));
+  private addTitleField(page: string, i: number) {
+    this.contentForm[i].addControl('page', new FormControl(page));
   }
   private addInfoField(info: ContentInfo, i: number) {
     const group = <FormGroup>this.contentForm[i].controls['info'];

@@ -61,11 +61,11 @@ const ContentPageSchema = new Schema({
 // Middleware validation
 const mustMatch = ['_id', 'pageIndex'];
 
-ContentPageSchema.pre('validate', function (next): Promise<void> { return saveOnePre(this, next); });
-ContentPageSchema.pre('update', function (next): Promise<void> { return saveOnePre(this, next); });
+ContentPageSchema.pre('validate', function (next) { return saveOnePre(this, next); });
+ContentPageSchema.pre('update', function (next) { return saveOnePre(this, next); });
 
-ContentPageSchema.pre('findOne', function (next): void { return QueryPre(this, next, mustMatch); });
-ContentPageSchema.pre('remove', function (next): void { return QueryPre(this, next, mustMatch); });
+ContentPageSchema.pre('findOne', function (next) { return QueryPre(this, next, mustMatch); });
+ContentPageSchema.pre('remove', function (next) { return QueryPre(this, next, mustMatch); });
 
 
 // Export models

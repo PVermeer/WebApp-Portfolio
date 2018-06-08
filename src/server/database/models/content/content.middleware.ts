@@ -1,7 +1,7 @@
 import { HookNextFunction } from 'mongoose';
 import { ContentPageModelIndex } from './content.types';
 
-export async function saveOnePre(context: any, _next: HookNextFunction): Promise<void> {
+export function saveOnePre(context: any, next: HookNextFunction) {
 
   let document: ContentPageModelIndex = context;
   if (context._update) { document = context._update.$set; }
@@ -9,6 +9,8 @@ export async function saveOnePre(context: any, _next: HookNextFunction): Promise
   if (document.page) {
     document.pageIndex = document.page;
   }
+
+  next();
 }
 
 export function QueryPre(context: any, next: HookNextFunction, mustMatch: string[]): void {
@@ -29,4 +31,3 @@ export function QueryPre(context: any, next: HookNextFunction, mustMatch: string
 
   return next();
 }
-
