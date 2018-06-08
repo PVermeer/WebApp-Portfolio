@@ -1,12 +1,11 @@
-import { HTTP_INTERCEPTORS, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ErrorMessage } from '../../../server/types/types';
-import { SnackbarComponent } from './_modules/_shared/components/snackbar/snackbar.component';
+import { environment } from '../environments/environment';
 import { UserService } from './_modules/users/user.service';
-
-
+import { SnackbarComponent } from './_modules/_shared/components/snackbar/snackbar.component';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -42,7 +41,6 @@ export class ErrorInterceptor implements HttpInterceptor {
 
         const status = responseError.status;
 
-
         // Handle some errors special
         if (status === 401) {
           this.userService.login();
@@ -57,7 +55,6 @@ export class ErrorInterceptor implements HttpInterceptor {
         } else if (status === 504) {
           this.snackbarComponent.snackbarError(error.message);
 
-
           // Handle all other errors
         } else {
           this.snackbarComponent.snackbarError(`${responseError.status} ${responseError.statusText}`);
@@ -68,7 +65,12 @@ export class ErrorInterceptor implements HttpInterceptor {
       let consoleError;
       if (error.message) { consoleError = error.message; } else { consoleError = error; }
 
-      console.error(consoleError);
+      if (environment.production) {
+        console.error(error);
+      } else {
+        console.error(consoleError);
+      }
+
       return throwError(error);
     }));
   }

@@ -12,6 +12,7 @@ export interface ErrorMessage {
  */
 interface Config {
   appName: string;
+  productionEnv: boolean;
   mongoDb: string;
   secret1: string;
   secret2: string;
