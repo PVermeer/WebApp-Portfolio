@@ -15,9 +15,9 @@ export class ContentService {
    * @param title Search value
    * @returns The id of an image
    */
-  public getImageId(title: string, page: ContentPageDocumentLean) {
-    if (title && page) {
-      const imageObject = page.images.find(x => x.title === title);
+  public getImageId(ref: string, page: ContentPageDocumentLean) {
+    if (ref && page) {
+      const imageObject = page.images.find(x => x.ref === ref);
       if (!imageObject) { return null; }
 
       return imageObject.image as string;

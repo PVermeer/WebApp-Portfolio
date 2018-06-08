@@ -1,10 +1,10 @@
 import { Response } from 'express';
-import { createReadStream, createWriteStream, existsSync, readFile, unlink, writeFile } from 'fs';
+import { createReadStream, createWriteStream, readFile, unlink, writeFile } from 'fs';
 import { ObjectId } from 'mongodb';
 import { gridFsBucket } from '../../database/connection';
 import { ContentPage } from '../../database/models/content/content.schema';
 import { ContentFetch, ContentPageDocumentLean, ContentPageModel, ContentQuery, GridFsDocument } from '../../database/models/content/content.types';
-import { deleteError, findError, saveError } from '../../services/error-handler.service';
+import { findError, saveError } from '../../services/error-handler.service';
 import { appRoot, config } from '../../services/server.service';
 import { QueryResult } from './content.types';
 
@@ -37,15 +37,13 @@ export async function uploadFiles(files: Express.Multer.File[]) {
 
 // GridFs delete
 export function deleteFileDb(_id: string): Promise<boolean> {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve) => {
 
     const id = new ObjectId(_id);
 
-    if (existsSync(config.cacheDirFiles + _id)) { unlink(config.cacheDirFiles + _id, () => { }); }
-
     gridFsBucket.delete(id, (error) => {
-      if (error) { reject(deleteError); }
-      return resolve(true);
+      if (error) { throw error; }
+      return resolve();
     });
   });
 }

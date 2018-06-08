@@ -1,7 +1,8 @@
 import { ObjectId } from 'mongodb';
-import { ContentList, ContentPageDocumentLean, ContentPageModel, ContentText, GridFsDocument } from '../../database/models/content/content.types';
+import { ContentPageDocumentLean, ContentPageModel, GridFsDocument } from '../../database/models/content/content.types';
 import { deleteFileDb, uploadFiles } from './content.database';
 import { ContentFileSubmit, ContentImageSubmit, ContentPageLeanInput } from './content.types';
+import { clearCacheDirs } from '../../services/cache-control.service';
 
 export function prepareArray(pageForm: ContentPageLeanInput) {
 
@@ -100,29 +101,23 @@ export async function uploadFileHandler(files: Express.Multer.File[], filesArray
   return fileArray;
 }
 
-
-export function processToDbInput(pageForm: ContentPageLeanInput, textArray: ContentText[], listArray: ContentList[], imageArray: ContentImageSubmit[], fileArray: ContentFileSubmit[]
+export function processToDbInput(pageForm: ContentPageLeanInput, imageArray: ContentImageSubmit[], fileArray: ContentFileSubmit[]
 ): ContentPageModel {
 
-  return {
-    page: pageForm.page,
-    info: pageForm.info,
-    texts: textArray,
-    lists: listArray,
-    images: imageArray,
-    files: fileArray,
-  };
+  delete pageForm._id;
+  return { ...pageForm, images: imageArray, files: fileArray } as ContentPageModel;
 }
 
-export async function updateContentErrorHandler(fileArray: GridFsDocument[], error: any) {
+export async function updateContentErrorHandler(filesArray: GridFsDocument[]) {
 
-  if (fileArray && fileArray.length > 0) {
-    await Promise.all(fileArray.map(x => new Promise(async (resolve) => {
+  if (filesArray && filesArray.length > 0) {
+
+    clearCacheDirs();
+    await Promise.all(filesArray.map(x => new Promise(async (resolve) => {
       if (x === null) { return resolve(); } // Catch from uploadFiles()
 
       await deleteFileDb(x._id.toString());
       resolve();
     })));
   }
-  throw error;
 }

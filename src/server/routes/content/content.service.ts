@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { deleteSuccess, findError, pageSaveSuccess, pageUpdateSuccess, saveError, updateErrorDetected } from '../../services/error-handler.service';
-import { clearCacheDirs } from '../../services/server.service';
+import { GridFsDocument, ContentPageModel } from '../../database/models/content/content.types';
+import { deleteSuccess, findError, pageSaveSuccess, pageUpdateSuccess, saveError } from '../../services/error-handler.service';
 import { RequestId } from '../../types/types';
 import { contentFile, deleteContentPage, findAllContentPagesLean, findContentPageLean, saveContentPage, updateContentPage } from './content.database';
 import { deleteOldFilesFromDb, deleteOldImagesFromDb, prepareArray, processToDbInput, updateContentErrorHandler, uploadFileHandler, uploadImageHandler } from './content.helpers';
@@ -11,12 +11,10 @@ export async function contentPageNew(req: Request) {
   const pageForm: ContentPageLeanInput = req.body;
 
   const newArray = prepareArray(pageForm);
-  const textArray = newArray.texts;
-  const listArray = newArray.lists;
   const imageArray = newArray.images;
   const fileArray = newArray.files;
 
-  const dbInput = processToDbInput(pageForm, textArray, listArray, imageArray, fileArray);
+  const dbInput = processToDbInput(pageForm, imageArray, fileArray);
 
   await saveContentPage(dbInput);
 
@@ -33,28 +31,30 @@ export async function contentPageUpdate(req: Request) {
   const pageDocument = await findContentPageLean({ page: pageForm.page });
 
   const newArray = prepareArray(pageForm);
-  const textArray = newArray.texts;
-  const listArray = newArray.lists;
   const imageArray = newArray.images;
   const fileArray = newArray.files;
 
-  await deleteOldImagesFromDb(pageDocument, imageArray);
-  await deleteOldFilesFromDb(pageDocument, fileArray);
+  let uploadImageArray: GridFsDocument[];
+  let uploadFileArray: GridFsDocument[];
 
-  const uploadImageArray = await uploadImageHandler(images, imageArray);
-  const uploadFileArray = await uploadFileHandler(files, fileArray);
+  try {
+    await deleteOldImagesFromDb(pageDocument, imageArray);
+    await deleteOldFilesFromDb(pageDocument, fileArray);
 
-  const pageModel = processToDbInput(pageForm, textArray, listArray, imageArray, fileArray);
+    uploadImageArray = await uploadImageHandler(images, imageArray);
+    uploadFileArray = await uploadFileHandler(files, fileArray);
 
-  const result = await updateContentPage({ page: pageModel.page }, pageModel)
+    const pageModel: ContentPageModel = processToDbInput(pageForm, imageArray, fileArray);
 
-    // On errors revert back
-    .catch(async error => await updateContentErrorHandler({ ...uploadImageArray, ...uploadFileArray }, error));
+    const result = await updateContentPage({ page: pageModel.page }, pageModel);
+    if (result && result.ok !== 1) { throw saveError; }
 
-  if (result && result.ok !== 1) { clearCacheDirs(); throw saveError; }
-  if (fileArray && fileArray.some(x => !x)) { clearCacheDirs(); throw updateErrorDetected; }
+    return pageUpdateSuccess;
 
-  return pageUpdateSuccess;
+  } catch (error) {
+    await updateContentErrorHandler(uploadImageArray.concat(uploadFileArray));
+    throw error;
+  }
 }
 
 export async function contentPageDelete(req: RequestId) {

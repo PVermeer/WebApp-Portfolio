@@ -10,7 +10,7 @@ export function saveOnePre(context: any, next: HookNextFunction) {
     document.pageIndex = document.page;
   }
 
-  next();
+  return next();
 }
 
 export function QueryPre(context: any, next: HookNextFunction, mustMatch: string[]): void {

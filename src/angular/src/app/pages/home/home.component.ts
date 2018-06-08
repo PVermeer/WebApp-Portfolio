@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
   private sidenavContent: SidenavContent;
 
   // Methods
-  public getImageId(title: string) { return this.contentService.getImageId(title, this.page); }
+  public getImageId(ref: string) { return this.contentService.getImageId(ref, this.page); }
 
   // Life cycle
   constructor(

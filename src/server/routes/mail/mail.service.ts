@@ -1,12 +1,11 @@
 import { Request } from 'express';
-
-import { ContactForm } from './mail.types';
-import { config } from '../../services/server.service';
-import { spamHandler } from './spam.service';
-import { contactTemplate, passwordRecoveryTemplate, userVerificationTemplate, userEmailUpdateTemplate } from './mail.template';
-import { ErrorMessage } from '../../types/types';
 import { createTransport } from 'nodemailer';
 import { UserDocumentLean } from '../../database/models/users/user.types';
+import { config } from '../../services/server.service';
+import { ErrorMessage } from '../../types/types';
+import { contactTemplate, passwordRecoveryTemplate, userEmailUpdateTemplate, userVerificationTemplate } from './mail.template';
+import { ContactForm } from './mail.types';
+import { spamHandler } from './spam.service';
 
 // Create the transporter for nodeMailer
 const transporter = createTransport(config.gmailConfig);
