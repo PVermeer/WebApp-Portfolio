@@ -1,14 +1,11 @@
-import { decode, sign, verify } from 'jsonwebtoken';
 import { compare } from 'bcryptjs';
 import { NextFunction, Response } from 'express';
-
-import {
-  LoginTokens, VerificationPayload, LoginPayload, Payload, EmailUpdatePayload,
-} from './users.types';
-import { config } from '../../services/server.service';
-import { findUserLean } from './users.database';
-import { ErrorMessage, RequestId } from '../../types/types';
+import { decode, sign, verify } from 'jsonwebtoken';
 import { UserDocumentLean, UserType } from '../../database/models/users/user.types';
+import { config } from '../../services/server.service';
+import { ErrorMessage, RequestId } from '../../types/types';
+import { findUserLean } from './users.database';
+import { EmailUpdatePayload, LoginPayload, LoginTokens, Payload, VerificationPayload } from './users.types';
 
 // --------- Passwords -------------
 

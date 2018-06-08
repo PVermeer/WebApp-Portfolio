@@ -8,7 +8,7 @@ import { passwordRecoveryMail, userEmailUpdateMail, userVerificationMail } from 
 import { spamHandler } from '../mail/spam.service';
 import { comparePasswords, createEmailUpdateToken, createLoginTokens, createVerificationToken, decodeToken, verifyEmailUpdateToken, verifyToken } from './users.authentication';
 import { deleteMany, deleteTempUser, deleteUser, findTransactions, findUserLean, findUsers, saveTempUser, saveTransactions, saveUser, updateMany, updateUser } from './users.database';
-import { PasswordRecovery } from './users.types';
+import { PasswordRecovery, LoggedIn } from './users.types';
 
 // ------------- functions --------------
 
@@ -75,7 +75,7 @@ export async function logIn(req: Request, res: Response) {
 
 // Login check
 export async function loginCheck() {
-  return loginSuccess;
+  return { loggedIn: true } as LoggedIn;
 }
 
 // Update user
