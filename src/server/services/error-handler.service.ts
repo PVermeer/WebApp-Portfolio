@@ -6,34 +6,31 @@ import { config } from './server.service';
 
 export function errorHandler(err: ErrorMessage | Error, _req?: Request, res?: Response, _next?: NextFunction) {
 
-  if (!config.productionEnv) { console.error(err); }
+  if (config.productionEnv) {
+    sendErrorMail(err);
+  } else {
+    console.error(err);
+  }
+
   if (dbReadOnlyError()) { res.status(503).send({ message: 'Database is set to read only' }); return; }
 
-  if (err instanceof Error) {
-    const error = err as Error;
+  if (res) {
+    if (err instanceof Error) {
+      const error = err as Error;
 
-    if (config.productionEnv) {
-      sendErrorMail(error);
-      if (res) { res.status(500).send({ message: error.message }); }
+      if (config.productionEnv) {
+        res.status(500).send({ message: error.message });
+      } else { res.status(500).send(error); }
+      return;
 
     } else {
-      if (res) { res.status(500).send(error); }
-    }
+      const errorMessage = err as ErrorMessage;
 
-    return;
-  } else {
+      if (errorMessage.code === 'LIMIT_FILE_SIZE') { res.status(400).send({ message: errorMessage.message }); return; }
 
-    const errorMessage = err as ErrorMessage;
-    if (config.productionEnv) { sendErrorMail(errorMessage); }
-
-    if (errorMessage.code === 'LIMIT_FILE_SIZE') {
-      if (res) { res.status(400).send({ message: errorMessage.message }); }
+      res.status(errorMessage.status).send({ message: errorMessage.message });
       return;
     }
-
-    if (res) { res.status(errorMessage.status).send({ message: errorMessage.message }); }
-
-    return;
   }
 }
 
