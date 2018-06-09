@@ -43,7 +43,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   // Methods
   public tabChange() {
-    // Scroll to top
     document.getElementById('sidenav-content').scrollTo({ top: 0, behavior: 'smooth' });
   }
 

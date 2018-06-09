@@ -1,16 +1,21 @@
-import { AfterViewInit, Directive, ElementRef, Input, OnDestroy } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, fromEvent } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
 @Directive({
   selector: '[appAnimateInview]'
 })
-export class AnimateInviewDirective implements AfterViewInit, OnDestroy {
+export class AnimateInviewDirective implements OnInit, AfterViewInit, OnDestroy {
 
   private contentDiv: HTMLElement;
   private subscriptions = new Subscription;
 
   @Input('appAnimateInview') appAnimateInview: string;
+
+  private addHide() {
+    const element = this.elementRef.nativeElement;
+    element.classList.add('hide');
+  }
 
   private checkInView() {
 
@@ -49,15 +54,24 @@ export class AnimateInviewDirective implements AfterViewInit, OnDestroy {
   ) {
     this.contentDiv = document.getElementById('sidenav-content');
   }
+
+  ngOnInit() {
+    this.addHide();
+  }
+
   ngAfterViewInit() {
-    this.checkInView();
+
+    setTimeout(() => {
+      this.checkInView();
+    }, 100);
 
     const scroll = fromEvent(this.contentDiv, 'scroll').pipe(auditTime(100)).subscribe(() => this.checkInView());
-    const resize = fromEvent(this.contentDiv, 'resize').pipe(auditTime(100)).subscribe(() => this.checkInView());
+    const resize = fromEvent(window, 'resize').pipe(auditTime(100)).subscribe(() => this.checkInView());
 
     this.subscriptions.add(scroll);
     this.subscriptions.add(resize);
   }
+
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }

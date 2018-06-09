@@ -1,5 +1,6 @@
 {
   "appName": "",
+  "productionEnv": true,
   "mongoDb": "",
   "secret1": "",
   "secret2": "",

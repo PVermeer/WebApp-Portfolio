@@ -28,10 +28,10 @@ export class PagePathHighlightDirective implements OnInit, OnDestroy {
     const elementBottom = elementTop + elementHeight;
     const contentDivHeight = contentDivRec.height;
 
-    if (elementBottom > 0 && elementBottom < contentDivHeight / 3) {
+    if (elementBottom > 0 || elementTop < contentDivHeight) {
       entry();
     }
-    if (elementBottom < 0 || elementTop > contentDivHeight / 3) {
+    if (elementBottom < 0 || elementTop > contentDivHeight) {
       leave();
     }
 
@@ -51,10 +51,15 @@ export class PagePathHighlightDirective implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.checkInView();
+    setTimeout(() => {
+      this.checkInView();
+    }, 100);
 
     const scroll = fromEvent(this.contentDiv, 'scroll').pipe(auditTime(500)).subscribe(() => this.checkInView());
+    const resize = fromEvent(window, 'resize').pipe(auditTime(500)).subscribe(() => this.checkInView());
+
     this.subscriptions.add(scroll);
+    this.subscriptions.add(resize);
   }
 
   ngOnDestroy() {

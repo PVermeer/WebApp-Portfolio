@@ -1,11 +1,6 @@
-import { model, Schema, Model } from 'mongoose';
+import { Model, Schema, model } from 'mongoose';
 import { ManyDocument } from './many.types';
-
-// ------- Mongoose middleware User functions --------
-// Shared
-import { QueryPre } from '../model.service';
-
-// Specific
+import { QueryPre } from './users.middleware';
 
 // ------------- Mongoose transaction schema -------------
 
@@ -22,7 +17,7 @@ ManyTransactionSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
 // Middleware validation
 const mustMatch = ['_id'];
 
-ManyTransactionSchema.pre('findOne', function(next): void { return QueryPre(this, next, mustMatch); });
+ManyTransactionSchema.pre('findOne', function (next): void { return QueryPre(this, next, mustMatch); });
 
 // Export model
 export const Many: Model<ManyDocument> = model('Many', ManyTransactionSchema);

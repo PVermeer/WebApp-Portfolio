@@ -1,22 +1,37 @@
 import { NextFunction, Request, Response } from 'express';
 import { createTransport } from 'nodemailer';
 import { dbReadOnlyError } from '../database/connection';
-import { config } from '../services/server.service';
 import { ErrorMessage } from '../types/types';
+import { config } from './server.service';
 
-const readOnlyError: ErrorMessage = { status: 503, message: 'Database is set to read only' };
+export function errorHandler(err: ErrorMessage | Error, _req?: Request, res?: Response, _next?: NextFunction) {
 
-export function errorHandler(err: ErrorMessage, _req: Request, res: Response, _next: NextFunction) {
-  let error = err;
+  if (config.productionEnv) {
+    sendErrorMail(err);
+  } else {
+    console.error(err);
+  }
 
-  if (dbReadOnlyError()) { return res.status(readOnlyError.status).send(readOnlyError); }
+  if (dbReadOnlyError()) { res.status(503).send({ message: 'Database is set to read only' }); return; }
 
-  if (err.stack) { error = { message: err.message, status: 500 }; }
-  if (err.code === 'LIMIT_FILE_SIZE') { error = { message: err.message, status: 400 }; }
+  if (res) {
+    if (err instanceof Error) {
+      const error = err as Error;
 
-  if (!error.status) { error.status = 500; }
+      if (config.productionEnv) {
+        res.status(500).send({ message: error.message });
+      } else { res.status(500).send(error); }
+      return;
 
-  return res.status(error.status).send(error);
+    } else {
+      const errorMessage = err as ErrorMessage;
+
+      if (errorMessage.code === 'LIMIT_FILE_SIZE') { res.status(400).send({ message: errorMessage.message }); return; }
+
+      res.status(errorMessage.status).send({ message: errorMessage.message });
+      return;
+    }
+  }
 }
 
 // Error messages
@@ -49,8 +64,8 @@ export const sendMailSuccess = 'Whoopie, mail send successfully!';
 export const pageUpdateSuccess = 'Whoopie, page updated successfully!';
 export const pageSaveSuccess = 'Whoopie, page created successfully!';
 
-// Error mail
-const transporter = createTransport(config.gmailConfig);
+// ----------- Error mail ------------
+
 let timeoutFlag = false;
 
 // Time-out function
@@ -62,9 +77,17 @@ function flagTimeOut(): void {
     timeoutFlag = false;
   }, 1000 * 60 * 60);
 }
+export function sendErrorMail(err: Error | ErrorMessage) {
 
-export function sendErrorMail(error: Error): void {
   if (timeoutFlag) { return; }
+  const transporter = createTransport(config.gmailConfig);
+
+  let error = { message: '', stack: '' };
+  if (err instanceof Error) {
+    error = { message: err.message, stack: err.stack };
+  } else {
+    error = { message: err.message, stack: 'Custom error, no stack information generated' };
+  }
 
   flagTimeOut();
 
@@ -72,7 +95,9 @@ export function sendErrorMail(error: Error): void {
     from: `"${config.appName}" <noreply@${config.appName}.com>`,
     to: config.emailTo,
     subject: `${config.appName}: Error`,
-    html: ` <b> Date: </b>${new Date()}<br>\n<b> Error: </b><br>${JSON.stringify(error, null, '\t')}`
+    html: ` <b> Date: </b>${new Date()}<br>
+    <b>Message: </b><br> ${error.message}<br>
+    <b>Stack: </b><br>${error.stack}`
   };
 
   transporter.sendMail(errorMail);

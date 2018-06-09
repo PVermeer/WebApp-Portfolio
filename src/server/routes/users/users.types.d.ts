@@ -49,3 +49,8 @@ export interface EmailUpdatePayload extends Payload {
   _id: string;
   newEmail: string;
 }
+
+// ---------- Login ----------
+export interface LoggedIn {
+  loggedIn: boolean;
+}

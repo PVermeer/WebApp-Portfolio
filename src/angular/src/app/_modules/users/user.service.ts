@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import {
   UserDocumentLean, UserLogin, UserModel, UserRegister, UserType, UserUpdate
 } from '../../../../../server/database/models/users/user.types';
-import { PasswordRecovery } from '../../../../../server/routes/users/users.types';
+import { PasswordRecovery, LoggedIn } from '../../../../../server/routes/users/users.types';
 import { DialogComponent } from '../_shared/components/dialog/dialog.component';
 import { SnackbarComponent } from '../_shared/components/snackbar/snackbar.component';
 import { CurrentUser } from './jwt.interceptor';
@@ -35,11 +35,9 @@ export class UserService {
   // Methods
   public login = (disableRegister?: boolean, username?: string): Promise<boolean> => new Promise((resolve) => {
 
-    // Check if register tab must be disabled
     let registerDisable = false;
     if (disableRegister) { registerDisable = true; }
 
-    // Open dialog
     const component = UserDialogComponent;
     const loginDialog = this.matDialog.open(DialogComponent, {
       data: {
@@ -69,10 +67,15 @@ export class UserService {
   }
 
   public checkLogin = (): Promise<boolean> => new Promise((resolve) => {
-    this.loginCheck().subscribe(() => {
+    this.loginCheck().subscribe((response) => {
 
-      this.passLoginStatus(true);
-      return resolve(true);
+      if (response.loggedIn) {
+        this.passLoginStatus(true);
+        return resolve(true);
+      } else {
+        this.passLoginStatus(false);
+        return resolve(false);
+      }
 
       // On error
     }, () => {
@@ -99,8 +102,8 @@ export class UserService {
   public loginUser(loginForm: UserLogin): Observable<string> {
     return this.http.post<string>('/users/login', loginForm);
   }
-  public loginCheck(): Observable<string> {
-    return this.http.get<string>('/users/logincheck');
+  public loginCheck(): Observable<LoggedIn> {
+    return this.http.get<LoggedIn>('/users/logincheck');
   }
   public verifyEmail(token: string): Observable<string> {
     return this.http.get<string>('/users/verify?token=' + token);

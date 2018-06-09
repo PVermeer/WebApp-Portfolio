@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { ContentPageDocumentLean } from '../../../../../server/database/models/content/content.types';
 import { ContentService } from '../../_modules/content/content.service';
 import { SidenavService } from '../../sidenav/sidenav.service';
@@ -14,7 +14,6 @@ export class HomeComponent implements OnInit {
 
   // Variables
   private title = 'Home';
-  public page$: Observable<ContentPageDocumentLean>;
   public page: ContentPageDocumentLean;
 
   // Sidenav config
@@ -25,29 +24,30 @@ export class HomeComponent implements OnInit {
   private sidenavContent: SidenavContent;
 
   // Methods
-  public getImageId(title: string) { return this.contentService.getImageId(title, this.page); }
+  public getImageId(ref: string) { return this.contentService.getImageId(ref, this.page); }
 
   // Life cycle
   constructor(
     private sidenavService: SidenavService,
     private contentService: ContentService,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-    this.contentService.getContentPage(this.title).subscribe(response => {
+    this.route.data.subscribe((data: { page: ContentPageDocumentLean }) => {
 
-      this.page$ = of(response);
-      this.page = response;
+      const { page } = data;
+      this.page = page;
 
       // Sidenav config
       this.sidenavContent = [{
         title: this.title,
-        items: response.texts.map(x => ({ label: x.header, path: x.header })),
+        items: page.texts.map(x => ({ label: x.header, path: x.header })),
       }];
       this.sidenavService.passSidenavContent(this.sidenavContent);
       this.sidenavService.passExpansionToggle(this.expansionToggle);
       this.sidenavService.passSidenavToggle(this.sidenavToggle);
-    }, () => {});
+    }, () => { });
   }
 
 }

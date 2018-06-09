@@ -1,10 +1,8 @@
-import * as rimraf from 'rimraf';
-import * as mkdirp from 'mkdirp';
+import { join, resolve as resolvePath, sep } from 'path';
 import { Config } from '../types/types';
-import { resolve, sep, join } from 'path';
 
 // Define a global root path
-export const appRoot = resolve(join(__dirname, '../../../')) + sep;
+export const appRoot = resolvePath(join(__dirname, '../../../')) + sep;
 console.log('appRoot = ' + appRoot);
 
 // ----------------- Config file ---------------------
@@ -22,26 +20,6 @@ const configReadOnly: Readonly<Config> = Object.freeze(config);
 export { configReadOnly as config };
 
 // ------------------ Functions ----------------
-export function startUpServer() {
-
-  try {
-    rimraf.sync(appRoot + config.cacheDir);
-    rimraf.sync(appRoot + config.uploadDir);
-
-    mkdirp.sync(appRoot + config.tempDir);
-    mkdirp.sync(appRoot + config.cacheDir);
-    mkdirp.sync(appRoot + config.cacheDirFiles);
-    mkdirp.sync(appRoot + config.cacheDirJson);
-    mkdirp.sync(appRoot + config.uploadDir);
-
-  } catch (error) {
-
-    setTimeout(() => {
-      startUpServer();
-    }, 1000
-    );
-  }
-}
 
 function convertDayToMs(day: number) {
   return day * 24 * 60 * 60 * 1000;

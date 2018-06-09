@@ -18,7 +18,7 @@ export class AboutComponent implements OnInit, AfterViewInit {
   private sidenavContent: SidenavContent = [{
     title: 'About',
     items: [
-      { label: 'Something', path: 'about' },
+      { label: 'Welcome', path: 'welcome' },
     ],
   }];
 

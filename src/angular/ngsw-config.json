@@ -20,6 +20,7 @@
         "/assets/**"
       ],
       "urls": [
+        "https://fonts.googleapis.com/*",
         "/content/image*",
         "/content/page*"
       ]

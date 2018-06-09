@@ -2,7 +2,10 @@ import { createHash } from 'crypto';
 import { NextFunction, Request, Response } from 'express';
 import { unlink, writeFile } from 'fs';
 import { Glob } from 'glob';
-import { appRoot, config, startUpServer } from './server.service';
+import * as mkdirp from 'mkdirp';
+import * as rimraf from 'rimraf';
+import { errorHandler } from './error-handler.service';
+import { appRoot, config } from './server.service';
 
 // Cache headers middleware
 export function disableCache(_req: Request, res: Response, next: NextFunction) {
@@ -60,9 +63,61 @@ export function cacheJson(req: Request, res: Response, next: NextFunction) {
 }
 
 // Cache clear middleware
-export function clearCache(_req: Request, _res: Response, next: NextFunction) {
+export async function clearCache(_req: Request, _res: Response, next: NextFunction) {
 
-  startUpServer();
+  await clearCacheDirs();
 
   return next();
+}
+
+// Functions
+export async function clearCacheDirs() {
+  return new Promise(async resolveFn => {
+
+    let counter = 0;
+
+    function clearDirs() {
+      return new Promise(async resolveAll => {
+        try {
+          await new Promise((resolve, reject) => {
+            rimraf(appRoot + config.cacheDir, (error) => { if (error) { return reject(); } resolve(); });
+          });
+          await new Promise((resolve, reject) => {
+            rimraf(appRoot + config.uploadDir, (error) => { if (error) { return reject(); } resolve(); });
+          });
+          await new Promise((resolve, reject) => {
+            mkdirp(appRoot + config.tempDir, (error) => { if (error) { return reject(); } resolve(); });
+          });
+          await new Promise((resolve, reject) => {
+            mkdirp(appRoot + config.cacheDir, (error) => { if (error) { return reject(); } resolve(); });
+          });
+          await new Promise((resolve, reject) => {
+            mkdirp(appRoot + config.cacheDirFiles, (error) => { if (error) { return reject(); } resolve(); });
+          });
+          await new Promise((resolve, reject) => {
+            mkdirp(appRoot + config.cacheDirJson, (error) => { if (error) { return reject(); } resolve(); });
+          });
+          await new Promise((resolve, reject) => {
+            mkdirp(appRoot + config.uploadDir, (error) => { if (error) { return reject(); } resolve(); });
+          });
+
+          resolveAll();
+
+        } catch {
+
+          if (counter < 10) {
+            setTimeout(() => {
+              counter++;
+              clearDirs();
+            }, 1000);
+          } else {
+            errorHandler(new Error('Counter has reached maximum in clearCacheDirs()'));
+            resolveAll();
+          }
+        }
+      });
+    }
+    await clearDirs();
+    resolveFn();
+  });
 }

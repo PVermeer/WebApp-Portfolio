@@ -6,13 +6,13 @@
 </div>
 
 <mat-tab-group [@.disabled]="true">
-  <div #ngForPages *ngFor="let page of (pages | async); let i = index">
+  <div *ngFor="let page of (pages | async); let i = index">
 
-    <mat-tab [label]="page.title">
+    <mat-tab [label]="page.page">
       <div *ngIf="contentForm[i]">
         <br>
         <div class="flex-row-between-nowrap">
-          <h3>{{ page.title }}</h3>
+          <h3>{{ page.page }}</h3>
           <div class="flex-column-around">
             <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)" [disabled]="!contentForm[i].valid">
               Submit changes
@@ -20,8 +20,61 @@
           </div>
         </div>
 
-
         <form [formGroup]="contentForm[i]" (ngSubmit)="confirmUpdateForm(i)">
+
+          <br>
+          <mat-divider></mat-divider>
+          <h4>Page header</h4>
+
+          <mat-card *ngIf="contentForm[i].controls.info" formGroupName="info">
+            <!-- Header -->
+            <mat-card-header class="flex-row-between-nowrap">
+              <mat-card-title>
+                <mat-form-field>
+                  <input matInput [type]="page.info.typeTitle" formControlName="title" [placeholder]="page.info.placeholderTitle" [value]="contentForm[i].controls.info.controls.title.value">
+                  <mat-error *ngIf="contentForm[i].controls.info.controls.title.errors">
+                    {{ page.info.alertTitle }}
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                  <input matInput [type]="page.info.typeSubtitle" formControlName="subtitle" [placeholder]="page.info.placeholderSubtitle" [value]="contentForm[i].controls.info.controls.subtitle.value">
+                  <mat-error *ngIf="contentForm[i].controls.info.controls.subtitle.errors">
+                    {{ page.info.alertSubtitle }}
+                  </mat-error>
+                </mat-form-field>
+              </mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content>
+              <!-- Text field -->
+              <mat-form-field>
+                <textarea matTextareaAutosize matAutosizeMinRows="3" matInput [type]="page.info.typeText" formControlName="text" [placeholder]="page.info.placeholderText" [value]="contentForm[i].controls.info.controls.text.value"></textarea>
+                <mat-error *ngIf="contentForm[i].controls.info.controls.title.errors">
+                  {{ page.info.alertText }}
+                </mat-error>
+              </mat-form-field>
+              <br>
+              <br>
+
+              <!-- List field -->
+              <div formArrayName="list">
+                <div *ngFor="let listItem of page.info.list; let n = index">
+                  <mat-form-field>
+                    <span matPrefix>{{ n + 1 }} &nbsp;</span>
+                    <input matInput [type]="page.info.typeList" [value]="contentForm[i].controls.info.controls.list.controls[n].value" [formControlName]="n" [placeholder]="page.info.placeholderList">
+                    <button type="button" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="infoRemovelistItem(i, n)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+              </div>
+            </mat-card-content>
+            <div class="flex-row-between button-margin">
+              <button mat-fab type="button" (click)="infoAddListItem(i)" matTooltip="Add a new line" matTooltipShowDelay="500">
+                <mat-icon>list</mat-icon>
+              </button>
+            </div>
+          </mat-card>
 
           <br>
           <mat-divider></mat-divider>
@@ -34,33 +87,45 @@
                 <!-- Header -->
                 <mat-card-header class="flex-row-between-nowrap">
                   <mat-card-title>
-                    <mat-form-field [formGroupName]="j" floatLabel="always">
-                      <input matInput [type]="text.typeHeader" formControlName="header" [value]="contentForm[i].controls.texts.controls[j].controls.header.value">
+                    <mat-form-field [formGroupName]="j">
+                      <input matInput [type]="text.typeHeader" formControlName="header" [placeholder]="text.placeholderHeader" [value]="contentForm[i].controls.texts.controls[j].controls.header.value">
                       <mat-error *ngIf="contentForm[i].controls.texts.controls[j].controls.header.errors">
                         {{ text.alertHeader }}
                       </mat-error>
                     </mat-form-field>
                   </mat-card-title>
 
-                  <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="textFieldRemove(i, j)" matTooltip="Remove this card" matTooltipPosition="above"
-                    matTooltipShowDelay="500">
+                  <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="textFieldRemove(i, j)" matTooltip="Remove this card" matTooltipPosition="above" matTooltipShowDelay="500">
                     <mat-icon>delete</mat-icon>
                   </button>
-
                 </mat-card-header>
 
-                <!-- Text field -->
-                <mat-card-content>
-
-                  <mat-form-field [formGroupName]="j" floatLabel="always">
-                    <textarea matTextareaAutosize matAutosizeMinRows="10" matInput [type]="text.typeText" formControlName="text" [placeholder]="text.placeholderText"
-                      [value]="contentForm[i].controls.texts.controls[j].controls.text.value"></textarea>
+                <mat-card-content [formGroupName]="j">
+                  <!-- Text field -->
+                  <mat-form-field>
+                    <textarea matTextareaAutosize matAutosizeMinRows="3" matInput [type]="text.typeText" formControlName="text" [placeholder]="text.placeholderText" [value]="contentForm[i].controls.texts.controls[j].controls.text.value"></textarea>
                     <mat-error *ngIf="contentForm[i].controls.texts.controls[j].controls.text.errors">
                       {{ text.alertText }}
                     </mat-error>
                   </mat-form-field>
-
+                  <!-- Reference field -->
+                  <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
+                    <input matInput [type]="text.typeRef" formControlName="ref" [placeholder]="text.placeholderRef" [value]="contentForm[i].controls.texts.controls[j].controls.ref.value">
+                    <mat-error *ngIf="contentForm[i].controls.texts.controls[j].controls.ref.errors">
+                      {{ text.alertRef }}
+                    </mat-error>
+                  </mat-form-field>
                 </mat-card-content>
+                <mat-card-footer *ngIf="isDeveloper">
+                  <div class="flex-row-between-nowrap">
+                    <button mat-icon-button type="button" (click)="moveItemBack(i, 'texts', j)" matTooltip="Move item back" matTooltipShowDelay="500">
+                      <mat-icon>chevron_left</mat-icon>
+                    </button>
+                    <button mat-icon-button type="button" (click)="moveItemForward(i, 'texts', j)" matTooltip="Move item forward" matTooltipShowDelay="500">
+                      <mat-icon>chevron_right</mat-icon>
+                    </button>
+                  </div>
+                </mat-card-footer>
               </mat-card>
             </div>
           </div>
@@ -81,19 +146,17 @@
                 <!-- Header -->
                 <mat-card-header class="flex-row-between-nowrap">
                   <mat-card-title>
-                    <mat-form-field floatLabel="always">
-                      <input matInput [type]="list.typeTitle" formControlName="title" [value]="contentForm[i].controls.lists.controls[l].controls.title.value">
+                    <mat-form-field>
+                      <input matInput [type]="list.typeTitle" formControlName="title" [placeholder]="list.placeholderTitle" [value]="contentForm[i].controls.lists.controls[l].controls.title.value">
                       <mat-error *ngIf="contentForm[i].controls.lists.controls[l].controls.title.errors">
                         {{ list.alertTitle }}
                       </mat-error>
                     </mat-form-field>
                   </mat-card-title>
 
-                  <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="listFieldRemove(i, l)" matTooltip="Remove this card" matTooltipPosition="above"
-                    matTooltipShowDelay="500">
+                  <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="listFieldRemove(i, l)" matTooltip="Remove this card" matTooltipPosition="above" matTooltipShowDelay="500">
                     <mat-icon>delete</mat-icon>
                   </button>
-
                 </mat-card-header>
 
                 <!-- List fields -->
@@ -102,13 +165,19 @@
                     <div *ngFor="let listItem of list.list; let m = index">
                       <mat-form-field>
                         <span matPrefix>{{ m + 1 }} &nbsp;</span>
-                        <input matInput type="text" [value]="contentForm[i].controls.lists.controls[l].controls.list.controls[m].value" [formControlName]="m">
+                        <input matInput type="text" [placeholder]="list.placeholderItem" [value]="contentForm[i].controls.lists.controls[l].controls.list.controls[m].value" [formControlName]="m">
                         <button type="button" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="listRemoveItem(i, l, m)">
                           <mat-icon>close</mat-icon>
                         </button>
                       </mat-form-field>
                     </div>
                   </div>
+                  <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
+                    <input matInput [type]="list.typeRef" formControlName="ref" [placeholder]="list.placeholderRef" [value]="contentForm[i].controls.lists.controls[l].controls.ref.value">
+                    <mat-error *ngIf="contentForm[i].controls.lists.controls[l].controls.ref.errors">
+                      {{ list.alertRef }}
+                    </mat-error>
+                  </mat-form-field>
                 </mat-card-content>
 
                 <div class="flex-row-between button-margin">
@@ -116,8 +185,16 @@
                     <mat-icon>list</mat-icon>
                   </button>
                 </div>
-
-
+                <mat-card-footer *ngIf="isDeveloper">
+                  <div class="flex-row-between-nowrap">
+                    <button mat-icon-button type="button" (click)="moveItemBack(i, 'lists', l)" matTooltip="Move item back" matTooltipShowDelay="500">
+                      <mat-icon>chevron_left</mat-icon>
+                    </button>
+                    <button mat-icon-button type="button" (click)="moveItemForward(i, 'lists', l)" matTooltip="Move item forward" matTooltipShowDelay="500">
+                      <mat-icon>chevron_right</mat-icon>
+                    </button>
+                  </div>
+                </mat-card-footer>
               </mat-card>
             </div>
           </div>
@@ -142,13 +219,15 @@
                   <mat-card-header class="flex-row-between-nowrap">
 
                     <mat-card-title>
-                      <mat-form-field floatLabel="always">
-                        <input matInput [type]="image.typeTitle" formControlName="title" [value]="contentForm[i].controls.images.controls[k].controls.title.value">
+                      <mat-form-field>
+                        <input matInput [type]="image.typeTitle" formControlName="title" [placeholder]="image.placeholderTitle" [value]="contentForm[i].controls.images.controls[k].controls.title.value">
+                        <mat-error *ngIf="contentForm[i].controls.images.controls[k].controls.title.errors">
+                          {{ image.alertTitle }}
+                        </mat-error>
                       </mat-form-field>
                     </mat-card-title>
 
-                    <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="imageFieldRemove(i, k)" matTooltip="Remove this card"
-                      matTooltipPosition="above" matTooltipShowDelay="500">
+                    <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="imageFieldRemove(i, k)" matTooltip="Remove this card" matTooltipPosition="above" matTooltipShowDelay="500">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </mat-card-header>
@@ -172,26 +251,40 @@
 
                     <div *ngIf="contentForm[i].controls.images.controls[k].controls.imageUpdate.value">
                       {{ contentForm[i].controls.images.controls[k].controls.imageUpdate.value.name }}
-                      <br>
-                      <br>
                     </div>
-
+                    <br>
                     <mat-error *ngIf="!contentForm[i].controls.images.controls[k]?.valid">
-                      {{ image.alert }}
+                      {{ image.alertFile }}
                     </mat-error>
-                    <br>
-                    <br>
 
                     <div class="flex-row-between button-margin">
                       <button mat-fab type="button" (click)="imgFileInput.click()" matTooltip="Select a new image" matTooltipShowDelay="500">
                         <mat-icon>add_photo_alternate</mat-icon>
                       </button>
-                      <button mat-fab type="button" *ngIf="imgFileInput.value" (click)="imgFileInput.value = null; contentForm[i].controls.images.controls[k].controls.imageUpdate.setValue(null)"
-                        matTooltip="Remove new image" matTooltipShowDelay="500">
+                      <button mat-fab type="button" *ngIf="imgFileInput.value" (click)="imgFileInput.value = null; contentForm[i].controls.images.controls[k].controls.imageUpdate.setValue(null)" matTooltip="Remove new image" matTooltipShowDelay="500">
                         <mat-icon>replay</mat-icon>
                       </button>
                     </div>
                   </div>
+                  <br>
+                  <mat-card-content>
+                    <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
+                      <input matInput [type]="image.typeRef" formControlName="ref" [placeholder]="image.placeholderRef" [value]="contentForm[i].controls.images.controls[k].controls.ref.value">
+                      <mat-error *ngIf="contentForm[i].controls.images.controls[k].controls.ref.errors">
+                        {{ image.alertRef }}
+                      </mat-error>
+                    </mat-form-field>
+                  </mat-card-content>
+                  <mat-card-footer *ngIf="isDeveloper">
+                    <div class="flex-row-between-nowrap">
+                      <button mat-icon-button type="button" (click)="moveItemBack(i, 'images', k)" matTooltip="Move item back" matTooltipShowDelay="500">
+                        <mat-icon>chevron_left</mat-icon>
+                      </button>
+                      <button mat-icon-button type="button" (click)="moveItemForward(i, 'images', k)" matTooltip="Move item forward" matTooltipShowDelay="500">
+                        <mat-icon>chevron_right</mat-icon>
+                      </button>
+                    </div>
+                  </mat-card-footer>
                 </div>
               </mat-card>
             </div>
@@ -209,23 +302,22 @@
           <div formArrayName="files" class="flex-row-left">
             <div *ngFor="let file of page.files; let l = index">
 
-              <mat-card class="file-card" floatLabel="always" *ngIf="contentForm[i].controls.files.controls[l]">
+              <mat-card class="file-card" *ngIf="contentForm[i].controls.files.controls[l]">
 
                 <div [formGroupName]="l">
                   <!-- Header -->
                   <mat-card-header class="flex-row-between-nowrap">
 
                     <mat-card-title>
-                      <mat-form-field floatLabel="always">
-                        <input matInput [type]="file.typeTitle" formControlName="title" [value]="contentForm[i].controls.files.controls[l].controls.title.value">
+                      <mat-form-field>
+                        <input matInput [type]="file.typeTitle" formControlName="title" [placeholder]="file.placeholderTitle" [value]="contentForm[i].controls.files.controls[l].controls.title.value">
                         <mat-error *ngIf="contentForm[i].controls.files.controls[l].controls.title.errors">
                           {{ file.alertTitle }}
                         </mat-error>
                       </mat-form-field>
                     </mat-card-title>
 
-                    <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="fileFieldRemove(i, l)" matTooltip="Remove this card" matTooltipPosition="above"
-                      matTooltipShowDelay="500">
+                    <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="fileFieldRemove(i, l)" matTooltip="Remove this card" matTooltipPosition="above" matTooltipShowDelay="500">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </mat-card-header>
@@ -246,26 +338,40 @@
 
                     <div *ngIf="contentForm[i].controls.files.controls[l].controls.fileUpdate.value">
                       {{ contentForm[i].controls.files.controls[l].controls.fileUpdate.value.name }}
-                      <br>
-                      <br>
                     </div>
-
+                    <br>
                     <mat-error *ngIf="!contentForm[i].controls.files.controls[l]?.valid">
-                      {{ file.alert }}
+                      {{ file.alertFile }}
                     </mat-error>
-                    <br>
-                    <br>
 
                     <div class="flex-row-between button-margin">
                       <button mat-fab type="button" (click)="fileInput.click()" matTooltip="Select a new file" matTooltipShowDelay="500">
                         <mat-icon>note_add</mat-icon>
                       </button>
-                      <button mat-fab type="button" *ngIf="fileInput.value" (click)="fileInput.value = null; contentForm[i].controls.files.controls[l].controls.fileUpdate.setValue(null)"
-                        matTooltip="Remove new image" matTooltipShowDelay="500">
+                      <button mat-fab type="button" *ngIf="fileInput.value" (click)="fileInput.value = null; contentForm[i].controls.files.controls[l].controls.fileUpdate.setValue(null)" matTooltip="Remove new image" matTooltipShowDelay="500">
                         <mat-icon>replay</mat-icon>
                       </button>
                     </div>
                   </div>
+                  <br>
+                  <mat-card-content>
+                    <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
+                      <input matInput [type]="file.typeRef" formControlName="ref" [placeholder]="file.placeholderRef" [value]="contentForm[i].controls.files.controls[l].controls.ref.value">
+                      <mat-error *ngIf="contentForm[i].controls.files.controls[l].controls.ref.errors">
+                        {{ file.alertRef }}
+                      </mat-error>
+                    </mat-form-field>
+                  </mat-card-content>
+                  <mat-card-footer *ngIf="isDeveloper">
+                    <div class="flex-row-between-nowrap">
+                      <button mat-icon-button type="button" (click)="moveItemBack(i, 'files', l)" matTooltip="Move item back" matTooltipShowDelay="500">
+                        <mat-icon>chevron_left</mat-icon>
+                      </button>
+                      <button mat-icon-button type="button" (click)="moveItemForward(i, 'files', l)" matTooltip="Move item forward" matTooltipShowDelay="500">
+                        <mat-icon>chevron_right</mat-icon>
+                      </button>
+                    </div>
+                  </mat-card-footer>
                 </div>
               </mat-card>
             </div>

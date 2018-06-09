@@ -1,21 +1,10 @@
-import { uploadFiles, deleteFileDb } from './content.database';
-import {
-  GridFsDocument, ContentPageDocumentLean, ContentTextDocumentLean, ContentPageModel, ContentListDocumentLean
-} from '../../database/models/content/content.types';
-import { ContentImageSubmit, ContentPageLeanInput, ContentFileSubmit } from './content.types';
 import { ObjectId } from 'mongodb';
+import { ContentPageDocumentLean, ContentPageModel, GridFsDocument } from '../../database/models/content/content.types';
+import { deleteFileDb, uploadFiles } from './content.database';
+import { ContentFileSubmit, ContentImageSubmit, ContentPageLeanInput } from './content.types';
+import { clearCacheDirs } from '../../services/cache-control.service';
 
 export function prepareArray(pageForm: ContentPageLeanInput) {
-
-  const texts = pageForm.texts.map(x => {
-    if (!x._id) { x._id = new ObjectId; }
-    return x;
-  });
-
-  const lists = pageForm.lists.map(x => {
-    if (!x._id) { x._id = new ObjectId; }
-    return x;
-  });
 
   const images = pageForm.images.map(x => {
     if (!x._id) { x._id = (new ObjectId).toString(); }
@@ -29,7 +18,7 @@ export function prepareArray(pageForm: ContentPageLeanInput) {
     return x;
   });
 
-  return { texts, lists, images, files };
+  return { ...pageForm, images, files };
 }
 
 export function deleteOldImagesFromDb(pageDocument: Partial<ContentPageDocumentLean>, imagesArray: ContentImageSubmit[]) {
@@ -112,29 +101,23 @@ export async function uploadFileHandler(files: Express.Multer.File[], filesArray
   return fileArray;
 }
 
-
-export function processToDbInput(pageForm: ContentPageLeanInput, textArray: ContentTextDocumentLean[], listArray: ContentListDocumentLean[], imageArray: ContentImageSubmit[], fileArray: ContentFileSubmit[]
+export function processToDbInput(pageForm: ContentPageLeanInput, imageArray: ContentImageSubmit[], fileArray: ContentFileSubmit[]
 ): ContentPageModel {
 
-  return {
-    title: pageForm.title,
-    description: pageForm.description,
-    texts: textArray,
-    lists: listArray,
-    images: imageArray,
-    files: fileArray,
-  };
+  delete pageForm._id;
+  return { ...pageForm, images: imageArray, files: fileArray } as ContentPageModel;
 }
 
-export async function updateContentErrorHandler(fileArray: GridFsDocument[], error: any) {
+export async function updateContentErrorHandler(filesArray: GridFsDocument[]) {
 
-  if (fileArray && fileArray.length > 0) {
-    await Promise.all(fileArray.map(x => new Promise(async (resolve) => {
+  if (filesArray && filesArray.length > 0) {
+
+    clearCacheDirs();
+    await Promise.all(filesArray.map(x => new Promise(async (resolve) => {
       if (x === null) { return resolve(); } // Catch from uploadFiles()
 
       await deleteFileDb(x._id.toString());
       resolve();
     })));
   }
-  throw error;
 }

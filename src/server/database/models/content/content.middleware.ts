@@ -1,14 +1,24 @@
 import { HookNextFunction } from 'mongoose';
+import { ContentPageModelIndex } from './content.types';
 
-// Mongoose middleware functions
+export function saveOnePre(context: any, next: HookNextFunction) {
 
+  let document: ContentPageModelIndex = context;
+  if (context._update) { document = context._update.$set; }
+
+  if (document.page) {
+    document.pageIndex = document.page;
+  }
+
+  return next();
+}
 
 export function QueryPre(context: any, next: HookNextFunction, mustMatch: string[]): void {
 
   const query = context.getQuery();
 
   // Username conversion for user queries
-  if (query.username) { query.usernameIndex = query.username; delete query.username; }
+  if (query.page) { query.pageIndex = query.page; delete query.page; }
 
   if (Object.keys(query).length === 0) { throw next(new Error('Nothing in query object')); }
   if (Object.keys(query).length > 1) { throw next(new Error('Only one query key is allowed')); }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 
 import { UserService } from './user.service';
 
@@ -8,9 +8,10 @@ export class AuthGuard implements CanActivate {
 
   constructor(
     private userService: UserService,
+    private router: Router,
   ) { }
 
-  async canActivate(): Promise<boolean> {
+  async canActivate() {
 
     // Check login with the backend
     const isLoggedIn = await this.userService.checkLogin();
@@ -20,6 +21,7 @@ export class AuthGuard implements CanActivate {
     const login = await this.userService.login();
     if (login) { return true; }
 
+    this.router.navigate(['home']);
     return false;
   }
 

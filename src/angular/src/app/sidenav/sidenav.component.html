@@ -10,8 +10,7 @@
     <span class="toolbar-spacer"></span>
 
     <nav mat-tab-nav-bar backgroundColor="primary" [style.display]="mobileQuery.matches ? 'none' : 'initial'">
-      <a mat-tab-link *ngFor="let link of pageNav[0].items" [routerLink]="link.path" routerLinkActive
-        #rla="routerLinkActive" [active]="rla.isActive">
+      <a mat-tab-link *ngFor="let link of pageNav[0].items" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive" (click)="tabChange()">
         {{link.label}}
       </a>
     </nav>
@@ -31,44 +30,42 @@
 
   <!-- Sidenav -->
   <mat-sidenav-container [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-    <mat-sidenav #sidenav class="mat-elevation-z1" [mode]="mobileQuery.matches ? 'over' : 'side'"
-      [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
+    <mat-sidenav #sidenav class="mat-elevation-z1" [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
 
       <div class="navigation-container">
-      <mat-accordion displayMode="flat" multi="true">
+        <mat-accordion displayMode="flat" multi="true">
 
-        <!-- Page nav -->
+          <!-- Page nav -->
           <mat-expansion-panel #expPageNav class="mat-elevation-z0">
-          <mat-expansion-panel-header collapsedHeight="35px" expandedHeight="35px">
-            <mat-panel-title>
-              {{pageNav[0].title}}
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <mat-nav-list>
-            <a mat-list-item *ngFor="let item of pageNav[0].items" role="listitem" [routerLink]="item.path"
-              routerLinkActive="active-link">
-              {{item.label}}
-            </a>
-          </mat-nav-list>
-        </mat-expansion-panel>
+            <mat-expansion-panel-header collapsedHeight="35px" expandedHeight="35px">
+              <mat-panel-title>
+                {{pageNav[0].title}}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-nav-list>
+              <a mat-list-item *ngFor="let item of pageNav[0].items" role="listitem" [routerLink]="item.path" routerLinkActive="active-link">
+                {{item.label}}
+              </a>
+            </mat-nav-list>
+          </mat-expansion-panel>
 
           <mat-divider></mat-divider>
 
-        <!-- Routed nav -->
+          <!-- Routed nav -->
           <mat-expansion-panel #expRouteNav *ngFor="let content of sidenavContent" class="mat-elevation-z0">
-          <mat-expansion-panel-header collapsedHeight="35px" expandedHeight="35px">
-            <mat-panel-title>
-              {{content.title}}
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <mat-nav-list role="list">
+            <mat-expansion-panel-header collapsedHeight="35px" expandedHeight="35px">
+              <mat-panel-title>
+                {{content.title}}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-nav-list role="list">
               <a mat-list-item role="listitem" *ngFor="let item of content.items" role="listitem" (click)="scrollTo(item.path)" [appPagePathHighlight]="item.path">
-              {{item.label}}
-            </a>
-          </mat-nav-list>
-        </mat-expansion-panel>
+                {{item.label}}
+              </a>
+            </mat-nav-list>
+          </mat-expansion-panel>
 
-      </mat-accordion>
+        </mat-accordion>
       </div>
 
       <!-- Bottom cards -->

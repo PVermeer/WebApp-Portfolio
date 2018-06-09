@@ -1,12 +1,6 @@
 import { Model, Schema, model } from 'mongoose';
 import { ContentPageDocument, GridFsDocument } from './content.types';
-
-
-
-// ------- Mongoose middleware User functions --------
-// Shared
-
-// Specific
+import { saveOnePre, QueryPre } from './content.middleware';
 
 // ------------- Mongoose content schema's -------------
 
@@ -22,29 +16,43 @@ const GridFsSchema = new Schema({
 
 // Page
 const ContentPageSchema = new Schema({
-  title: {
+  page: {
     type: String,
     trim: true,
     required: true,
-    unique: true,
+  },
+  pageIndex: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: true,
+    unique: true
+  },
+  info: {
+    title: { type: String, trim: true },
+    subtitle: { type: String, trim: true },
+    text: { type: String, trim: true },
+    list: [{ type: String, trim: true }],
   },
   texts: [{
-    _id: { type: Schema.Types.ObjectId, required: true },
-    header: { type: String, trim: true, required: true },
-    text: { type: String, trim: true, required: true }
+    ref: { type: String, trim: true },
+    header: { type: String, trim: true },
+    text: { type: String, trim: true }
   }],
   lists: [{
-    _id: { type: Schema.Types.ObjectId, required: true },
-    title: { type: String, trim: true, required: true },
+    ref: { type: String, trim: true },
+    title: { type: String, trim: true },
     list: [{ type: String, trim: true }]
   }],
   images: [{
-    _id: { type: Schema.Types.ObjectId, required: true },
+    ref: { type: String, trim: true },
+    _id: { type: Schema.Types.ObjectId },
     title: { type: String, trim: true, required: true },
     image: { type: Schema.Types.ObjectId, ref: 'content.files' }
   }],
   files: [{
-    _id: { type: Schema.Types.ObjectId, required: true },
+    ref: { type: String, trim: true },
+    _id: { type: Schema.Types.ObjectId },
     title: { type: String, trim: true, required: true },
     file: { type: Schema.Types.ObjectId, ref: 'content.files' }
   }]
@@ -55,8 +63,15 @@ const ContentPageSchema = new Schema({
 // Expire collections
 
 // Middleware validation
+const mustMatch = ['_id', 'pageIndex'];
+
+ContentPageSchema.pre('validate', function (next) { return saveOnePre(this, next); });
+ContentPageSchema.pre('update', function (next) { return saveOnePre(this, next); });
+
+ContentPageSchema.pre('findOne', function (next) { return QueryPre(this, next, mustMatch); });
+ContentPageSchema.pre('remove', function (next) { return QueryPre(this, next, mustMatch); });
+
 
 // Export models
 export const ContentPage: Model<ContentPageDocument> = model('ContentPage', ContentPageSchema);
 export const GridFs: Model<GridFsDocument> = model('content.files', GridFsSchema);
-

@@ -1,17 +1,17 @@
-import * as express from 'express';
+import { json, urlencoded } from 'body-parser';
 import * as compression from 'compression';
-
+import * as express from 'express';
 import './database/connection';
-import { errorHandler } from './services/error-handler.service';
+import { content } from './routes/content/content.routes';
 import { mail } from './routes/mail/mail.routes';
 import { users } from './routes/users/users.routes';
-import { content } from './routes/content/content.routes';
-import { startUpServer, appRoot } from './services/server.service';
-import { urlencoded, json } from 'body-parser';
-
-startUpServer();
+import { clearCacheDirs } from './services/cache-control.service';
+import { errorHandler } from './services/error-handler.service';
+import { appRoot } from './services/server.service';
 
 export const app = express();
+
+clearCacheDirs();
 
 // Middleware
 app.use(compression());
