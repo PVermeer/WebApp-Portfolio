@@ -18,20 +18,23 @@ export function errorHandler(err: ErrorMessage | Error, _req?: Request, res?: Re
 
     } else {
       if (res) { res.status(500).send(error); }
+    }
+
+    return;
+  } else {
+
+    const errorMessage = err as ErrorMessage;
+    if (config.productionEnv) { sendErrorMail(errorMessage); }
+
+    if (errorMessage.code === 'LIMIT_FILE_SIZE') {
+      if (res) { res.status(400).send({ message: errorMessage.message }); }
       return;
     }
-  }
 
-  const errorMessage = err as ErrorMessage;
-  if (config.productionEnv) { sendErrorMail(errorMessage); }
+    if (res) { res.status(errorMessage.status).send({ message: errorMessage.message }); }
 
-  if (errorMessage.code === 'LIMIT_FILE_SIZE') {
-    if (res) { res.status(400).send({ message: errorMessage.message }); }
     return;
   }
-
-  if (res) { res.status(errorMessage.status).send({ message: errorMessage.message }); }
-  return;
 }
 
 // Error messages

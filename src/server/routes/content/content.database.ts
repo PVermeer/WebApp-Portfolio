@@ -64,12 +64,10 @@ export function contentFile(_id: string, res: Response): Promise<void> {
 
     function isCached(fileType: string) {
 
-      try {
-        res.contentType(fileType);
-        res.sendFile(appRoot + config.cacheDirFiles + _id, (error: Error) => {
-          if (error) { return isNotCached(); }
-        });
-      } catch { isNotCached(); }
+      res.contentType(fileType);
+      res.sendFile(appRoot + config.cacheDirFiles + _id, (error: Error) => {
+        if (error) { return isNotCached(); }
+      });
     }
 
     function isNotCached() {
@@ -89,6 +87,8 @@ export function contentFile(_id: string, res: Response): Promise<void> {
         writeFile(writeFsJson, JSON.stringify(file), () => { });
       });
       readStream.on('close', () => resolve());
+
+      writeStreamFsFile.on('error', () => writeStreamFsFile.end());
     }
   });
 }
