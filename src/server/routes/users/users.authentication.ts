@@ -192,43 +192,58 @@ async function refreshLoginTokens(refreshToken: string): Promise<LoginTokens | f
   return tokens;
 }
 
-// ------------Authentication middleware----------------
-
 /**
- * User authentication as middleware
+ * Check current login status. Setting response token headers if necessary and adds _id and type to the req object.
  * @param status Status code to return if tokens are not valid.
- * @returns Calls next() or responds with the provided status.
+ * @param userType The minimum userType rank to validate access.
+ * @returns Responds with an ErrorMessage or null if login is valid.
  */
-export const requiresUserAuth = (status: number, type: UserType) => async (req: RequestId, res: Response, next: NextFunction) => {
-
+export async function checkLogin(req: RequestId, res: Response, status: number, type: UserType): Promise<ErrorMessage | null> {
   const authError: ErrorMessage = { status, message: 'Not logged in' };
   const typeError: ErrorMessage = { status, message: 'You\'re not authorized!' };
   const sessionError: ErrorMessage = { status, message: 'User session expired' };
 
   const token = req.headers['x-token'] as string;
-  if (!token) { return next(authError); }
+  if (!token) { return authError; }
 
   const verifiedToken = await verifyToken(token);
 
   if (verifiedToken) {
-    if (verifiedToken.type.rank < type.rank) { return next(typeError); }
+    if (verifiedToken.type.rank < type.rank) { return typeError; }
 
     req._id = verifiedToken._id;
     req.type = verifiedToken.type;
 
-    return next();
+    return null;
   }
 
   const refreshToken = req.headers['x-refresh-token'] as string;
-  if (!refreshToken) { return next(authError); }
+  if (!refreshToken) { return authError; }
 
   const newTokens = await refreshLoginTokens(refreshToken);
-  if (!newTokens) { return next(sessionError); }
+  if (!newTokens) { return sessionError; }
 
   req._id = newTokens._id;
   req.type = newTokens.type;
   res.set('x-token', newTokens.token);
   res.set('x-refresh-token', newTokens.refreshToken);
+
+  return null;
+}
+
+// ------------Authentication middleware----------------
+
+/**
+ * User authentication as middleware
+ * @param status Status code in ErrorMessage to return if tokens are not valid.
+ * @param userType The minimum userType rank to validate access.
+ * @returns Calls next() or responds with the provided status.
+ */
+export const requiresUserAuth = (status: number, type: UserType) => async (req: RequestId, res: Response, next: NextFunction) => {
+
+  const logInError = await checkLogin(req, res, status, type);
+
+  if (logInError) { return next(logInError); }
 
   return next();
 };

@@ -11,8 +11,8 @@ export function logIn(req: Request, res: Response, next: NextFunction): void {
     .then(result => res.json(result))
     .catch(error => next(error));
 }
-export function loginCheck(_req: Request, res: Response, next: NextFunction): void {
-  userService.loginCheck()
+export function loginCheck(req: Request, res: Response, next: NextFunction): void {
+  userService.loginCheck(req, res)
   .then(result => res.json(result))
   .catch(error => next(error));
 }

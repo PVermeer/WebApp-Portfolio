@@ -6,9 +6,9 @@ import { accountDeleteSuccess, actionSuccess, blockedError, deleteError, duplica
 import { ReqQuery, RequestId } from '../../types/types';
 import { passwordRecoveryMail, userEmailUpdateMail, userVerificationMail } from '../mail/mail.service';
 import { spamHandler } from '../mail/spam.service';
-import { comparePasswords, createEmailUpdateToken, createLoginTokens, createVerificationToken, decodeToken, verifyEmailUpdateToken, verifyToken } from './users.authentication';
+import { checkLogin, comparePasswords, createEmailUpdateToken, createLoginTokens, createVerificationToken, decodeToken, verifyEmailUpdateToken, verifyToken } from './users.authentication';
 import { deleteMany, deleteTempUser, deleteUser, findTransactions, findUserLean, findUsers, saveTempUser, saveTransactions, saveUser, updateMany, updateUser } from './users.database';
-import { PasswordRecovery, LoggedIn } from './users.types';
+import { LoggedIn, PasswordRecovery } from './users.types';
 
 // ------------- functions --------------
 
@@ -74,7 +74,11 @@ export async function logIn(req: Request, res: Response) {
 }
 
 // Login check
-export async function loginCheck() {
+export async function loginCheck(req: Request, res: Response) {
+
+  const logInError = await checkLogin(req, res, 200, userTypes.user);
+
+  if (logInError) { return { loggedIn: false } as LoggedIn; }
   return { loggedIn: true } as LoggedIn;
 }
 

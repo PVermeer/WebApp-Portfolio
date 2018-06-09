@@ -24,7 +24,7 @@ router.put('/updateemail', updateEmail);
 router.post('/resendverification', resendEmailVerification);
 
 // User authentication (authenticates then adds "userId" and "userType" keys to request)
-router.get('/logincheck', requiresUserAuth(200, userTypes.user), loginCheck);
+router.get('/logincheck', loginCheck);
 
 // User
 router.get('/info', requiresUserAuth(401, userTypes.user), userInfo);
