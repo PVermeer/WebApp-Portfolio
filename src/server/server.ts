@@ -5,10 +5,13 @@ import './database/connection';
 import { content } from './routes/content/content.routes';
 import { mail } from './routes/mail/mail.routes';
 import { users } from './routes/users/users.routes';
+import { clearCacheDirs } from './services/cache-control.service';
 import { errorHandler } from './services/error-handler.service';
 import { appRoot } from './services/server.service';
 
 export const app = express();
+
+clearCacheDirs();
 
 // Middleware
 app.use(compression());

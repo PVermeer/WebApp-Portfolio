@@ -65,6 +65,7 @@ export const pageUpdateSuccess = 'Whoopie, page updated successfully!';
 export const pageSaveSuccess = 'Whoopie, page created successfully!';
 
 // ----------- Error mail ------------
+
 let timeoutFlag = false;
 
 // Time-out function
@@ -76,10 +77,17 @@ function flagTimeOut(): void {
     timeoutFlag = false;
   }, 1000 * 60 * 60);
 }
-export function sendErrorMail(error: Error | ErrorMessage) {
+export function sendErrorMail(err: Error | ErrorMessage) {
 
   if (timeoutFlag) { return; }
   const transporter = createTransport(config.gmailConfig);
+
+  let error = { message: '', stack: '' };
+  if (err instanceof Error) {
+    error = { message: err.message, stack: err.stack };
+  } else {
+    error = { message: err.message, stack: 'Custom error, no stack information generated' };
+  }
 
   flagTimeOut();
 
@@ -87,7 +95,9 @@ export function sendErrorMail(error: Error | ErrorMessage) {
     from: `"${config.appName}" <noreply@${config.appName}.com>`,
     to: config.emailTo,
     subject: `${config.appName}: Error`,
-    html: ` <b> Date: </b>${new Date()}<br>\n<b> Error: </b><br>${JSON.stringify(error, null, '\t')}`
+    html: ` <b> Date: </b>${new Date()}<br>
+    <b>Message: </b><br> ${error.message}<br>
+    <b>Stack: </b><br>${error.stack}`
   };
 
   transporter.sendMail(errorMail);

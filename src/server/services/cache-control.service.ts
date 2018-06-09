@@ -105,11 +105,14 @@ export async function clearCacheDirs() {
 
         } catch {
 
-          if (counter > 10) { errorHandler(new Error('Counter has reached maximum in clearCacheDirs()')); }
-          setTimeout(() => {
-            counter++;
-            clearDirs();
-          }, 1000);
+          if (counter < 10) {
+            setTimeout(() => {
+              counter++;
+              clearDirs();
+            }, 1000);
+          } else {
+            errorHandler(new Error('Counter has reached maximum in clearCacheDirs()'));
+          }
         }
       });
     }
