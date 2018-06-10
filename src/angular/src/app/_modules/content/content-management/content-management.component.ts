@@ -97,8 +97,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     );
   }
 
-  public updateForm(i: number): Promise<void> {
-    return new Promise(resolve => {
+  public updateForm(i: number) {
 
       const value: ContentPageLeanSubmit = this.contentForm[i].getRawValue();
       const formData = new FormData;
@@ -121,26 +120,22 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       });
       formData.append('content', JSON.stringify(value));
 
-      // Send formdata
       this.progressSpinner = true;
       this.contentService.updateContentPage(formData).subscribe(res => {
         this.progressSpinner = false;
 
-        // On success
         this.snackbarComponent.snackbarSuccess(res);
-        resolve();
+        this.getForm();
 
         // Errors
       }, () => {
         this.progressSpinner = false;
-        this.resetContentManager(); resolve();
+        this.resetContentManager();
       });
-    });
   }
 
   public confirmUpdateForm(i: number) {
 
-    // Open dialog to confirm the changes
     const data: DialogContent = {
       dialogData: {
         title: 'Confirm',
@@ -152,11 +147,9 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const dialog = this.matDialog.open(DialogComponent, { data, disableClose: true });
 
     dialog.afterClosed().subscribe(async response => {
-      // Do nothing on cancel
       if (!response) { return; }
 
-      await this.updateForm(i).catch(() => { this.resetContentManager(); return; });
-      this.getForm();
+      this.updateForm(i);
     });
   }
 

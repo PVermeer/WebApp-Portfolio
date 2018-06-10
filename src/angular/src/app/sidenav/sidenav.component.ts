@@ -125,24 +125,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
 
-    // Change sidenav content based on route
     this.sideNavContentChange();
-
-    // Toggle sidenav based on route
     this.toggleSidenav();
     this.toggleExpansions();
-
-    // Subscribe to login status
     this.toggleIsLoggedIn();
   }
 
   ngOnInit() {
-    // Check if user still has valid tokens
     this.userService.checkLogin();
   }
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
 }
