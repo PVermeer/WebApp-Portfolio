@@ -31,8 +31,6 @@ export class UserComponent implements OnInit, AfterViewInit, OnDestroy {
   }];
 
   // Methods
-  public logout() { this.userService.logout(); }
-
   private applyUsertype() {
     if (this.userType.rank > 2) {
       this.sidenavContent[0].items.unshift({ label: 'Admin panel', path: 'admin-card' });
