@@ -22,7 +22,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('slideToggleDelete') private slideToggleDelete: MatSlideToggle;
 
   // Variables
-  public userTitle = 'User details';
   public progressBar = false;
   public userForm: FormGroup;
   public disableEdit: boolean;

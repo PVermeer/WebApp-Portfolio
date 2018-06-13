@@ -36,7 +36,5 @@ app.use(errorHandler);
 
 // Start server
 const port = process.env.PORT || 8080;
-app.on('ready', () => {
-  app.listen(port);
-  console.log(`Listening to port ${port}`);
-});
+app.listen(port);
+console.log(`Listening to port ${port}`);

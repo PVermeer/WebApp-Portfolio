@@ -1,7 +1,9 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Observable, of, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ContentInfo, ContentPageArrays } from '../../../../../../server/database/models/content/content.types';
 import { UserService } from '../../users/user.service';
 import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
@@ -27,6 +29,10 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   private maxImageSize = 204800; // Bytes
   private maxFileSize = 2097152; // Bytes
   public isDeveloper = false;
+
+  public isSmaller$: Observable<boolean> = this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.XSmall]).pipe(
+    map(result => result.matches)
+  );
 
   // Subscriptions
   private subscriptions = new Subscription;
@@ -97,50 +103,45 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     );
   }
 
-  public updateForm(i: number): Promise<void> {
-    return new Promise(resolve => {
+  public updateForm(i: number) {
 
-      const value: ContentPageLeanSubmit = this.contentForm[i].getRawValue();
-      const formData = new FormData;
+    const value: ContentPageLeanSubmit = this.contentForm[i].getRawValue();
+    const formData = new FormData;
 
-      value.images.map(x => {
-        if (x.imageUpdate) {
-          const id = <string>x._id || 'newId-' + x.title + '-' + Math.random().toString(36).slice(-10);
+    value.images.map(x => {
+      if (x.imageUpdate) {
+        const id = <string>x._id || 'newId-' + x.title + '-' + Math.random().toString(36).slice(-10);
 
-          formData.append('images', x.imageUpdate, id);
-          x._id = id;
-        }
-      });
-      value.files.map(x => {
-        if (x.fileUpdate) {
-          const id = <string>x._id || 'newId-' + x.title + '-' + Math.random().toString(36).slice(-10);
+        formData.append('images', x.imageUpdate, id);
+        x._id = id;
+      }
+    });
+    value.files.map(x => {
+      if (x.fileUpdate) {
+        const id = <string>x._id || 'newId-' + x.title + '-' + Math.random().toString(36).slice(-10);
 
-          formData.append('files', x.fileUpdate, id);
-          x._id = id;
-        }
-      });
-      formData.append('content', JSON.stringify(value));
+        formData.append('files', x.fileUpdate, id);
+        x._id = id;
+      }
+    });
+    formData.append('content', JSON.stringify(value));
 
-      // Send formdata
-      this.progressSpinner = true;
-      this.contentService.updateContentPage(formData).subscribe(res => {
-        this.progressSpinner = false;
+    this.progressSpinner = true;
+    this.contentService.updateContentPage(formData).subscribe(res => {
+      this.progressSpinner = false;
 
-        // On success
-        this.snackbarComponent.snackbarSuccess(res);
-        resolve();
+      this.snackbarComponent.snackbarSuccess(res);
+      this.getForm();
 
-        // Errors
-      }, () => {
-        this.progressSpinner = false;
-        this.resetContentManager(); resolve();
-      });
+      // Errors
+    }, () => {
+      this.progressSpinner = false;
+      this.resetContentManager();
     });
   }
 
   public confirmUpdateForm(i: number) {
 
-    // Open dialog to confirm the changes
     const data: DialogContent = {
       dialogData: {
         title: 'Confirm',
@@ -152,11 +153,9 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const dialog = this.matDialog.open(DialogComponent, { data, disableClose: true });
 
     dialog.afterClosed().subscribe(async response => {
-      // Do nothing on cancel
       if (!response) { return; }
 
-      await this.updateForm(i).catch(() => { this.resetContentManager(); return; });
-      this.getForm();
+      this.updateForm(i);
     });
   }
 
@@ -622,6 +621,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
 
   // Lifecycle
   constructor(
+    private breakpointObserver: BreakpointObserver,
     private formBuilder: FormBuilder,
     private matDialog: MatDialog,
     private contentService: ContentService,
