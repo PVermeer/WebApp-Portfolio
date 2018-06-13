@@ -8,9 +8,17 @@
             <h3>Admin panel</h3>
           </mat-card-header>
           <br>
+          <mat-tab-group>
+            <mat-tab label="User management">
+              <br>
+              <app-user-management></app-user-management>
+            </mat-tab>
 
-          <app-content-management></app-content-management>
-
+            <mat-tab label="Content management">
+              <br>
+              <app-content-management></app-content-management>
+            </mat-tab>
+          </mat-tab-group>
         </mat-card>
       </div>
 
