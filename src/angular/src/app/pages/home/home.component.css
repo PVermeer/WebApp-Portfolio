@@ -1,0 +1,40 @@
+.top-background {
+  position: absolute;
+  top: -70px;
+  height: 40vh;
+  width: 100%;
+  transform: skewY(-4deg);
+  transform-origin: 0%;
+  z-index: -1;
+}
+
+.container {
+  max-width: 700px;
+}
+
+#showcase-container {
+  position: absolute;
+  top: 40vh;
+}
+
+.header-text {
+  height: 20vh;
+}
+
+.header-icon {
+  font-size: 35px;
+  width: 35px;
+  height: 35px;
+}
+
+.margin>* {
+  margin: 0 5px;
+}
+
+.showcase-image {
+  height: 160px;
+}
+
+.showcase-text {
+  max-width: 300px;
+}

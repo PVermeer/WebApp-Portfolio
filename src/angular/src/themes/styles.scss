@@ -1,0 +1,24 @@
+@mixin styles($theme) {
+  $primary: mat-color(map-get($theme, primary));
+  $primary-text: mat-color(map-get($theme, primary), default-contrast);
+  $primary-lighter: mat-color(map-get($theme, primary), lighter);
+  $accent: mat-color(map-get($theme, accent));
+  $warn: mat-color(map-get($theme, warn));
+  $warn-text: mat-color(map-get($theme, warn), default-contrast);
+  $background: mat-color(map-get($theme, background), background);
+  $foreground: mat-color(map-get($theme, foreground), text);
+
+  // General styles
+  .primary-gradient {
+    color: $primary-text;
+    background: linear-gradient(90deg, $primary, $primary-lighter);
+  }
+
+  .primary-text {
+    color: $primary-text;
+  }
+  .primary-text~.mat-ink-bar {
+    background-color: $primary-text !important;
+  }
+
+}

@@ -1,15 +1,15 @@
 <!-- Toolbar -->
 <div class="toolbar-container" [class.is-mobile]="(isHandset$ | async)">
-  <mat-toolbar color="primary" class="toolbar">
-    <button mat-icon-button (click)="drawer.toggle()">
+  <mat-toolbar class="toolbar primary-gradient">
+    <button mat-icon-button class="animated" [ngClass]="{'bounceInDown': !isHome && !(isHandset$ | async), 'fadeOutLeft': isHome && !(isHandset$ | async)}" (click)="drawer.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
 
-    <h1 id="app-name">{{title}}</h1>
+    <h1 id="app-name">{{ appInfo?.info.title }}</h1>
     <span class="toolbar-spacer"></span>
 
-    <nav mat-tab-nav-bar backgroundColor="primary" [style.display]="(isHandset$ | async) ? 'none' : 'initial'">
-      <a mat-tab-link *ngFor="let link of pageNav[0].items" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive" (click)="tabChange()">
+    <nav mat-tab-nav-bar disableRipple="true" [ngStyle]="{'display': (isHandset$ | async) ? 'none' : 'initial'}">
+      <a mat-tab-link class="primary-text" *ngFor="let link of pageNav[0].items" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive" (click)="tabChange()">
         {{link.label | maxLength:14}}
       </a>
     </nav>

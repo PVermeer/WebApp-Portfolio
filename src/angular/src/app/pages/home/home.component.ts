@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ContentPageDocumentLean } from '../../../../../server/database/models/content/content.types';
-import { ContentService } from '../../_modules/content/content.service';
 import { SidenavService } from '../../sidenav/sidenav.service';
 import { MatToggle, MatToggleExp, SidenavContent } from '../../sidenav/sidenav.types';
+import { ContentService } from '../../_modules/content/content.service';
+import { SharedService } from '../../_modules/_shared/services/shared.service';
 
 @Component({
   selector: 'app-home',
@@ -14,23 +15,26 @@ export class HomeComponent implements OnInit {
 
   // Variables
   private title = 'Home';
+  public appInfo: ContentPageDocumentLean;
   public page: ContentPageDocumentLean;
 
   // Sidenav config
-  private sidenavToggle: MatToggle = 'open';
+  private sidenavToggle: MatToggle = 'close';
   private expansionToggle: MatToggleExp = 'open';
 
   // Sidenav content
   private sidenavContent: SidenavContent;
 
   // Methods
-  public getImageId(ref: string) { return this.contentService.getImageId(ref, this.page); }
+  public getImageId = (ref: string) => this.contentService.getImageId(ref, this.page);
+  public isEven = (number: number) => this.sharedService.isEven(number);
 
   // Life cycle
   constructor(
     private sidenavService: SidenavService,
     private contentService: ContentService,
     private route: ActivatedRoute,
+    private sharedService: SharedService,
   ) { }
 
   ngOnInit() {

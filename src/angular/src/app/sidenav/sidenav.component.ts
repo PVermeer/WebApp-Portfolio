@@ -1,13 +1,15 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatExpansionPanel, MatSidenav, MatSlideToggle } from '@angular/material';
-import { RouterOutlet } from '@angular/router';
-import { Subscription, Observable } from 'rxjs';
+import { Router, RouterEvent, RouterOutlet } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+import { map, throttleTime } from 'rxjs/operators';
+import { ContentPageDocumentLean } from '../../../../server/database/models/content/content.types';
+import { ContentService } from '../_modules/content/content.service';
 import { UserService } from '../_modules/users/user.service';
+import { fadeAnimation } from '../_modules/_shared/services/animations.service';
 import { SidenavService } from './sidenav.service';
 import { SidenavContent } from './sidenav.types';
-import { fadeAnimation } from '../_modules/_shared/services/animations.service';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidenav',
@@ -25,7 +27,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   @ViewChildren('expRouteNav') private expRoutedNav: QueryList<MatExpansionPanel>;
 
   // Sidenav content
-  public title = 'app';
+  public appInfo: ContentPageDocumentLean;
   public pageNav: SidenavContent = [{
     title: 'Navigation',
     items: [
@@ -38,6 +40,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   // Variables
   public sidenavContent: SidenavContent;
   public isLoggedIn = false;
+  public isHome: boolean;
 
   public isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(map(result => result.matches));
@@ -116,8 +119,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private breakpointObserver: BreakpointObserver,
     private sidenavService: SidenavService,
     private userService: UserService,
+    private contentService: ContentService,
+    private router: Router,
   ) {
-
     this.sideNavContentChange();
     this.toggleSidenav();
     this.toggleExpansions();
@@ -126,6 +130,18 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userService.checkLogin();
+
+    const routerEvents = this.router.events.pipe(throttleTime(0)).subscribe((event: RouterEvent) => {
+      if (event.url === '/' || event.url === '/home') {
+        this.isHome = true;
+      } else { this.isHome = false; }
+    });
+
+    this.contentService.getContentPage('App info').subscribe(response => {
+      this.appInfo = response;
+    });
+
+    this.subscriptions.add(routerEvents);
   }
 
   ngOnDestroy() {
