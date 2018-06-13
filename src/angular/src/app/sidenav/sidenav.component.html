@@ -1,35 +1,35 @@
 <!-- Toolbar -->
-<div class="toolbar-container" [class.is-mobile]="mobileQuery.matches">
+<div class="toolbar-container" [class.is-mobile]="(isHandset$ | async)">
   <mat-toolbar color="primary" class="toolbar">
-    <button mat-icon-button (click)="sidenav.toggle()">
+    <button mat-icon-button (click)="drawer.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
 
-    <h1 class="app-name">{{title}}</h1>
+    <h1 id="app-name">{{title}}</h1>
     <span class="toolbar-spacer"></span>
 
-    <nav mat-tab-nav-bar backgroundColor="primary" [style.display]="mobileQuery.matches ? 'none' : 'initial'">
+    <nav mat-tab-nav-bar backgroundColor="primary" [style.display]="(isHandset$ | async) ? 'none' : 'initial'">
       <a mat-tab-link *ngFor="let link of pageNav[0].items" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive" (click)="tabChange()">
         {{link.label | maxLength:14}}
       </a>
     </nav>
     <span class="toolbar-spacer"></span>
 
-    <div *ngIf="isLoggedIn; else loginButton">
+    <div *ngIf="isLoggedIn; else loginButton" [style.display]="(isMobile$ | async) ? 'none' : 'initial'">
       <button mat-button [matMenuTriggerFor]="menu">User menu</button>
     </div>
     <ng-template #loginButton>
       <button mat-button id="login-button" (click)="login()">Login</button>
     </ng-template>
-    <mat-menu #menu="matMenu">
+    <mat-menu #menu>
       <button mat-menu-item (click)="logout()">Logout</button>
       <button mat-menu-item routerLink="user">User page</button>
     </mat-menu>
   </mat-toolbar>
 
   <!-- Sidenav -->
-  <mat-sidenav-container [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-    <mat-sidenav #sidenav class="mat-elevation-z1" [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
+  <mat-sidenav-container [style.marginTop.px]="(isHandset$ | async) ? 56 : 0">
+    <mat-sidenav #drawer class="mat-elevation-z1" [mode]="(isHandset$ | async) ? 'over' : 'side'" [fixedInViewport]="(isHandset$ | async)" fixedTopGap="56">
 
       <div>
         <mat-accordion displayMode="flat" multi="true">

@@ -80,7 +80,7 @@
           <mat-divider></mat-divider>
           <h4>Texts</h4>
 
-          <div formArrayName="texts" class="flex-row-left text-container">
+          <div formArrayName="texts" class="flex-row-left text-container" [class.flex-basis-1]="(isSmaller$ | async)">
             <div *ngFor="let text of page.texts; let j = index">
 
               <mat-card *ngIf="contentForm[i].get('texts').at(j)">

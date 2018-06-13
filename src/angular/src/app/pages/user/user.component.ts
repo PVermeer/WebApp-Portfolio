@@ -19,7 +19,7 @@ export class UserComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscriptions = new Subscription;
 
   // Sidenav config
-  private sidenavToggle: MatToggle = 'open';
+  private sidenavToggle: MatToggle = 'close';
   private expansionToggle: MatToggleExp = 'open';
 
   // Sidenav content
