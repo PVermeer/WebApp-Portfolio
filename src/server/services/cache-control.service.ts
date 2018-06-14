@@ -38,7 +38,7 @@ export function cacheJson(req: Request, res: Response, next: NextFunction) {
 
     function jsonHook(this: any, json: any) {
 
-      if (json && !json.status) {
+      if (json && res.statusCode === 200) {
         writeFile(newFile, JSON.stringify(json), () => { });
       }
 
