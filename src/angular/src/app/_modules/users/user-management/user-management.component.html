@@ -5,13 +5,13 @@
 <div class="table-container">
   <div class="flex-row-between-nowrap">
 
-    <div class="flex-row-left-center button-margin">
+    <div class="flex-row-left-center button-margin-all">
       <div *ngIf="isDeveloper" class="flex-column-around">
         <button mat-raised-button (click)="mockUser()" [(disabled)]="disableButtons">Create Mock Users</button>
       </div>
     </div>
 
-    <div class="flex-row-right-center button-margin">
+    <div class="flex-row-right-center button-margin-all">
       <mat-form-field>
         <mat-select [(value)]="selectedAction" placeholder="Select an action">
           <mat-option>-- None --</mat-option>

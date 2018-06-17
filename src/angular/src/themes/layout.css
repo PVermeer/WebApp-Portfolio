@@ -175,7 +175,7 @@ section {
 
 /* Buttons */
 
-.button-margin>* {
+.button-margin-all>* {
   margin: 5px !important;
 }
 

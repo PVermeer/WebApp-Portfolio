@@ -1,7 +1,7 @@
 <!-- The loading spinner componenent -->
 <app-dialog-spinner *ngIf="progressSpinner"></app-dialog-spinner>
 
-<div *ngIf="isDeveloper" class="flex-row-right button-margin">
+<div *ngIf="isDeveloper" class="flex-row-right button-margin-all">
   <button mat-raised-button (click)="newPageForm()">Add new page</button>
 </div>
 
@@ -69,7 +69,7 @@
                 </div>
               </div>
             </mat-card-content>
-            <div class="flex-row-between button-margin">
+            <div class="flex-row-between button-margin-all">
               <button mat-fab type="button" (click)="infoAddListItem(i)" matTooltip="Add a new line" matTooltipShowDelay="500">
                 <mat-icon>list</mat-icon>
               </button>
@@ -180,7 +180,7 @@
                   </mat-form-field>
                 </mat-card-content>
 
-                <div class="flex-row-between button-margin">
+                <div class="flex-row-between button-margin-all">
                   <button mat-fab type="button" (click)="listAddItem(i, l)" matTooltip="Add a new line" matTooltipShowDelay="500">
                     <mat-icon>list</mat-icon>
                   </button>
@@ -257,7 +257,7 @@
                       {{ image.alertFile }}
                     </mat-error>
 
-                    <div class="flex-row-between button-margin">
+                    <div class="flex-row-between button-margin-all">
                       <button mat-fab type="button" (click)="imgFileInput.click()" matTooltip="Select a new image" matTooltipShowDelay="500">
                         <mat-icon>add_photo_alternate</mat-icon>
                       </button>
@@ -344,7 +344,7 @@
                       {{ file.alertFile }}
                     </mat-error>
 
-                    <div class="flex-row-between button-margin">
+                    <div class="flex-row-between button-margin-all">
                       <button mat-fab type="button" (click)="fileInput.click()" matTooltip="Select a new file" matTooltipShowDelay="500">
                         <mat-icon>note_add</mat-icon>
                       </button>
@@ -388,7 +388,7 @@
       <mat-divider></mat-divider>
       <br>
       <br>
-      <div class="flex-row-right button-margin">
+      <div class="flex-row-right button-margin-all">
         <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)" [disabled]="!contentForm[i]?.valid">
           Submit changes
         </button>
