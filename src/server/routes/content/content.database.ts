@@ -1,11 +1,10 @@
 import { Response } from 'express';
 import { createReadStream, createWriteStream, readFile, unlink, writeFile } from 'fs';
-import { ObjectId } from 'mongodb';
 import { gridFsBucket } from '../../database/connection';
 import { ContentPage } from '../../database/models/content/content.schema';
 import { ContentFetch, ContentPageDocumentLean, ContentPageModel, ContentQuery, GridFsDocument } from '../../database/models/content/content.types';
 import { findError, saveError } from '../../services/error-handler.service';
-import { appRoot, config } from '../../services/server.service';
+import { appRoot, config, newObjectId } from '../../services/server.service';
 import { QueryResult } from './content.types';
 
 // GridFs upload
@@ -39,7 +38,7 @@ export async function uploadFiles(files: Express.Multer.File[]) {
 export function deleteFileDb(_id: string): Promise<boolean> {
   return new Promise(async (resolve) => {
 
-    const id = new ObjectId(_id);
+    const id = newObjectId(_id);
 
     gridFsBucket.delete(id, (error) => {
       if (error) { throw error; }
@@ -72,7 +71,7 @@ export function contentFile(_id: string, res: Response): Promise<void> {
 
     function isNotCached() {
 
-      const id = new ObjectId(_id);
+      const id = newObjectId(_id);
 
       const readStream = gridFsBucket.openDownloadStream(id);
       const writeStreamFsFile = createWriteStream(appRoot + config.cacheDirFiles + id);

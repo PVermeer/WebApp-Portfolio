@@ -28,7 +28,13 @@ export class ErrorInterceptor implements HttpInterceptor {
       // Duplicate of #19148
       // On angular v. 5.2.0
       if (responseError.error instanceof Blob) {
-        return throwError(responseError.error);
+        this.snackbarComponent.snackbarError('Error downloading file');
+        if (environment.production) {
+          console.error('Could not download file');
+        } else {
+          console.error(responseError);
+        }
+        return throwError(responseError);
       }
 
       let error: ErrorMessage;
