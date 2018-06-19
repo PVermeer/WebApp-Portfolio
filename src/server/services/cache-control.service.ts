@@ -80,10 +80,10 @@ export async function clearCacheDirs() {
       return new Promise(async resolveAll => {
         try {
           await new Promise((resolve, reject) => {
-            rimraf(appRoot + config.cacheDir, (error) => { if (error) { return reject(); } resolve(); });
+            rimraf(appRoot + config.cacheDir + '**', (error) => { if (error) { return reject(); } resolve(); });
           });
           await new Promise((resolve, reject) => {
-            rimraf(appRoot + config.uploadDir, (error) => { if (error) { return reject(); } resolve(); });
+            rimraf(appRoot + config.uploadDir + '**', (error) => { if (error) { return reject(); } resolve(); });
           });
           await new Promise((resolve, reject) => {
             mkdirp(appRoot + config.tempDir, (error) => { if (error) { return reject(); } resolve(); });
