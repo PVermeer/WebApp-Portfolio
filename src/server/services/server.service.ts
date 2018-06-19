@@ -26,7 +26,8 @@ function convertDayToMs(day: number) {
   return day * 24 * 60 * 60 * 1000;
 }
 
-export function newObjectId(_id: string) {
+export function newObjectId(_id: string | ObjectId) {
+  if (_id instanceof ObjectId) { return _id; }
   if (_id.length !== 24) { return undefined; }
   return new ObjectId(_id);
 }
