@@ -113,6 +113,7 @@ export async function clearCacheDirs() {
           } else {
             errorHandler(new Error('Counter has reached maximum in clearCacheDirs()'));
             resolveAll();
+            resolveFn();
           }
         }
       });
