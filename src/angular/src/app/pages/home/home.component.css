@@ -12,9 +12,11 @@
   max-width: 700px;
 }
 
+.spacer {
+  height: 20vh;
+}
+
 #showcase-container {
-  position: absolute;
-  top: 40vh;
 }
 
 .header-text {

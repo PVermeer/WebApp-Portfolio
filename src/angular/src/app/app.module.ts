@@ -12,11 +12,12 @@ import { HomeComponent } from './pages/home/home.component';
 import { PageResolver } from './pages/page-resolver.service';
 import { UserComponent } from './pages/user/user.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
-import { SidenavService } from './sidenav/sidenav.service';
 import { ContactModule } from './_modules/contact/contact.module';
-import { ContentModule } from './_modules/content/content.module';
 import { UsersModule } from './_modules/users/users.module';
 import { SharedModule } from './_modules/_shared/shared.module';
+import { VisualModule } from './_modules/_visual/visual.module';
+import { ContentModule } from './_modules/content/content.module';
+import { FooterComponent } from './_modules/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -27,17 +28,19 @@ import { SharedModule } from './_modules/_shared/shared.module';
     ContactComponent,
     UserComponent,
     ErrorComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     SharedModule,
+    ContentModule,
     ContactModule,
     UsersModule,
-    ContentModule,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
+    VisualModule,
   ],
-  providers: [ErrorInterceptorProvider, SidenavService, PageResolver],
+  providers: [ErrorInterceptorProvider, PageResolver],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

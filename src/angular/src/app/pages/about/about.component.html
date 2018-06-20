@@ -1,28 +1,89 @@
-<section>
-  <div class="container">
-    <div style="text-align:center">
-      <h1 id="welcome">
-        Welcome!
-      </h1>
-      <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+  <section #introText appContentText [page]="page" ref="text_intro" [id]="introText.text.header">
+    <div class="container">
+
+      <div class="flex-column-around-center">
+        <img [appViewImage]="getImageId('profile_pic')" id="profile-pic" alt="Profile picture">
+        <p id="fname-profile-pic">Pim</p>
+        <p id="lname-profile-pic">Vermeer</p>
+      </div>
+
+      <div #introText class="columnblock" appContentText [page]="page" ref="text_intro">
+        <p [innerHTML]="introText.text.text | convertLinebreaks"></p>
+      </div>
+
+      <h2>Vaardigheden</h2>
+      <div class="flex-row-around-center">
+
+        <div #codingTitles appContentList [page]="page" ref="coding_skill_titles" class="margin-hz">
+          <div #codingProgress appContentList [page]="page" ref="coding_skill_progress">
+            <h3> {{ codingTitles.list.title }} </h3>
+            <div *ngFor="let listItem of codingTitles.list.list; let i = index" class="progress-bar-wrapper">
+              <h5> {{ listItem }} </h5>
+              <app-progress-bar color="accent" [progress]="codingProgress.list.list[i]"></app-progress-bar>
+            </div>
+          </div>
+        </div>
+
+        <div #ictTitles appContentList [page]="page" ref="ict_skill_titles" class="margin-hz">
+          <div #ictProgress appContentList [page]="page" ref="ict_skill_progress">
+            <h3> {{ ictTitles.list.title }} </h3>
+            <div *ngFor="let listItem of ictTitles.list.list; let i = index" class="progress-bar-wrapper">
+              <h5> {{ listItem }} </h5>
+              <app-progress-bar color="accent" [progress]="ictProgress.list.list[i]"></app-progress-bar>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <q #quotes appContentList [page]="page" ref="quotes"> {{ quotes.list.list[0] }} </q>
+
     </div>
-    <h2>Here are some links to help you start: </h2>
-    <ul>
-      <li>
-        <h2>
-          <a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a>
-        </h2>
-      </li>
-      <li>
-        <h2>
-          <a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a>
-        </h2>
-      </li>
-      <li>
-        <h2>
-          <a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a>
-        </h2>
-      </li>
-    </ul>
-  </div>
-</section>
+  </section>
+
+  <section #experienceText appContentText [page]="page" ref="text_experience" [id]="experienceText.text.header" [ngStyle]="experienceBackground" class="white">
+    <app-wave></app-wave>
+
+    <div class="container flex-column-around" id="experience-container">
+
+      <h2> {{ experienceText.text.header }} </h2>
+      <br>
+
+      <div class="columnblock margin-hz">
+
+        <div class="max-width-500-all flex-column-around-center">
+          <div>
+            <p [innerHTML]="experienceText.text.text | convertLinebreaks"></p>
+          </div>
+
+          <q>{{ quotes.list.list[1] }}</q>
+
+          <div *ngIf="appInfo" #file appContentFile [page]="appInfo" ref="file_cv" class="flex-row-around">
+            <button mat-raised-button color="accent"> {{ file.file.title }} </button>
+          </div>
+        </div>
+        <br>
+        <br>
+
+        <app-timeline [page]="page" id="timeline-container" class="column-nobreak margin-center-all"></app-timeline>
+
+      </div>
+
+    </div>
+    <app-wave flip="true"></app-wave>
+  </section>
+
+  <section #contactText appContentText [page]="page" ref="text_contact" [id]="contactText.text.header">
+
+    <h2> {{ contactText.text.header }} </h2>
+
+    <div class="container flex-row-around">
+
+      <app-contact-details></app-contact-details>
+      <app-contact-form class="basis-50"></app-contact-form>
+
+    </div>
+
+  </section>
+
+  <app-footer></app-footer>

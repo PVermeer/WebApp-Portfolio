@@ -16,6 +16,8 @@ import { PagePathHighlightDirective } from './directives/page-path-highlight.dir
 import { PreviewImageDirective } from './directives/preview-image.directive';
 import { ViewImageDirective } from './directives/view-image.directive';
 import { MaterialModule } from './modules/material.module';
+import { ConvertLinebreaksPipe } from './pipes/convert-linebreaks.pipe';
+import { DomainNamePipe } from './pipes/domain-name.pipe';
 import { MaxLengthPipe } from './pipes/max-length.pipe';
 import { MailService } from './services/mail.service';
 
@@ -40,7 +42,9 @@ const sharedModules = [
     PagePathHighlightDirective,
     DialogSpinnerComponent,
     DialogSpinnerDialogComponent,
-    MaxLengthPipe
+    MaxLengthPipe,
+    ConvertLinebreaksPipe,
+    DomainNamePipe
   ],
   exports: [
     sharedModules,
@@ -49,7 +53,9 @@ const sharedModules = [
     ViewImageDirective,
     PagePathHighlightDirective,
     DialogSpinnerComponent,
-    MaxLengthPipe
+    MaxLengthPipe,
+    ConvertLinebreaksPipe,
+    DomainNamePipe,
   ],
   providers: [
     SnackbarComponent, MailService

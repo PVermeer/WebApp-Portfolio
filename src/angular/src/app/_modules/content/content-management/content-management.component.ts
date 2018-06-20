@@ -203,7 +203,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const data: DialogContent = {
       dialogData: {
         title: 'Confirm',
-        body: `Do you really want to <b>delete</b> ${this.contentForm[i].value.title}?
+        body: `Do you really want to <b>delete</b> ${this.contentForm[i].value.page}?
                 <br><br>
                Submit your changes first, this will delete unsaved changes`,
         button: 'Confirm',

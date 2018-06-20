@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map, take } from 'rxjs/operators';
 import { ContentPageDocumentLean } from '../../../../server/database/models/content/content.types';
 import { ContentService } from '../_modules/content/content.service';
 
@@ -26,7 +26,12 @@ export class PageResolver implements Resolve<ContentPageDocumentLean> {
           this.router.navigate(['error']);
           return null;
         }
+      }),
+      catchError((error: any) => {
+        this.router.navigate(['error']);
+        return throwError(error);
       })
     );
   }
+
 }

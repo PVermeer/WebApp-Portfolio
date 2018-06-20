@@ -11,20 +11,72 @@ body * {
 section {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .container {
   max-width: 1150px;
-  padding: 10px;
+  padding: 0 10px;
   width: 100%;
   align-self: center;
+  min-width: 300px;
 }
 
-@media only screen and (max-width: 600px) {
-  .container {
-    padding: 5px;
-  }
+@media all and (max-width: 600px) {}
+
+/* Margins */
+
+.margin-hz-all>*,
+.margin-hz {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.button-margin-all>* {
+  margin: 5px !important;
+}
+
+.margin-center-all>*,
+.margin-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Width */
+
+.width-500-all>*,
+.width-500 {
+  width: 500px;
+}
+
+/* Width */
+
+.min-width-300-all>*,
+.min-width-300 {
+  min-width: 300px;
+}
+
+.min-width-50-all>*,
+.min-width-50 {
+  min-width: 40%;
+}
+
+.max-width-500-all>*,
+.max-width-500 {
+  max-width: 500px;
+}
+
+.width-100-all>*,
+.width-100 {
+  width: 100%;
+}
+
+/* Height */
+
+.height-100-all>*,
+.height-100 {
+  height: 100%;
 }
 
 /* --------- Flex box ---------- */
@@ -38,33 +90,60 @@ section {
   flex-wrap: nowrap !important;
 }
 
-.basis-50-all>*, .basis-50 {
+.basis-50-all>*,
+.basis-50 {
   flex-basis: 50%;
+}
+
+.basis-45-all>*,
+.basis-45 {
+  flex-basis: 45%;
 }
 
 .row-reverse {
   flex-direction: row-reverse !important;
 }
 
+.flex-end-all>*,
+.flex-end {
+  align-self: flex-end;
+}
+
+@media all and (max-width: 600px) {
+  .basis-50-all>*,
+  .basis-50 {
+    flex-basis: 100%;
+  }
+
+  .basis-45-all>*,
+  .basis-45 {
+    flex-basis: 100%;
+  }
+}
+
 /* Flex column */
+
+.flex-column {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
 
 .flex-column-around {
   display: flex;
-  height: 100%;
   flex-direction: column;
   justify-content: space-around;
 }
 
 .flex-column-around-center {
   display: flex;
-  height: 100%;
   flex-flow: column;
   justify-content: space-around;
   align-items: center;
 }
+
 .flex-column-around-left {
   display: flex;
-  height: 100%;
   flex-flow: column;
   justify-content: space-around;
   align-items: left;
@@ -72,14 +151,12 @@ section {
 
 .flex-column-between {
   display: flex;
-  height: 100%;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .flex-column-between-center {
   display: flex;
-  height: 100%;
   flex-flow: column;
   justify-content: space-between;
   align-items: center;
@@ -87,7 +164,6 @@ section {
 
 .flex-column-left {
   display: flex;
-  height: 100%;
   flex-flow: column;
   justify-content: left;
 }
@@ -96,35 +172,32 @@ section {
 
 .flex-row-center {
   display: flex;
-  width: 100%;
+  height: 100%;
   flex-flow: row wrap;
   justify-content: center;
+  align-items: stretch;
 }
 
 .flex-row-between {
   display: flex;
-  width: 100%;
   flex-flow: row wrap;
   justify-content: space-between;
 }
 
 .flex-row-between-nowrap {
   display: flex;
-  width: 100%;
   flex-flow: row nowrap;
   justify-content: space-between;
 }
 
 .flex-row-around {
   display: flex;
-  width: 100%;
   justify-content: space-around;
   flex-flow: row wrap;
 }
 
 .flex-row-around-center {
   display: flex;
-  width: 100%;
   justify-content: space-around;
   align-items: center;
   flex-flow: row wrap;
@@ -132,33 +205,28 @@ section {
 
 .flex-row-left {
   display: flex;
-  width: 100%;
   flex-flow: row wrap;
 }
 
 .flex-row-left-start {
   display: flex;
-  width: 100%;
   flex-flow: row wrap;
   align-items: flex-start;
 }
 
 .flex-row-left-center {
   display: flex;
-  width: 100%;
   flex-flow: row wrap;
   align-items: center;
 }
 
 .flex-row-right {
   display: flex;
-  width: 100%;
   flex-flow: row-reverse wrap;
 }
 
 .flex-row-right-center {
   display: flex;
-  width: 100%;
   flex-flow: row-reverse wrap;
   align-items: center;
 }
@@ -167,22 +235,17 @@ section {
 
 .columnblock {
   display: block;
-  columns: 2 320px;
+  columns: 2 390px;
   column-gap: 40px;
-  break-inside: avoid;
-  page-break-inside: avoid;
   width: 100%;
-  margin-bottom: 30px;
+  padding: 30px 0;
+  page-break-inside: avoid;
 }
 
-.columnblock>*,
-.columnblock>div>p {
-  display: block;
-  width: auto;
-  max-width: 500px;
-  margin: 0 auto 20px auto;
-  break-inside: avoid;
+.column-nobreak-all>*,
+.column-nobreak {
   page-break-inside: avoid;
+
 }
 
 /* -------------- Block ------------- */
@@ -194,12 +257,6 @@ section {
 }
 
 /* ---------- Material design ---------- */
-
-/* Buttons */
-
-.button-margin>* {
-  margin: 5px !important;
-}
 
 /* Card */
 

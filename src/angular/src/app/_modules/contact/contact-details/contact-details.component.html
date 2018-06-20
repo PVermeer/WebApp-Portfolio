@@ -1,13 +1,19 @@
-<mat-card-content>
-  <div class="flex-column-between-center">
-    <div class="flex-row-around">
-      <h3>Something</h3>
-    </div>
-    <div class="flex-row-around">
-      <h3>Something else</h3>
-    </div>
-    <div class="flex-row-around">
-      <button mat-raised-button color="primary">Something</button>
-    </div>
-  </div>
-</mat-card-content>
+<mat-card id="contact-details" class="mat-elevation-z1">
+
+  <mat-card-header>
+    <mat-card-title>
+      <h3 class="title"> {{ page?.info.title }} </h3>
+    </mat-card-title>
+    <mat-card-subtitle> {{ page?.info.subtitle }} </mat-card-subtitle>
+  </mat-card-header>
+  <img mat-card-image [appViewImage]="getImageId('profile_pic')">
+
+  <mat-card-content>
+    <p [innerHTML]="page?.info.text | convertLinebreaks"></p>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <app-social-icons [page]="infoPage" ref="social_buttons" animation="ring" size="35px"></app-social-icons>
+  </mat-card-actions>
+
+</mat-card>

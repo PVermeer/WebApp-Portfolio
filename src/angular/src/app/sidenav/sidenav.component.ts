@@ -32,7 +32,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     title: 'Navigation',
     items: [
       { label: 'Home', path: 'home' },
-      { label: 'About', path: 'about' },
+      { label: 'About me', path: 'about' },
       { label: 'Contact', path: 'contact' },
     ],
   }];
@@ -41,6 +41,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   public sidenavContent: SidenavContent;
   public isLoggedIn = false;
   public isHome: boolean;
+  public routerIsAnimating = true;
 
   public isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(map(result => result.matches));
@@ -49,7 +50,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   // Methods
   public tabChange() {
-    document.getElementById('sidenav-content').scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('sidenav-content').scrollTo({ top: 0, behavior: 'instant' });
   }
 
   public scrollTo(element: string) { this.sidenavService.scrollIntoView(element); }
@@ -136,12 +137,12 @@ export class SidenavComponent implements OnInit, OnDestroy {
         this.isHome = true;
       } else { this.isHome = false; }
     });
+    this.subscriptions.add(routerEvents);
 
     this.contentService.getContentPage('App info').subscribe(response => {
+      this.sidenavService.passInfoPage(response);
       this.appInfo = response;
     });
-
-    this.subscriptions.add(routerEvents);
   }
 
   ngOnDestroy() {

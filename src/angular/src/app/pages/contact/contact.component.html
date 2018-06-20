@@ -1,13 +1,11 @@
-<section id="contact">
+<section [id]="page.texts[0].header" class="height-100">
   <div class="container">
-    <h2>{{title}}</h2>
+    <h2> {{ page.texts[0].header }} </h2>
     <div class="flex-row-center">
-      <mat-card>
-        <app-contact-details></app-contact-details>
-      </mat-card>
-      <mat-card>
-        <app-contact-form></app-contact-form>
-      </mat-card>
+      <app-contact-details></app-contact-details>
+      <app-contact-form class="min-width-50"></app-contact-form>
     </div>
   </div>
+
+  <app-footer></app-footer>
 </section>

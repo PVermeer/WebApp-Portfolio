@@ -89,5 +89,4 @@ export function getPage(req: Request) {
   const { page } = req.query;
 
   return findContentPageLean({ page });
-
 }

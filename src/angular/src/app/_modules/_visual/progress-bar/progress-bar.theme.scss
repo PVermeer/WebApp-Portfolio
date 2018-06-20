@@ -1,0 +1,19 @@
+@mixin progressBar($theme) {
+  $primary: mat-color(map-get($theme, primary));
+  $primary-text: mat-color(map-get($theme, primary), default-contrast);
+  $accent: mat-color(map-get($theme, accent));
+  $accent-text: mat-color(map-get($theme, accent), default-contrast);
+
+  .progress-bar {
+    color: $primary-text;
+  }
+  .primary {
+    color: $primary-text;
+    background-color: $primary;
+  }
+  .accent {
+    color: $accent-text;
+    background-color: $accent;
+  }
+
+}

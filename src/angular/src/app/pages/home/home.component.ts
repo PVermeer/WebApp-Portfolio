@@ -1,21 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ContentPageDocumentLean } from '../../../../../server/database/models/content/content.types';
 import { SidenavService } from '../../sidenav/sidenav.service';
 import { MatToggle, MatToggleExp, SidenavContent } from '../../sidenav/sidenav.types';
 import { ContentService } from '../../_modules/content/content.service';
 import { SharedService } from '../../_modules/_shared/services/shared.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+
+  private subscriptions = new Subscription;
 
   // Variables
-  private title = 'Home';
-  public appInfo: ContentPageDocumentLean;
   public page: ContentPageDocumentLean;
 
   // Sidenav config
@@ -29,6 +30,22 @@ export class HomeComponent implements OnInit {
   public getImageId = (ref: string) => this.contentService.getImageId(ref, this.page);
   public isEven = (number: number) => this.sharedService.isEven(number);
 
+  private getPage() {
+    const getPage = this.route.data.subscribe((data: { page: ContentPageDocumentLean; }) => {
+
+      this.page = data.page;
+
+      this.sidenavContent = [{
+        title: this.page.info.title,
+        items: this.page.texts.map(x => ({ label: x.header, path: x.header })),
+      }];
+
+    }, () => { }
+    );
+    this.subscriptions.add(getPage);
+  }
+
+
   // Life cycle
   constructor(
     private sidenavService: SidenavService,
@@ -38,20 +55,15 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.data.subscribe((data: { page: ContentPageDocumentLean }) => {
+    this.getPage();
 
-      const { page } = data;
-      this.page = page;
+    this.sidenavService.passSidenavContent(this.sidenavContent);
+    this.sidenavService.passExpansionToggle(this.expansionToggle);
+    this.sidenavService.passSidenavToggle(this.sidenavToggle);
+  }
 
-      // Sidenav config
-      this.sidenavContent = [{
-        title: this.title,
-        items: page.texts.map(x => ({ label: x.header, path: x.header })),
-      }];
-      this.sidenavService.passSidenavContent(this.sidenavContent);
-      this.sidenavService.passExpansionToggle(this.expansionToggle);
-      this.sidenavService.passSidenavToggle(this.sidenavToggle);
-    }, () => { });
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
 }

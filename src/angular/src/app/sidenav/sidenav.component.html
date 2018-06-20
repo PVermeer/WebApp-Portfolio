@@ -89,10 +89,12 @@
 
     </mat-sidenav>
 
-    <mat-sidenav-content id="sidenav-content">
+    <mat-sidenav-content id="sidenav-content" class="height-100-all">
       <!-- Router -->
       <main [@routerTransition]="getState(o)">
+
         <router-outlet #o="outlet"></router-outlet>
+
       </main>
     </mat-sidenav-content>
 

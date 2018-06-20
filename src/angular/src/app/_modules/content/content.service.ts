@@ -44,5 +44,8 @@ export class ContentService {
   public getImage(id: string) {
     return this.http.get('/content/image?id=' + id, { responseType: 'blob' });
   }
+  public getFile(id: string) {
+    return this.http.get('/content/file?id=' + id, { responseType: 'blob' });
+  }
 
 }

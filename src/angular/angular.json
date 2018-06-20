@@ -10,8 +10,8 @@
       "prefix": "app",
       "schematics": {
         "@schematics/angular:component": {
-          "inlineTemplate": true,
-          "inlineStyle": true,
+          "inlineTemplate": false,
+          "inlineStyle": false,
           "spec": false
         },
         "@schematics/angular:class": {
@@ -69,7 +69,7 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "serviceWorker": false
+              "serviceWorker": true
             }
           }
         },

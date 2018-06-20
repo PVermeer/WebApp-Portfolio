@@ -9,8 +9,7 @@ h1,
 h2,
 h3,
 h4,
-h5 {
-}
+h5 {}
 
 h1 {
   font-size: 21px;
@@ -24,20 +23,23 @@ h2 {
   font-weight: 400;
   letter-spacing: 3px;
   padding: 10px 3%;
-  margin: 25px auto;
+  margin: 25px auto 0 auto;
   text-align: center;
+  width: 100%;
 }
 
 h2::after {
   content: "";
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
+  border-bottom: 2px solid;
+  opacity: 0.7;
   width: 50%;
   display: block;
   margin: 15px auto;
 }
 
 h3 {
+  margin: 0;
+  padding: 20px 0;
   font-size: 20px;
   letter-spacing: 3px;
   font-weight: 500;
@@ -50,8 +52,19 @@ h4 {
   font-weight: 400;
 }
 
-p {
+h5 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
   text-align: left;
+}
+
+p {
+  margin: 0;
+  text-align: left;
+  font-size: 14px;
 }
 
 a {
@@ -61,10 +74,18 @@ a {
 }
 
 q {
+  display: block;
   font-style: italic;
+  font-size: 20px;
   padding: 10px 0;
   margin: 10px auto 30px auto;
   text-align: center;
+}
+
+/* Material Design */
+
+.mat-card {
+  font-family: inherit !important;
 }
 
 @media screen and (max-width: 600px) {
@@ -75,15 +96,19 @@ q {
     font-size: 16px;
   }
   h3 {
-    font-size: 14px;
+    font-size: 16px;
   }
   h4 {
     font-size: 12px;
   }
+  h5 {
+    font-size: 12px;
+  }
   p {
+    font-size: 12px;
   }
-  a {
-  }
+  a {}
   q {
+    font-size: 15px;
   }
-  }
+}

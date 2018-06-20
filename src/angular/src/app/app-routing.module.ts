@@ -19,9 +19,9 @@ const routes: Routes = [
 
   // Page routes
   { path: '', redirectTo: 'home', pathMatch: 'full' }, // Default route
-  { path: 'home', component: HomeComponent, resolve: { page: PageResolver } },
-  { path: 'about', component: AboutComponent, data: { state: 'about' } },
-  { path: 'contact', component: ContactComponent, data: { state: 'contact' } },
+  { path: 'home', component: HomeComponent, data: { state: 'home' }, resolve: { page: PageResolver } },
+  { path: 'about', component: AboutComponent, data: { state: 'about' }, resolve: { page: PageResolver } },
+  { path: 'contact', component: ContactComponent, data: { state: 'contact' }, resolve: { page: PageResolver } },
   { path: 'user', component: UserComponent, data: { state: 'user' }, canActivate: [AuthGuard] },
   { path: 'error', component: ErrorComponent, data: { state: 'error' } },
   { path: '**', redirectTo: 'home', pathMatch: 'full' }, // All other routes

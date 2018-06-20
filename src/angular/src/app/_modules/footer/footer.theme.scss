@@ -1,0 +1,19 @@
+@mixin footer($theme) {
+  $primary: mat-color(map-get($theme, primary));
+  $primary-text: mat-color(map-get($theme, primary), default-contrast);
+  $primary-text-lighter: mat-color(map-get($theme, primary), lighter-contrast);
+  $primary-lighter: mat-color(map-get($theme, primary), lighter);
+  $accent: mat-color(map-get($theme, accent));
+  $accent-text: mat-color(map-get($theme, accent), default-contrast);
+  $warn: mat-color(map-get($theme, warn));
+  $warn-text: mat-color(map-get($theme, warn), default-contrast);
+  $background: mat-color(map-get($theme, background), background);
+  $foreground: mat-color(map-get($theme, foreground), text);
+
+  // Add styles e.g:
+  #footer {
+    color: $primary-text-lighter;
+    background-color: $primary-lighter;
+  }
+
+}

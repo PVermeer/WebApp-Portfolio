@@ -14,7 +14,7 @@ router.use(dbConnectionError);
 
 // No authentication
 router.get('/page', cacheJson, getPage);
-router.get('/image', getFile); // Separation for client cache support (images may be cached, files may not)
+router.get('/image', getFile);
 router.get('/file', getFile);
 
 // Admin authentication

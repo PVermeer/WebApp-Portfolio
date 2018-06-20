@@ -1,4 +1,5 @@
 @import '~@angular/material/theming';
+@import '~font-awesome/css/font-awesome.css';
 
 // Import general stylesheets
 @import 'text.css';
@@ -11,6 +12,10 @@
 @import '../app/sidenav/sidenav.theme';
 @import '../app/_modules/_shared/components/snackbar/snackbar.theme';
 @import '../app/_modules/users/user-management/user-management.theme';
+@import '../app/_modules/_visual/progress-bar/progress-bar.theme';
+@import '../app/_modules/_visual/timeline/timeline.theme';
+@import '../app/_modules/_visual/wave/wave.theme';
+@import '../app/_modules/footer/footer.theme';
 
 // Include mat-core (only once)
 @include mat-core();
@@ -18,7 +23,7 @@
 // Primary theme
 // Color: default, lighter, and darker
 $primary-theme-primary: mat-palette($mat-light-blue, 900, 700);
-$primary-theme-accent: mat-palette($mat-deep-orange, A200, A100, A400);
+$primary-theme-accent: mat-palette($mat-deep-orange, 800, A100, A400);
 $primary-theme-warn: mat-palette($mat-red, 900);
 
 $primary-theme: mat-light-theme($primary-theme-primary, $primary-theme-accent, $primary-theme-warn);
@@ -36,6 +41,10 @@ $secondary-theme: mat-dark-theme($secondary-theme-primary, $secondary-theme-acce
   @include sidenav($theme);
   @include snackbar($theme);
   @include userManagement($theme);
+  @include progressBar($theme);
+  @include timeline($theme);
+  @include wave-top($theme);
+  @include footer($theme);
 }
 
 // Default theme (no class applied)
