@@ -45,8 +45,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     .pipe(map(result => result.matches));
 
   // Methods
-  public tabChange() {
-    document.getElementById('sidenav-content').scrollTo({ top: 0, behavior: 'smooth' });
+  public onRouterActivate() {
+    document.getElementById('sidenav-content').scrollTo({ top: 0, behavior: 'instant' });
   }
 
   public scrollTo(element: string) { this.sidenavService.scrollIntoView(element); }
