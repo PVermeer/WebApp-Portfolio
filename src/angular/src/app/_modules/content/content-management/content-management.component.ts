@@ -131,7 +131,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       this.progressSpinner = false;
 
       this.snackbarComponent.snackbarSuccess(res);
-      this.getForm();
+      this.resetContentManager();
 
       // Errors
     }, () => {

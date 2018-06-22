@@ -1,7 +1,7 @@
 <div #socialList appContentList [page]="page" [ref]="ref">
   <div class="button-margin-all flex-row-around social-buttons">
     <a *ngFor="let icon of socialList.list?.list" [href]="icon" target="_blank">
-      <i class="fa fa-{{ icon | domainName }} {{ addClasses }}" [ngStyle]="addStyles" aria-hidden="true"></i>
+      <i class="fab fa-{{ icon | domainName }} {{ addClasses }}" [ngStyle]="addStyles" aria-hidden="true"></i>
     </a>
   </div>
 </div>

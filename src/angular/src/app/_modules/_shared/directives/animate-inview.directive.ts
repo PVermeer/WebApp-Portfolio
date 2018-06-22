@@ -21,8 +21,8 @@ export class AnimateInviewDirective implements OnInit, AfterViewInit, OnDestroy 
 
     const animation = this.appAnimateInview;
     const element = this.elementRef.nativeElement;
-    const elementRec = element.getBoundingClientRect();
-    const contentDivRec = this.contentDiv.getBoundingClientRect();
+    const elementRec: ClientRect = element.getBoundingClientRect();
+    const contentDivRec: ClientRect = this.contentDiv.getBoundingClientRect();
 
     const elementTop = elementRec.top - contentDivRec.top;
     const elementHeight = elementRec.height;

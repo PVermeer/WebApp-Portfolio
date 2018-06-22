@@ -25,8 +25,8 @@ export class TimelineComponent implements OnInit {
 
     const page = this.page;
     const years = page.lists.find(x => x.ref === 'timeline_year');
-    const titles = page.lists.find(x => x.ref === 'timeline_job');
-    const subtitles = page.lists.find(x => x.ref === 'timeline_company');
+    const titles = page.lists.find(x => x.ref === 'timeline_title');
+    const subtitles = page.lists.find(x => x.ref === 'timeline_subtitle');
 
     const timeline: Timeline[] = [];
 

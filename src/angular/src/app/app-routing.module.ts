@@ -1,15 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AboutComponent } from './pages/about/about.component';
+import { ContactComponent } from './pages/contact/contact.component';
+import { ErrorComponent } from './pages/error/error.component';
+import { FeaturesComponent } from './pages/features/features.component';
+import { HomeComponent } from './pages/home/home.component';
+import { PageResolver } from './pages/page-resolver.service';
+import { UserComponent } from './pages/user/user.component';
 import { AuthGuard } from './_modules/users/auth.guard';
 import { VerifyUserComponent } from './_modules/users/user-dialog/verify-user/verify-user.component';
 import { EmailUpdateComponent } from './_modules/users/verify-pages/email-update.component';
 import { UpdatePasswordComponent } from './_modules/users/verify-pages/update-password.component';
-import { AboutComponent } from './pages/about/about.component';
-import { ContactComponent } from './pages/contact/contact.component';
-import { ErrorComponent } from './pages/error/error.component';
-import { HomeComponent } from './pages/home/home.component';
-import { PageResolver } from './pages/page-resolver.service';
-import { UserComponent } from './pages/user/user.component';
 
 const routes: Routes = [
   // Verification routes
@@ -20,6 +21,7 @@ const routes: Routes = [
   // Page routes
   { path: '', redirectTo: 'home', pathMatch: 'full' }, // Default route
   { path: 'home', component: HomeComponent, data: { state: 'home' }, resolve: { page: PageResolver } },
+  { path: 'features', component: FeaturesComponent, data: { state: 'features' }, resolve: { page: PageResolver } },
   { path: 'about', component: AboutComponent, data: { state: 'about' }, resolve: { page: PageResolver } },
   { path: 'contact', component: ContactComponent, data: { state: 'contact' }, resolve: { page: PageResolver } },
   { path: 'user', component: UserComponent, data: { state: 'user' }, canActivate: [AuthGuard] },

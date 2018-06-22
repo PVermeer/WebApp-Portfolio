@@ -20,6 +20,9 @@ import { ConvertLinebreaksPipe } from './pipes/convert-linebreaks.pipe';
 import { DomainNamePipe } from './pipes/domain-name.pipe';
 import { MaxLengthPipe } from './pipes/max-length.pipe';
 import { MailService } from './services/mail.service';
+import { OverflowHideDirective } from './directives/overflow-hide.directive';
+import { SpaceToArrayPipe } from './pipes/space-to-array.pipe';
+import { CommaToArrayPipe } from './pipes/comma-to-array.pipe';
 
 const sharedModules = [
   CommonModule,
@@ -44,7 +47,10 @@ const sharedModules = [
     DialogSpinnerDialogComponent,
     MaxLengthPipe,
     ConvertLinebreaksPipe,
-    DomainNamePipe
+    DomainNamePipe,
+    OverflowHideDirective,
+    SpaceToArrayPipe,
+    CommaToArrayPipe,
   ],
   exports: [
     sharedModules,
@@ -56,6 +62,9 @@ const sharedModules = [
     MaxLengthPipe,
     ConvertLinebreaksPipe,
     DomainNamePipe,
+    OverflowHideDirective,
+    SpaceToArrayPipe,
+    CommaToArrayPipe,
   ],
   providers: [
     SnackbarComponent, MailService

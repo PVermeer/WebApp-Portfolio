@@ -1,0 +1,50 @@
+<section>
+  <div class="flex-row-center">
+    <h2> {{ page.info.title }} </h2>
+  </div>
+  <div class="container">
+
+    <div class="spacer"></div>
+
+    <div #linkMatch appContentList [page]="page" ref="list_links_match"></div>
+    <div #links appContentList [page]="page" ref="list_links"></div>
+    <div #icons appContentList [page]="page" ref="list_icons"></div>
+
+    <div *ngFor="let list of page.lists" [class.display-none]="list.ref !== 'list_headers'">
+
+      <div [id]="listItem" *ngFor="let listItem of list.list; let i = index" appAnimateInview="fadeIn">
+        <div class="flex-column-around-center">
+
+          <h1 class="text-center"> {{ listItem }} </h1>
+          <div class="primary-color flex-row-around icon-container margin-hz-all">
+
+            <app-fa-icon *ngFor="let icon of icons.list.list[i] | commaToArray" [icon]="icon" size="60px"></app-fa-icon>
+
+          </div>
+
+          <div class="flex-row-around margin-hz-all">
+            <div *ngFor="let text of page.texts; let j = index" [class.display-none]="text.ref !== (i + 1).toLocaleString()" class="showcase-container">
+
+              <h3 class="showcase-header">{{ text.header }}</h3>
+
+              <h4 [innerHTML]="text.text" class="showcase-text"></h4>
+
+              <div *ngFor="let match of linkMatch.list.list; let k = index">
+                <a #clickLink [href]="links.list.list[k]" target="_blank"></a>
+                <mat-chip-list>
+                  <mat-chip color="accent" selected="true" *ngIf="match === text.header" (click)="clickLink.click()" class="cursor-pointer"> Learn more </mat-chip>
+                </mat-chip-list>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <mat-divider></mat-divider>
+        <br>
+      </div>
+    </div>
+  </div>
+</section>
+<app-footer></app-footer>

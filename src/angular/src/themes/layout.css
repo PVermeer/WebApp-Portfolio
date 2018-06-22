@@ -317,9 +317,15 @@ td.mat-cell {
 .mat-slide-toggle-label,
 .mat-slide-toggle-thumb-container,
 .mat-icon-button,
-.mat-checkbox {
+.mat-checkbox,
+.cursor-default {
   cursor: default !important;
 }
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
 
 /* ---------- Control ----------- */
 
@@ -335,4 +341,5 @@ td.mat-cell {
 
 .display-none {
   display: none !important;
+  position: absolute;
 }
