@@ -9,7 +9,7 @@
     <span class="toolbar-spacer"></span>
 
     <nav mat-tab-nav-bar backgroundColor="primary" [style.display]="(isHandset$ | async) ? 'none' : 'initial'">
-      <a mat-tab-link *ngFor="let link of pageNav[0].items" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive" (click)="tabChange()">
+      <a mat-tab-link *ngFor="let link of pageNav[0].items" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
         {{link.label | maxLength:14}}
       </a>
     </nav>
