@@ -1,7 +1,7 @@
 <!-- The loading spinner componenent -->
 <app-dialog-spinner *ngIf="progressSpinner"></app-dialog-spinner>
 
-<div *ngIf="isDeveloper" class="flex-row-right button-margin">
+<div *ngIf="isDeveloper" class="flex-row-right button-margin-all">
   <button mat-raised-button (click)="newPageForm()">Add new page</button>
 </div>
 
@@ -69,7 +69,7 @@
                 </div>
               </div>
             </mat-card-content>
-            <div class="flex-row-between button-margin">
+            <div class="flex-row-between button-margin-all">
               <button mat-fab type="button" (click)="infoAddListItem(i)" matTooltip="Add a new line" matTooltipShowDelay="500">
                 <mat-icon>list</mat-icon>
               </button>
@@ -83,11 +83,11 @@
           <div formArrayName="texts" class="flex-row-left text-container" [class.flex-basis-1]="(isSmaller$ | async)">
             <div *ngFor="let text of page.texts; let j = index">
 
-              <mat-card *ngIf="contentForm[i].get('texts').at(j)">
+              <mat-card [formGroupName]="j">
                 <!-- Header -->
                 <mat-card-header class="flex-row-between-nowrap">
                   <mat-card-title>
-                    <mat-form-field [formGroupName]="j">
+                    <mat-form-field>
                       <input matInput [type]="text.typeHeader" formControlName="header" [placeholder]="text.placeholderHeader">
                       <mat-error *ngIf="contentForm[i].get('texts').at(j).get('header').errors">
                         {{ text.alertHeader }}
@@ -100,14 +100,32 @@
                   </button>
                 </mat-card-header>
 
-                <mat-card-content [formGroupName]="j">
+                <mat-card-content>
                   <!-- Text field -->
-                  <mat-form-field>
-                    <textarea matTextareaAutosize matAutosizeMinRows="3" matInput [type]="text.typeText" formControlName="text" [placeholder]="text.placeholderText"></textarea>
-                    <mat-error *ngIf="contentForm[i].get('texts').at(j).get('text').errors">
-                      {{ text.alertText }}
-                    </mat-error>
-                  </mat-form-field>
+                  <div formArrayName="text">
+                    <div *ngFor="let textItem of text.text; let r = index">
+
+                      <mat-form-field *ngIf="r === 0; else nestedValue">
+                        <textarea matTextareaAutosize matAutosizeMinRows="3" matInput [type]="text.typeText" [formControlName]="r" [placeholder]="text.placeholderText" [value]="contentForm[i].get('texts').at(j).get('text').at(r).value"></textarea>
+                        <mat-error *ngIf="contentForm[i].get('texts').at(j).get('text').errors">
+                          {{ text.alertText }}
+                        </mat-error>
+                      </mat-form-field>
+                      <button *ngIf="r === 0 && isDeveloper" type="button" mat-icon-button matSuffix (click)="textAddExtraItem(i, j)" matTooltip="Add an extra value field" matTooltipShowDelay="500">
+                        <app-fa-icon icon="fas plus" class="suffix-button"></app-fa-icon>
+                      </button>
+
+                      <ng-template #nestedValue>
+                        <mat-form-field class="extra-values">
+                          <input matInput type="text" [placeholder]="'Extra value ' + r" [formControlName]="r" [value]="contentForm[i].get('texts').at(j).get('text').at(r).value">
+                          <button type="button" mat-icon-button matSuffix mat-icon-button aria-label="Clear" (click)="textRemoveExtraItem(i, j, r)">
+                            <mat-icon>close</mat-icon>
+                          </button>
+                        </mat-form-field>
+                      </ng-template>
+
+                    </div>
+                  </div>
                   <!-- Reference field -->
                   <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
                     <input matInput [type]="text.typeRef" formControlName="ref" [placeholder]="text.placeholderRef">
@@ -142,8 +160,7 @@
           <div formArrayName="lists" class="flex-row-left text-container">
             <div *ngFor="let list of page.lists; let l = index">
 
-              <mat-card *ngIf="contentForm[i].get('lists').at(l)" [formGroupName]="l">
-                <!-- Header -->
+              <mat-card [formGroupName]="l">
                 <mat-card-header class="flex-row-between-nowrap">
                   <mat-card-title>
                     <mat-form-field>
@@ -159,17 +176,33 @@
                   </button>
                 </mat-card-header>
 
-                <!-- List fields -->
                 <mat-card-content>
                   <div formArrayName="list">
                     <div *ngFor="let listItem of list.list; let m = index">
-                      <mat-form-field>
-                        <span matPrefix>{{ m + 1 }} &nbsp;</span>
-                        <input matInput type="text" [placeholder]="list.placeholderItem" [formControlName]="m">
-                        <button type="button" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="listRemoveItem(i, l, m)">
-                          <mat-icon>close</mat-icon>
-                        </button>
-                      </mat-form-field>
+                      <div [formArrayName]="m" *ngFor="let listItemItem of listItem; let u = index">
+
+                        <mat-form-field *ngIf="u === 0; else nestedValue">
+                          <span matPrefix>{{ m + 1 }} &nbsp;</span>
+                          <input matInput type="text" [placeholder]="list.placeholderItem" [formControlName]="u" [value]="contentForm[i].get('lists').at(l).get('list').at(m).at(u).value">
+
+                          <button type="button" mat-icon-button matSuffix mat-icon-button aria-label="Clear" (click)="listRemoveItem(i, l, m)">
+                            <mat-icon>close</mat-icon>
+                          </button>
+                          <button *ngIf="u === 0 && isDeveloper" type="button" mat-icon-button matSuffix (click)="listAddExtraItem(i, l, m)" matTooltip="Add an extra value field" matTooltipShowDelay="500">
+                            <app-fa-icon icon="fas plus" class="suffix-button"></app-fa-icon>
+                          </button>
+                        </mat-form-field>
+
+                        <ng-template #nestedValue>
+                          <mat-form-field class="extra-values">
+                            <input matInput type="text" [placeholder]="'Extra value ' + u" [formControlName]="u" [value]="contentForm[i].get('lists').at(l).get('list').at(m).at(u).value">
+                            <button type="button" mat-icon-button matSuffix aria-label="Clear" (click)="listRemoveExtraItem(i, l, m, u)">
+                              <mat-icon>close</mat-icon>
+                            </button>
+                          </mat-form-field>
+                        </ng-template>
+                      </div>
+
                     </div>
                   </div>
                   <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
@@ -180,7 +213,7 @@
                   </mat-form-field>
                 </mat-card-content>
 
-                <div class="flex-row-between button-margin">
+                <div class="flex-row-between button-margin-all">
                   <button mat-fab type="button" (click)="listAddItem(i, l)" matTooltip="Add a new line" matTooltipShowDelay="500">
                     <mat-icon>list</mat-icon>
                   </button>
@@ -245,7 +278,7 @@
                   </div>
 
 
-                  <input hidden type="file" accept="image/*" #imgFileInput (change)="contentForm[i].get('images').at(k).get('imageUpdate').setValue(imgFileInput.files[0]); validateImageSize(i, k, imgFileInput.files[0])">
+                  <input hidden type="file" accept="image/*" #imgFileInput (change)="contentForm[i].get('images').at(k).get('imageUpdate').setValue(imgFileInput.files[0]); validateImageSize(i, k, imgFileInput.files[0]); contentForm[i].get('images').at(k).get('title').markAsTouched()">
 
                   <div class="flex-column-around-center">
 
@@ -253,11 +286,11 @@
                       {{ contentForm[i].get('images').at(k).get('imageUpdate').value.name }}
                     </div>
                     <br>
-                    <mat-error *ngIf="!contentForm[i].get('images').at(k).valid">
-                      {{ image.alertFile }}
+                    <mat-error *ngIf="contentForm[i].get('images').at(k).get('imageUpdate').hasError('Size exceeded')">
+                      {{ image.alertImage }}
                     </mat-error>
 
-                    <div class="flex-row-between button-margin">
+                    <div class="flex-row-between button-margin-all">
                       <button mat-fab type="button" (click)="imgFileInput.click()" matTooltip="Select a new image" matTooltipShowDelay="500">
                         <mat-icon>add_photo_alternate</mat-icon>
                       </button>
@@ -270,9 +303,6 @@
                   <mat-card-content>
                     <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
                       <input matInput [type]="image.typeRef" formControlName="ref" [placeholder]="image.placeholderRef">
-                      <mat-error *ngIf="contentForm[i].get('images').at(k).get('ref').errors">
-                        {{ image.alertRef }}
-                      </mat-error>
                     </mat-form-field>
                   </mat-card-content>
                   <mat-card-footer *ngIf="isDeveloper">
@@ -331,7 +361,7 @@
                     </ng-template>
                   </div>
 
-                  <input hidden type="file" #fileInput (change)="contentForm[i].get('files').at(l).get('fileUpdate').setValue(fileInput.files[0]); validateFileSize(i, l, fileInput.files[0])">
+                  <input hidden type="file" #fileInput (change)="contentForm[i].get('files').at(l).get('fileUpdate').setValue(fileInput.files[0]); validateFileSize(i, l, fileInput.files[0]); contentForm[i].get('files').at(l).get('title').markAsTouched()">
 
                   <br>
                   <div class="flex-column-around-center">
@@ -340,11 +370,11 @@
                       {{ contentForm[i].get('files').at(l).get('fileUpdate').value.name }}
                     </div>
                     <br>
-                    <mat-error *ngIf="!contentForm[i].get('files').at(l).valid">
+                    <mat-error *ngIf="contentForm[i].get('files').at(l).get('fileUpdate').hasError('Size exceeded')">
                       {{ file.alertFile }}
                     </mat-error>
 
-                    <div class="flex-row-between button-margin">
+                    <div class="flex-row-between button-margin-all">
                       <button mat-fab type="button" (click)="fileInput.click()" matTooltip="Select a new file" matTooltipShowDelay="500">
                         <mat-icon>note_add</mat-icon>
                       </button>
@@ -357,9 +387,6 @@
                   <mat-card-content>
                     <mat-form-field [ngClass]="{'display-none':!isDeveloper}">
                       <input matInput [type]="file.typeRef" formControlName="ref" [placeholder]="file.placeholderRef">
-                      <mat-error *ngIf="contentForm[i].get('files').at(l).get('ref').errors">
-                        {{ file.alertRef }}
-                      </mat-error>
                     </mat-form-field>
                   </mat-card-content>
                   <mat-card-footer *ngIf="isDeveloper">
@@ -388,7 +415,7 @@
       <mat-divider></mat-divider>
       <br>
       <br>
-      <div class="flex-row-right button-margin">
+      <div class="flex-row-right button-margin-all">
         <button type="submit" mat-raised-button color="primary" (click)="confirmUpdateForm(i)" [disabled]="!contentForm[i]?.valid">
           Submit changes
         </button>

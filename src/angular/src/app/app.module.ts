@@ -17,6 +17,7 @@ import { ContactModule } from './_modules/contact/contact.module';
 import { ContentModule } from './_modules/content/content.module';
 import { UsersModule } from './_modules/users/users.module';
 import { SharedModule } from './_modules/_shared/shared.module';
+import { VisualModule } from './_modules/_visual/visual.module';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { SharedModule } from './_modules/_shared/shared.module';
     UsersModule,
     ContentModule,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
+    VisualModule,
   ],
   providers: [ErrorInterceptorProvider, SidenavService, PageResolver],
   bootstrap: [AppComponent]

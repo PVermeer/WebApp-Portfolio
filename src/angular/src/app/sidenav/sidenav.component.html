@@ -9,7 +9,7 @@
     <span class="toolbar-spacer"></span>
 
     <nav mat-tab-nav-bar backgroundColor="primary" [style.display]="(isHandset$ | async) ? 'none' : 'initial'">
-      <a mat-tab-link *ngFor="let link of pageNav[0].items" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive" (click)="tabChange()">
+      <a mat-tab-link *ngFor="let link of pageNav[0].items" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
         {{link.label | maxLength:14}}
       </a>
     </nav>
@@ -89,10 +89,12 @@
 
     </mat-sidenav>
 
-    <mat-sidenav-content id="sidenav-content">
+    <mat-sidenav-content id="sidenav-content" class="height-100-all">
       <!-- Router -->
-      <main [@routerTransition]="getState(o)">
+      <main [@routerTransition]="getState(o)"  (activate)="onRouterActivate()">
+
         <router-outlet #o="outlet"></router-outlet>
+
       </main>
     </mat-sidenav-content>
 

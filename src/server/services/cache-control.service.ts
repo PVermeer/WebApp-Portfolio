@@ -38,7 +38,7 @@ export function cacheJson(req: Request, res: Response, next: NextFunction) {
 
     function jsonHook(this: any, json: any) {
 
-      if (json && !json.status) {
+      if (json && res.statusCode === 200) {
         writeFile(newFile, JSON.stringify(json), () => { });
       }
 
@@ -80,10 +80,10 @@ export async function clearCacheDirs() {
       return new Promise(async resolveAll => {
         try {
           await new Promise((resolve, reject) => {
-            rimraf(appRoot + config.cacheDir, (error) => { if (error) { return reject(); } resolve(); });
+            rimraf(appRoot + config.cacheDir + '**', (error) => { if (error) { return reject(); } resolve(); });
           });
           await new Promise((resolve, reject) => {
-            rimraf(appRoot + config.uploadDir, (error) => { if (error) { return reject(); } resolve(); });
+            rimraf(appRoot + config.uploadDir + '**', (error) => { if (error) { return reject(); } resolve(); });
           });
           await new Promise((resolve, reject) => {
             mkdirp(appRoot + config.tempDir, (error) => { if (error) { return reject(); } resolve(); });
@@ -113,6 +113,7 @@ export async function clearCacheDirs() {
           } else {
             errorHandler(new Error('Counter has reached maximum in clearCacheDirs()'));
             resolveAll();
+            resolveFn();
           }
         }
       });

@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   margin: 0;
   height: 100%;
 }
@@ -11,6 +12,7 @@ section {
   display: flex;
   flex-direction: column;
   height: 100%;
+  justify-content: space-between;
 }
 
 .container {
@@ -20,15 +22,19 @@ section {
   align-self: center;
 }
 
-@media only screen and (max-width: 600px) {
-  .container {
-    padding: 5px;
-  }
+@media only screen and (max-width: 600px) {}
+
+/* Height */
+
+.height-100-all>*,
+.height-100 {
+  height: 100%;
 }
 
 /* --------- Flex box ---------- */
 
-.flex1-all>*, .flex1 {
+.flex1-all>*,
+.flex1 {
   flex: 1
 }
 
@@ -101,6 +107,7 @@ section {
   justify-content: space-around;
   flex-flow: row wrap;
 }
+
 .flex-row-around-center {
   display: flex;
   width: 100%;
@@ -154,7 +161,8 @@ section {
   margin-bottom: 30px;
 }
 
-.columnblock>*, .columnblock>div>p {
+.columnblock>*,
+.columnblock>div>p {
   display: block;
   width: auto;
   max-width: 500px;
@@ -175,7 +183,7 @@ section {
 
 /* Buttons */
 
-.button-margin>* {
+.button-margin-all>* {
   margin: 5px !important;
 }
 
@@ -209,7 +217,8 @@ form {
   /* Checkbox animation won't overflow */
 }
 
-th.mat-header-cell, td.mat-cell {
+th.mat-header-cell,
+td.mat-cell {
   padding: 0 10px !important;
 }
 
@@ -234,7 +243,10 @@ th.mat-header-cell, td.mat-cell {
 
 /* Cursor settings */
 
-.mat-slide-toggle-label, .mat-slide-toggle-thumb-container, .mat-icon-button, .mat-checkbox {
+.mat-slide-toggle-label,
+.mat-slide-toggle-thumb-container,
+.mat-icon-button,
+.mat-checkbox {
   cursor: default !important;
 }
 
