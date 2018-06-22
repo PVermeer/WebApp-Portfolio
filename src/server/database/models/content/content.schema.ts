@@ -37,12 +37,12 @@ const ContentPageSchema = new Schema({
   texts: [{
     ref: { type: String, trim: true },
     header: { type: String, trim: true },
-    text: { type: String, trim: true }
+    text: [{ type: String, trim: true }]
   }],
   lists: [{
     ref: { type: String, trim: true },
     title: { type: String, trim: true },
-    list: [{ type: String, trim: true }]
+    list: [[{ type: String, trim: true }]]
   }],
   images: [{
     ref: { type: String, trim: true },

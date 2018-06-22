@@ -13,12 +13,12 @@ export interface ContentInfo {
 export interface ContentText {
   ref: string;
   header: string;
-  text: string;
+  text: string[];
 }
 export interface ContentList {
   ref: string;
   title: string;
-  list: string[];
+  list: string[][];
 }
 export interface ContentImage {
   _id: string | ObjectID;
