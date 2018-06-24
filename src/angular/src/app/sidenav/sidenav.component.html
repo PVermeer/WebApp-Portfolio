@@ -93,7 +93,7 @@
       <!-- Router -->
       <main [@routerTransition]="getState(o)">
 
-        <router-outlet #o="outlet"></router-outlet>
+        <router-outlet #o="outlet" (activate)="onRouterActivate()"></router-outlet>
 
       </main>
     </mat-sidenav-content>

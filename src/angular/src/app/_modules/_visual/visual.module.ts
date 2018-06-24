@@ -6,7 +6,6 @@ import { TimelineComponent } from './timeline/timeline.component';
 import { WaveComponent } from './wave/wave.component';
 import { SocialIconsComponent } from './social-icons/social-icons.component';
 import { ContentModule } from '../content/content.module';
-import { FaIconComponent } from './fa-icon/fa-icon.component';
 
 @NgModule({
   imports: [
@@ -19,14 +18,12 @@ import { FaIconComponent } from './fa-icon/fa-icon.component';
     TimelineComponent,
     WaveComponent,
     SocialIconsComponent,
-    FaIconComponent
   ],
   exports: [
     ProgressBarComponent,
     TimelineComponent,
     WaveComponent,
     SocialIconsComponent,
-    FaIconComponent,
   ]
 })
 export class VisualModule { }
