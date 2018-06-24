@@ -8,58 +8,54 @@
       </div>
 
       <div class="columnblock">
-        <p [innerHTML]="introText?.text.text | convertLinebreaks"></p>
+        <p [innerHTML]="introText.text.text[0] | convertLinebreaks"></p>
       </div>
 
       <h2>Vaardigheden</h2>
       <div class="flex-row-around-center">
 
         <div #codingTitles appContentList [page]="page" ref="coding_skill_titles" class="margin-hz">
-          <div #codingProgress appContentList [page]="page" ref="coding_skill_progress">
-            <h3> {{ codingTitles?.list.title }} </h3>
-            <div *ngFor="let listItem of codingTitles?.list.list; let i = index" class="progress-bar-wrapper">
-              <h5> {{ listItem }} </h5>
-              <app-progress-bar color="accent" [progress]="codingProgress.list.list[i]"></app-progress-bar>
+            <h3> {{ codingTitles.list.title }} </h3>
+            <div *ngFor="let listItem of codingTitles.list.list; let i = index" class="progress-bar-wrapper">
+              <h5> {{ listItem[0] }} </h5>
+              <app-progress-bar color="accent" [progress]="listItem[1]"></app-progress-bar>
             </div>
-          </div>
         </div>
 
         <div #ictTitles appContentList [page]="page" ref="ict_skill_titles" class="margin-hz">
-          <div #ictProgress appContentList [page]="page" ref="ict_skill_progress">
-            <h3> {{ ictTitles?.list.title }} </h3>
-            <div *ngFor="let listItem of ictTitles?.list.list; let i = index" class="progress-bar-wrapper">
-              <h5> {{ listItem }} </h5>
-              <app-progress-bar color="accent" [progress]="ictProgress?.list.list[i]"></app-progress-bar>
+            <h3> {{ ictTitles.list.title }} </h3>
+            <div *ngFor="let listItem of ictTitles.list.list; let i = index" class="progress-bar-wrapper">
+              <h5> {{ listItem[0] }} </h5>
+              <app-progress-bar color="accent" [progress]="listItem[1]"></app-progress-bar>
             </div>
-          </div>
         </div>
 
       </div>
 
-      <q #quotes appContentList [page]="page" ref="quotes"> {{ quotes?.list.list[0] }} </q>
+      <q #quotes appContentList [page]="page" ref="quotes"> {{ quotes.list.list[0] }} </q>
 
     </div>
   </section>
 
-  <section #experienceText appContentText [page]="page" ref="text_experience" [id]="experienceText.text.header" [ngStyle]="experienceBackground" class="white">
+  <section #experienceText appContentText [page]="page" ref="text_experience" [id]="experienceText.text.header" [ngStyle]="experienceBackground" class="white experience-background">
     <app-wave></app-wave>
 
     <div class="container flex-column-around" id="experience-container">
 
-      <h2> {{ experienceText?.text.header }} </h2>
+      <h2> {{ experienceText.text.header }} </h2>
       <br>
 
       <div class="columnblock margin-hz">
 
         <div class="max-width-500-all flex-column-around-center">
           <div>
-            <p [innerHTML]="experienceText?.text.text | convertLinebreaks"></p>
+            <p [innerHTML]="experienceText.text.text[0] | convertLinebreaks"></p>
           </div>
 
-          <q>{{ quotes?.list.list[1] }}</q>
+          <q>{{ quotes.list.list[1] }}</q>
 
           <div #file appContentFile [page]="page" ref="file_cv" class="flex-row-around">
-            <button mat-raised-button color="accent"> {{ file?.file.title }} </button>
+            <button mat-raised-button color="accent"> {{ file.file.title }} </button>
           </div>
         </div>
         <br>
@@ -73,9 +69,9 @@
     <app-wave flip="true"></app-wave>
   </section>
 
-  <section #contactText appContentText [page]="page" ref="text_contact" [id]="contactText?.text.header">
+  <section #contactText appContentText [page]="page" ref="text_contact" [id]="contactText.text.header">
 
-    <h2> {{ contactText?.text.header }} </h2>
+    <h2> {{ contactText.text.header }} </h2>
 
     <div class="container flex-row-around">
 

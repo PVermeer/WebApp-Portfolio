@@ -6,37 +6,33 @@
 
     <div class="spacer"></div>
 
-    <div #linkMatch appContentList [page]="page" ref="list_links_match"></div>
-    <div #links appContentList [page]="page" ref="list_links"></div>
-    <div #icons appContentList [page]="page" ref="list_icons"></div>
+    <div #titles appContentList [page]="page" ref="list_titles"></div>
 
-    <div *ngFor="let list of page.lists" [class.display-none]="list.ref !== 'list_headers'">
+    <div *ngFor="let title of titles.list.list; let i = index">
 
-      <div [id]="listItem" *ngFor="let listItem of list.list; let i = index" appAnimateInview="fadeIn">
-        <div class="flex-column-around-center">
+      <div [id]="title[0]" appAnimateInview="fadeIn" class="flex-column-around-center">
 
-          <h1 class="text-center"> {{ listItem }} </h1>
-          <div class="primary-color flex-row-around icon-container margin-hz-all">
+        <h1 class="text-center"> {{ title[0] }} </h1>
+        <div class="primary-color flex-row-around icon-container margin-hz-all">
 
-            <app-fa-icon *ngFor="let icon of icons.list.list[i] | commaToArray" [icon]="icon" size="60px"></app-fa-icon>
+          <app-fa-icon *ngFor="let icon of title[1] | commaToArray" [icon]="icon" size="60px"></app-fa-icon>
 
-          </div>
+        </div>
 
-          <div class="flex-row-around margin-hz-all">
-            <div *ngFor="let text of page.texts; let j = index" [class.display-none]="text.ref !== (i + 1).toLocaleString()" class="showcase-container">
+        <div class="flex-row-around margin-hz-all">
+          <div *ngFor="let text of page.texts; let j = index" [class.display-none]="text.ref !== (i + 1).toLocaleString()" class="showcase-container">
 
-              <h3 class="showcase-header">{{ text.header }}</h3>
+            <h3 class="showcase-header">{{ text.header }}</h3>
 
-              <h4 [innerHTML]="text.text" class="showcase-text"></h4>
+            <h4 [innerHTML]="text.text[0]" class="showcase-text"></h4>
 
-              <div *ngFor="let match of linkMatch.list.list; let k = index">
-                <a #clickLink [href]="links.list.list[k]" target="_blank"></a>
-                <mat-chip-list>
-                  <mat-chip color="accent" selected="true" *ngIf="match === text.header" (click)="clickLink.click()" class="cursor-pointer"> Learn more </mat-chip>
-                </mat-chip-list>
-              </div>
-
+            <div *ngIf="text.text[1]" >
+              <a #clickLink [href]="text.text[1]" target="_blank"></a>
+              <mat-chip-list>
+                <mat-chip color="accent" selected="true" (click)="clickLink.click()" class="cursor-pointer"> Learn more </mat-chip>
+              </mat-chip-list>
             </div>
+
           </div>
         </div>
         <br>

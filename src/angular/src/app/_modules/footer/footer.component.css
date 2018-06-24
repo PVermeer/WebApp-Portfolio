@@ -6,14 +6,14 @@
 }
 
 #footer {
-  height: 100px;
+  height: 50px;
   width: 95%;
   overflow: hidden;
   border-radius: 10px 10px 0 0;
 }
 
 #footer-text-container {
-  
+
 }
 
 .footer-header {

@@ -10,41 +10,40 @@ import { ContentService } from '../../content/content.service';
   styles: [`
 
   #contact-details {
-    width: 300px;
+    max-width: 350px;
   }
   .social-buttons {
     font-size: 50px;
   }
+  .image {
+  }
   .title {
     padding: 0;
     margin: 0;
+    letter-spacing: 1px;
+  }
+  .text {
+    font-weight: 400;
   }
   `]
 })
 export class ContactDetailsComponent implements OnInit, OnDestroy {
 
-  public page: ContentPageDocumentLean;
-  public infoPage: ContentPageDocumentLean;
-
   private subscriptions = new Subscription;
 
+  public infoPage: ContentPageDocumentLean;
+
   // Methods
-  public getImageId = (ref: string) => this.contentService.getImageId(ref, this.page);
+  public getImageId = (ref: string) => this.contentService.getImageId(ref, this.infoPage);
 
   // Life cycle
   constructor(
-    private sidenavService: SidenavService,
     private contentService: ContentService,
-  ) {
-  }
+    private sidenavservice: SidenavService,
+  ) { }
 
   ngOnInit() {
-    const contactPage = this.contentService.getContentPage('contact').subscribe(response => {
-      this.page = response;
-    });
-    this.subscriptions.add(contactPage);
-
-    const infoPage = this.sidenavService.infoPage$.subscribe(response => {
+    const infoPage = this.sidenavservice.infoPage$.subscribe(response => {
       this.infoPage = response;
     });
     this.subscriptions.add(infoPage);

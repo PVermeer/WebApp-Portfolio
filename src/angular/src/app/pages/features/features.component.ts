@@ -38,7 +38,7 @@ export class FeaturesComponent implements OnInit, OnDestroy {
 
       this.sidenavContent = [{
         title: this.page.info.title,
-        items: this.page.lists.find(x => x.ref === 'list_headers').list.map(y => ({ label: y, path: y }))
+        items: this.page.lists.find(x => x.ref === 'list_titles').list.map(y => ({ label: y[0], path: y[0] }))
       }];
 
     }, () => { }

@@ -23,6 +23,7 @@ import { MailService } from './services/mail.service';
 import { OverflowHideDirective } from './directives/overflow-hide.directive';
 import { SpaceToArrayPipe } from './pipes/space-to-array.pipe';
 import { CommaToArrayPipe } from './pipes/comma-to-array.pipe';
+import { FaIconComponent } from './fa-icon/fa-icon.component';
 
 const sharedModules = [
   CommonModule,
@@ -51,6 +52,7 @@ const sharedModules = [
     OverflowHideDirective,
     SpaceToArrayPipe,
     CommaToArrayPipe,
+    FaIconComponent,
   ],
   exports: [
     sharedModules,
@@ -65,6 +67,7 @@ const sharedModules = [
     OverflowHideDirective,
     SpaceToArrayPipe,
     CommaToArrayPipe,
+    FaIconComponent,
   ],
   providers: [
     SnackbarComponent, MailService
