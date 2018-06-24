@@ -6,7 +6,7 @@
 }
 
 #footer {
-  height: 50px;
+  height: 64px;
   width: 95%;
   overflow: hidden;
   border-radius: 10px 10px 0 0;
@@ -18,4 +18,8 @@
 
 .footer-header {
   margin: 10px 0 5px 0;
+}
+
+.footer-text {
+  opacity: 0.9;
 }
