@@ -1,19 +1,22 @@
 <mat-card id="contact-details" class="mat-elevation-z1">
 
-  <mat-card-header>
-    <mat-card-title>
-      <h3 class="title"> {{ page?.info.title }} </h3>
-    </mat-card-title>
-    <mat-card-subtitle> {{ page?.info.subtitle }} </mat-card-subtitle>
-  </mat-card-header>
-  <img mat-card-image [appViewImage]="getImageId('profile_pic')">
+  <img mat-card-image [appViewImage]="getImageId('profile_pic')" class="mat-elevation-z3 image">
+  <h3 #cardInfo appContentText [page]="infoPage" ref="profile_card" class="title text-center">
+    <b> {{ cardInfo.text.header }} </b>
+  </h3>
+  <h4 class="text-center primary-color">
+    <b> {{ cardInfo.text.text[1] }} </b>
+  </h4>
 
   <mat-card-content>
-    <p [innerHTML]="page?.info.text | convertLinebreaks"></p>
+    <p [innerHTML]="cardInfo.text.text[0] | convertLinebreaks" class="text-center text"></p>
   </mat-card-content>
 
-  <mat-card-actions>
-    <app-social-icons [page]="infoPage" ref="social_buttons" animation="ring" size="35px"></app-social-icons>
-  </mat-card-actions>
+  <br>
+  <div #cardIcons appContentList [page]="infoPage" ref="social_buttons" class="flex-row-around-center">
+    <a *ngFor="let icon of cardIcons.list.list" [href]="icon[1]" target="_blank">
+      <app-fa-icon mat-icon [icon]="icon[0]" size="35px" animation="ring"></app-fa-icon>
+    </a>
+  </div>
 
 </mat-card>

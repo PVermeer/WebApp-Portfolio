@@ -7,31 +7,27 @@
         <p id="lname-profile-pic">Vermeer</p>
       </div>
 
-      <div #introText class="columnblock" appContentText [page]="page" ref="text_intro">
-        <p [innerHTML]="introText.text.text | convertLinebreaks"></p>
+      <div class="columnblock">
+        <p [innerHTML]="introText.text.text[0] | convertLinebreaks"></p>
       </div>
 
       <h2>Vaardigheden</h2>
       <div class="flex-row-around-center">
 
         <div #codingTitles appContentList [page]="page" ref="coding_skill_titles" class="margin-hz">
-          <div #codingProgress appContentList [page]="page" ref="coding_skill_progress">
             <h3> {{ codingTitles.list.title }} </h3>
             <div *ngFor="let listItem of codingTitles.list.list; let i = index" class="progress-bar-wrapper">
-              <h5> {{ listItem }} </h5>
-              <app-progress-bar color="accent" [progress]="codingProgress.list.list[i]"></app-progress-bar>
+              <h5> {{ listItem[0] }} </h5>
+              <app-progress-bar color="accent" [progress]="listItem[1]"></app-progress-bar>
             </div>
-          </div>
         </div>
 
         <div #ictTitles appContentList [page]="page" ref="ict_skill_titles" class="margin-hz">
-          <div #ictProgress appContentList [page]="page" ref="ict_skill_progress">
             <h3> {{ ictTitles.list.title }} </h3>
             <div *ngFor="let listItem of ictTitles.list.list; let i = index" class="progress-bar-wrapper">
-              <h5> {{ listItem }} </h5>
-              <app-progress-bar color="accent" [progress]="ictProgress.list.list[i]"></app-progress-bar>
+              <h5> {{ listItem[0] }} </h5>
+              <app-progress-bar color="accent" [progress]="listItem[1]"></app-progress-bar>
             </div>
-          </div>
         </div>
 
       </div>
@@ -41,7 +37,7 @@
     </div>
   </section>
 
-  <section #experienceText appContentText [page]="page" ref="text_experience" [id]="experienceText.text.header" [ngStyle]="experienceBackground" class="white">
+  <section #experienceText appContentText [page]="page" ref="text_experience" [id]="experienceText.text.header" [ngStyle]="experienceBackground" class="white experience-background">
     <app-wave></app-wave>
 
     <div class="container flex-column-around" id="experience-container">
@@ -53,12 +49,12 @@
 
         <div class="max-width-500-all flex-column-around-center">
           <div>
-            <p [innerHTML]="experienceText.text.text | convertLinebreaks"></p>
+            <p [innerHTML]="experienceText.text.text[0] | convertLinebreaks"></p>
           </div>
 
           <q>{{ quotes.list.list[1] }}</q>
 
-          <div *ngIf="appInfo" #file appContentFile [page]="appInfo" ref="file_cv" class="flex-row-around">
+          <div #file appContentFile [page]="page" ref="file_cv" class="flex-row-around">
             <button mat-raised-button color="accent"> {{ file.file.title }} </button>
           </div>
         </div>

@@ -32,6 +32,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     title: 'Navigation',
     items: [
       { label: 'Home', path: 'home' },
+      { label: 'Features', path: 'features' },
       { label: 'About me', path: 'about' },
       { label: 'Contact', path: 'contact' },
     ],
@@ -49,7 +50,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     .pipe(map(result => result.matches));
 
   // Methods
-  public tabChange() {
+  public onRouterActivate() {
     document.getElementById('sidenav-content').scrollTo({ top: 0, behavior: 'instant' });
   }
 

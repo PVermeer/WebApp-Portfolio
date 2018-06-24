@@ -18,6 +18,7 @@ import { SharedModule } from './_modules/_shared/shared.module';
 import { VisualModule } from './_modules/_visual/visual.module';
 import { ContentModule } from './_modules/content/content.module';
 import { FooterComponent } from './_modules/footer/footer.component';
+import { FeaturesComponent } from './pages/features/features.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { FooterComponent } from './_modules/footer/footer.component';
     UserComponent,
     ErrorComponent,
     FooterComponent,
+    FeaturesComponent,
   ],
   imports: [
     BrowserModule,

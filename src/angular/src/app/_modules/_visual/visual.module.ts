@@ -13,17 +13,17 @@ import { ContentModule } from '../content/content.module';
     SharedModule,
     ContentModule,
   ],
-  exports: [
+  declarations: [
     ProgressBarComponent,
     TimelineComponent,
     WaveComponent,
     SocialIconsComponent,
   ],
-  declarations: [
+  exports: [
     ProgressBarComponent,
     TimelineComponent,
     WaveComponent,
-    SocialIconsComponent
+    SocialIconsComponent,
   ]
 })
 export class VisualModule { }
