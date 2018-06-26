@@ -1,4 +1,4 @@
-# WebApp Mean Template
+# WebApp Portfolio
 
 Personal Portfolio as a WebApp.
 
