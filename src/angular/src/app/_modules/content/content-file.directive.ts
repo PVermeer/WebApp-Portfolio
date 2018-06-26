@@ -66,7 +66,7 @@ export class ContentFileDirective implements OnChanges, AfterViewInit {
       }
 
       // On errors
-    }, (error) => { console.log(error); }
+    }, () => { }
     );
   }
 
