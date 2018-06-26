@@ -10,11 +10,9 @@
   $background: mat-color(map-get($theme, background), background);
   $foreground: mat-color(map-get($theme, foreground), text);
 
-  // General styles
   .primary-color {
     color: $primary;
   }
-
   .primary-background {
     color: $primary-text;
     background: $primary;
@@ -32,9 +30,16 @@
     color: $accent-text;
     background: $accent;
   }
-
   .accent-color {
     color: $accent;
+  }
+
+  .warn-background {
+    color: $warn-text;
+    background: $warn;
+  }
+  .warn-color {
+    color: $warn;
   }
 
   .primary-text {

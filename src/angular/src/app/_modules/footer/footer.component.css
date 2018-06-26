@@ -12,14 +12,12 @@
   border-radius: 10px 10px 0 0;
 }
 
-#footer-text-container {
-
-}
-
 .footer-header {
   margin: 10px 0 5px 0;
+  opacity: 0.9;
 }
 
 .footer-text {
+  margin: 0;
   opacity: 0.9;
 }

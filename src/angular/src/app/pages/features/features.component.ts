@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ContentPageDocumentLean } from '../../../../../server/database/models/content/content.types';
 import { SidenavService } from '../../sidenav/sidenav.service';
 import { MatToggle, MatToggleExp, SidenavContent } from '../../sidenav/sidenav.types';
 import { ContentService } from '../../_modules/content/content.service';
 import { SharedService } from '../../_modules/_shared/services/shared.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-features',
@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./features.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FeaturesComponent implements OnInit, OnDestroy {
+export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private subscriptions = new Subscription;
 
@@ -61,6 +61,12 @@ export class FeaturesComponent implements OnInit, OnDestroy {
     this.sidenavService.passSidenavContent(this.sidenavContent);
     this.sidenavService.passExpansionToggle(this.expansionToggle);
     this.sidenavService.passSidenavToggle(this.sidenavToggle);
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.sidenavService.checkForScrollHash();
+    }, 200);
   }
 
   ngOnDestroy() {

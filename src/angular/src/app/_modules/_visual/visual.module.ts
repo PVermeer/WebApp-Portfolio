@@ -6,6 +6,7 @@ import { TimelineComponent } from './timeline/timeline.component';
 import { WaveComponent } from './wave/wave.component';
 import { SocialIconsComponent } from './social-icons/social-icons.component';
 import { ContentModule } from '../content/content.module';
+import { ImpossibleTriangleCssComponent } from './impossible-triangle-css/impossible-triangle-css.component';
 
 @NgModule({
   imports: [
@@ -18,12 +19,14 @@ import { ContentModule } from '../content/content.module';
     TimelineComponent,
     WaveComponent,
     SocialIconsComponent,
+    ImpossibleTriangleCssComponent,
   ],
   exports: [
     ProgressBarComponent,
     TimelineComponent,
     WaveComponent,
     SocialIconsComponent,
+    ImpossibleTriangleCssComponent
   ]
 })
 export class VisualModule { }

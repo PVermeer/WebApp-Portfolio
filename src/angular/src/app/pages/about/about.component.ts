@@ -20,7 +20,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   public appInfo: ContentPageDocumentLean;
 
   // Sidenav config
-  private sidenavToggle: MatToggle = 'open';
+  private sidenavToggle: MatToggle = 'close';
   private expansionToggle: MatToggleExp = 'open';
   public page: ContentPageDocumentLean;
 

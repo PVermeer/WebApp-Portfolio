@@ -46,8 +46,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   public isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(map(result => result.matches));
-  public isMobile$: Observable<boolean> = this.breakpointObserver.observe([Breakpoints.Handset, Breakpoints.Tablet])
-    .pipe(map(result => result.matches));
 
   // Methods
   public onRouterActivate() {

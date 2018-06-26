@@ -49,18 +49,24 @@ export class ContentFileDirective implements OnChanges, AfterViewInit {
 
     this.contentService.getFile(this.id).subscribe(response => {
 
-      const url = window.URL.createObjectURL(response);
-      const a = document.createElement('a');
-      document.body.appendChild(a);
-      a.setAttribute('style', 'display: none');
-      a.href = url;
-      a.download = this.filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
+      // Fix for edge
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(response, this.filename);
+      } else {
+
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        a.href = url;
+        a.download = this.filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+      }
 
       // On errors
-    }, () => { }
+    }, (error) => { console.log(error); }
     );
   }
 

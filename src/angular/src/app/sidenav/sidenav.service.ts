@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { ContentPageDocumentLean } from '../../../../server/database/models/content/content.types';
 import { MatToggle, MatToggleExp, SidenavContent } from './sidenav.types';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
-})export class SidenavService {
+}) export class SidenavService {
 
   // Events
   private sidenavContentSource = new Subject<SidenavContent>();
@@ -41,5 +42,18 @@ import { MatToggle, MatToggleExp, SidenavContent } from './sidenav.types';
     const scrollToElement = document.getElementById(element);
     scrollToElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
   }
+  public checkForScrollHash() {
+    const hashSplit = this.router.url.split('#');
+
+    if (hashSplit.length > 1) {
+      const hash = decodeURI(hashSplit[1]);
+      this.scrollIntoView(hash);
+    }
+  }
+
+  constructor(
+    private router: Router,
+  ) { }
+
 
 }

@@ -24,6 +24,8 @@ import { OverflowHideDirective } from './directives/overflow-hide.directive';
 import { SpaceToArrayPipe } from './pipes/space-to-array.pipe';
 import { CommaToArrayPipe } from './pipes/comma-to-array.pipe';
 import { FaIconComponent } from './fa-icon/fa-icon.component';
+import { RemoveSpacesPipe } from './pipes/remove-spaces.pipe';
+import { FilterArrayPipe } from './pipes/filter-array.pipe';
 
 const sharedModules = [
   CommonModule,
@@ -53,6 +55,8 @@ const sharedModules = [
     SpaceToArrayPipe,
     CommaToArrayPipe,
     FaIconComponent,
+    RemoveSpacesPipe,
+    FilterArrayPipe,
   ],
   exports: [
     sharedModules,
@@ -68,6 +72,8 @@ const sharedModules = [
     SpaceToArrayPipe,
     CommaToArrayPipe,
     FaIconComponent,
+    RemoveSpacesPipe,
+    FilterArrayPipe
   ],
   providers: [
     SnackbarComponent, MailService

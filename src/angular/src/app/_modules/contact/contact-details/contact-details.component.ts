@@ -10,7 +10,7 @@ import { ContentService } from '../../content/content.service';
   styles: [`
 
   #contact-details {
-    max-width: 350px;
+    max-width: 320px;
   }
   .social-buttons {
     font-size: 50px;

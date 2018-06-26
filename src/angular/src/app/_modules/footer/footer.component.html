@@ -1,9 +1,9 @@
 <div id="footer-container" class="flex-column-around-center">
-  <div id="footer" class="flex-column">
+  <div id="footer" class="flex-column primary-background-gradient">
     <div id="footer-text-container" class="container flex-row-around nowrap">
 
       <div *ngFor="let item of appInfo?.texts" class="margin-hz-all" [class.display-none]="item.ref !== 'text_footer'">
-        <h4 class="footer-header footer-text">
+        <h4 class="footer-header">
           <b> {{ item.header }} </b>
         </h4>
         <p [innerHTML]="item.text[0] | convertLinebreaks" class="footer-text"></p>

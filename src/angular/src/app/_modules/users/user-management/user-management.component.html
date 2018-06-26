@@ -27,7 +27,7 @@
   <mat-form-field>
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search" [(ngModel)]="searchInput">
     <button mat-button *ngIf="searchInput" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
-      <mat-icon>close</mat-icon>
+      <app-fa-icon icon="fas times" size="15px" class="opacity-7"></app-fa-icon>
     </button>
   </mat-form-field>
 
@@ -35,8 +35,7 @@
 
     <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
-        <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
-          [indeterminate]="selection.hasValue() && !isAllSelected()">
+        <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()">
         </mat-checkbox>
       </th>
       <td mat-cell *matCellDef="let row">

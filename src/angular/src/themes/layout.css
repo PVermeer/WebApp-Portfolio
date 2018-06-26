@@ -79,11 +79,23 @@ section {
   height: 100%;
 }
 
+/* Text */
+.text-align-right {
+  text-align: right;
+}
+
 /* --------- Flex box ---------- */
 
 .flex1-all>*,
 .flex1 {
   flex: 1
+}
+
+.flex-start {
+  align-items: flex-start;
+}
+.flex-end {
+  align-items: flex-end;
 }
 
 .nowrap {
@@ -102,11 +114,6 @@ section {
 
 .row-reverse {
   flex-direction: row-reverse !important;
-}
-
-.flex-end-all>*,
-.flex-end {
-  align-self: flex-end;
 }
 
 @media all and (max-width: 600px) {
@@ -140,13 +147,6 @@ section {
   flex-flow: column;
   justify-content: space-around;
   align-items: center;
-}
-
-.flex-column-around-left {
-  display: flex;
-  flex-flow: column;
-  justify-content: space-around;
-  align-items: left;
 }
 
 .flex-column-between {
@@ -242,12 +242,6 @@ section {
   page-break-inside: avoid;
 }
 
-.column-nobreak-all>*,
-.column-nobreak {
-  page-break-inside: avoid;
-
-}
-
 /* -------------- Block ------------- */
 
 .block {
@@ -312,6 +306,8 @@ td.mat-cell {
   background: transparent !important;
 }
 
+/* -------------- General -------------- */
+
 /* Cursor settings */
 
 .mat-slide-toggle-label,
@@ -324,6 +320,13 @@ td.mat-cell {
 
 .cursor-pointer {
   cursor: pointer !important;
+}
+
+.opacity-7 {
+  opacity: 0.7;
+}
+.opacity-4 {
+  opacity: 0.4;
 }
 
 
@@ -342,4 +345,15 @@ td.mat-cell {
 .display-none {
   display: none !important;
   position: absolute;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+@media screen and (max-width: 600px) {
+  .scale {
+    transform: scale(0.7)
+  }
+
 }

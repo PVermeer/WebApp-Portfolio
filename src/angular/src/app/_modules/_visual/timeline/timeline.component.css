@@ -4,6 +4,7 @@
   padding: 10px;
   width: 100%;
   break-inside: avoid;
+  page-break-inside: avoid;
 }
 
 /* The actual timeline (the vertical ruler) */

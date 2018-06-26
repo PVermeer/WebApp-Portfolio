@@ -15,7 +15,7 @@
   <br>
   <div #cardIcons appContentList [page]="infoPage" ref="social_buttons" class="flex-row-around-center">
     <a *ngFor="let icon of cardIcons.list.list" [href]="icon[1]" target="_blank">
-      <app-fa-icon mat-icon [icon]="icon[0]" size="35px" animation="ring"></app-fa-icon>
+      <app-fa-icon [icon]="icon[0]" size="35px" animation="ring"></app-fa-icon>
     </a>
   </div>
 

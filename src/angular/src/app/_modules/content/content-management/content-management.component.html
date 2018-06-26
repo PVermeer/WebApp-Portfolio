@@ -62,8 +62,8 @@
                   <mat-form-field>
                     <span matPrefix>{{ n + 1 }} &nbsp;</span>
                     <input matInput [type]="page.info.typeList" [formControlName]="n" [placeholder]="page.info.placeholderList">
-                    <button type="button" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="infoRemovelistItem(i, n)">
-                      <mat-icon>close</mat-icon>
+                    <button type="button" matSuffix mat-icon-button aria-label="Clear" (click)="infoRemovelistItem(i, n)">
+                      <app-fa-icon icon="fas times" size="15px" class="opacity-7"></app-fa-icon>
                     </button>
                   </mat-form-field>
                 </div>
@@ -71,7 +71,7 @@
             </mat-card-content>
             <div class="flex-row-between button-margin-all">
               <button mat-fab type="button" (click)="infoAddListItem(i)" matTooltip="Add a new line" matTooltipShowDelay="500">
-                <mat-icon>list</mat-icon>
+                <app-fa-icon icon="fas list-ol" size="25px"></app-fa-icon>
               </button>
             </div>
           </mat-card>
@@ -96,7 +96,7 @@
                   </mat-card-title>
 
                   <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="textFieldRemove(i, j)" matTooltip="Remove this card" matTooltipPosition="above" matTooltipShowDelay="500">
-                    <mat-icon>delete</mat-icon>
+                    <app-fa-icon icon="fas trash" size="18px"></app-fa-icon>
                   </button>
                 </mat-card-header>
 
@@ -112,14 +112,14 @@
                         </mat-error>
                       </mat-form-field>
                       <button *ngIf="r === 0 && isDeveloper" type="button" mat-icon-button matSuffix (click)="textAddExtraItem(i, j)" matTooltip="Add an extra value field" matTooltipShowDelay="500">
-                        <app-fa-icon icon="fas plus" class="suffix-button"></app-fa-icon>
+                        <app-fa-icon icon="fas plus" class="opacity-7"></app-fa-icon>
                       </button>
 
                       <ng-template #nestedValue>
                         <mat-form-field class="extra-values">
                           <input matInput type="text" [placeholder]="'Extra value ' + r" [formControlName]="r" [value]="contentForm[i].get('texts').at(j).get('text').at(r).value">
-                          <button type="button" mat-icon-button matSuffix mat-icon-button aria-label="Clear" (click)="textRemoveExtraItem(i, j, r)">
-                            <mat-icon>close</mat-icon>
+                          <button type="button" matSuffix mat-icon-button aria-label="Clear" (click)="textRemoveExtraItem(i, j, r)">
+                            <app-fa-icon icon="fas times" size="15px" class="opacity-7"></app-fa-icon>
                           </button>
                         </mat-form-field>
                       </ng-template>
@@ -134,16 +134,18 @@
                     </mat-error>
                   </mat-form-field>
                 </mat-card-content>
+
                 <mat-card-footer *ngIf="isDeveloper">
                   <div class="flex-row-between-nowrap">
                     <button mat-icon-button type="button" (click)="moveItemBack(i, 'texts', j)" matTooltip="Move item back" matTooltipShowDelay="500">
-                      <mat-icon>chevron_left</mat-icon>
+                      <app-fa-icon icon="fas chevron-left" size="15px"></app-fa-icon>
                     </button>
                     <button mat-icon-button type="button" (click)="moveItemForward(i, 'texts', j)" matTooltip="Move item forward" matTooltipShowDelay="500">
-                      <mat-icon>chevron_right</mat-icon>
+                      <app-fa-icon icon="fas chevron-right" size="15px"></app-fa-icon>
                     </button>
                   </div>
                 </mat-card-footer>
+
               </mat-card>
             </div>
           </div>
@@ -172,7 +174,7 @@
                   </mat-card-title>
 
                   <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="listFieldRemove(i, l)" matTooltip="Remove this card" matTooltipPosition="above" matTooltipShowDelay="500">
-                    <mat-icon>delete</mat-icon>
+                    <app-fa-icon icon="fas trash" size="18px"></app-fa-icon>
                   </button>
                 </mat-card-header>
 
@@ -185,11 +187,11 @@
                           <span matPrefix>{{ m + 1 }} &nbsp;</span>
                           <input matInput type="text" [placeholder]="list.placeholderItem" [formControlName]="u" [value]="contentForm[i].get('lists').at(l).get('list').at(m).at(u).value">
 
-                          <button type="button" mat-icon-button matSuffix mat-icon-button aria-label="Clear" (click)="listRemoveItem(i, l, m)">
-                            <mat-icon>close</mat-icon>
+                          <button type="button" matSuffix mat-icon-button aria-label="Clear" (click)="listRemoveItem(i, l, m)">
+                            <app-fa-icon icon="fas times" size="15px" class="opacity-7"></app-fa-icon>
                           </button>
                           <button *ngIf="u === 0 && isDeveloper" type="button" mat-icon-button matSuffix (click)="listAddExtraItem(i, l, m)" matTooltip="Add an extra value field" matTooltipShowDelay="500">
-                            <app-fa-icon icon="fas plus" class="suffix-button"></app-fa-icon>
+                            <app-fa-icon icon="fas plus" size="15px" class="opacity-7"></app-fa-icon>
                           </button>
                         </mat-form-field>
 
@@ -197,7 +199,7 @@
                           <mat-form-field class="extra-values">
                             <input matInput type="text" [placeholder]="'Extra value ' + u" [formControlName]="u" [value]="contentForm[i].get('lists').at(l).get('list').at(m).at(u).value">
                             <button type="button" mat-icon-button matSuffix aria-label="Clear" (click)="listRemoveExtraItem(i, l, m, u)">
-                              <mat-icon>close</mat-icon>
+                              <app-fa-icon icon="fas times" size="15px" class="opacity-7"></app-fa-icon>
                             </button>
                           </mat-form-field>
                         </ng-template>
@@ -215,16 +217,17 @@
 
                 <div class="flex-row-between button-margin-all">
                   <button mat-fab type="button" (click)="listAddItem(i, l)" matTooltip="Add a new line" matTooltipShowDelay="500">
-                    <mat-icon>list</mat-icon>
+                    <app-fa-icon icon="fas list-ol" size="25px"></app-fa-icon>
                   </button>
                 </div>
+
                 <mat-card-footer *ngIf="isDeveloper">
                   <div class="flex-row-between-nowrap">
                     <button mat-icon-button type="button" (click)="moveItemBack(i, 'lists', l)" matTooltip="Move item back" matTooltipShowDelay="500">
-                      <mat-icon>chevron_left</mat-icon>
+                      <app-fa-icon icon="fas chevron-left" size="15px"></app-fa-icon>
                     </button>
                     <button mat-icon-button type="button" (click)="moveItemForward(i, 'lists', l)" matTooltip="Move item forward" matTooltipShowDelay="500">
-                      <mat-icon>chevron_right</mat-icon>
+                      <app-fa-icon icon="fas chevron-right" size="15px"></app-fa-icon>
                     </button>
                   </div>
                 </mat-card-footer>
@@ -261,7 +264,7 @@
                     </mat-card-title>
 
                     <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="imageFieldRemove(i, k)" matTooltip="Remove this card" matTooltipPosition="above" matTooltipShowDelay="500">
-                      <mat-icon>delete</mat-icon>
+                      <app-fa-icon icon="fas trash" size="18px"></app-fa-icon>
                     </button>
                   </mat-card-header>
 
@@ -270,7 +273,7 @@
                     <img mat-card-image [appViewImage]="image.image" *ngIf="image.image; else noImage" [class.image-grey]="imgFileInput.files[0]">
 
                     <ng-template #noImage>
-                      <mat-icon class="icon-big" color="warn">broken_image</mat-icon>
+                      <app-fa-icon class="warn-color" icon="fas window-close" size="50px"></app-fa-icon>
                     </ng-template>
 
                     <br>
@@ -292,10 +295,10 @@
 
                     <div class="flex-row-between button-margin-all">
                       <button mat-fab type="button" (click)="imgFileInput.click()" matTooltip="Select a new image" matTooltipShowDelay="500">
-                        <mat-icon>add_photo_alternate</mat-icon>
+                        <app-fa-icon icon="fas images" size="25px"></app-fa-icon>
                       </button>
                       <button mat-fab type="button" *ngIf="imgFileInput.value" (click)="imgFileInput.value = null; contentForm[i].get('images').at(k).get('imageUpdate').setValue(null)" matTooltip="Remove new image" matTooltipShowDelay="500">
-                        <mat-icon>replay</mat-icon>
+                        <app-fa-icon icon="fas undo" size="25px"></app-fa-icon>
                       </button>
                     </div>
                   </div>
@@ -308,10 +311,10 @@
                   <mat-card-footer *ngIf="isDeveloper">
                     <div class="flex-row-between-nowrap">
                       <button mat-icon-button type="button" (click)="moveItemBack(i, 'images', k)" matTooltip="Move item back" matTooltipShowDelay="500">
-                        <mat-icon>chevron_left</mat-icon>
+                        <app-fa-icon icon="fas chevron-left" size="15px"></app-fa-icon>
                       </button>
                       <button mat-icon-button type="button" (click)="moveItemForward(i, 'images', k)" matTooltip="Move item forward" matTooltipShowDelay="500">
-                        <mat-icon>chevron_right</mat-icon>
+                        <app-fa-icon icon="fas chevron-right" size="15px"></app-fa-icon>
                       </button>
                     </div>
                   </mat-card-footer>
@@ -348,16 +351,16 @@
                     </mat-card-title>
 
                     <button *ngIf="isDeveloper" type="button" mat-icon-button (click)="fileFieldRemove(i, l)" matTooltip="Remove this card" matTooltipPosition="above" matTooltipShowDelay="500">
-                      <mat-icon>delete</mat-icon>
+                      <app-fa-icon icon="fas trash" size="18px"></app-fa-icon>
                     </button>
                   </mat-card-header>
 
                   <br>
                   <div class="flex-column-between-center">
-                    <mat-icon class="icon-big" *ngIf="file.file; else noFile" [class.image-grey]="fileInput.files[0]">insert_drive_file</mat-icon>
+                    <app-fa-icon icon="fas file" size="50px" *ngIf="file.file; else noFile"></app-fa-icon>
 
                     <ng-template #noFile>
-                      <mat-icon class="icon-big" color="warn">broken_image</mat-icon>
+                      <app-fa-icon icon="fas window-close" size="50px" class="warn-color" [class.image-grey]="fileInput.files[0]"></app-fa-icon>
                     </ng-template>
                   </div>
 
@@ -376,10 +379,10 @@
 
                     <div class="flex-row-between button-margin-all">
                       <button mat-fab type="button" (click)="fileInput.click()" matTooltip="Select a new file" matTooltipShowDelay="500">
-                        <mat-icon>note_add</mat-icon>
+                        <app-fa-icon icon="fas upload" size="25px"></app-fa-icon>
                       </button>
                       <button mat-fab type="button" *ngIf="fileInput.value" (click)="fileInput.value = null; contentForm[i].get('files').at(l).get('fileUpdate').setValue(null)" matTooltip="Remove new image" matTooltipShowDelay="500">
-                        <mat-icon>replay</mat-icon>
+                        <app-fa-icon icon="fas undo" size="25px"></app-fa-icon>
                       </button>
                     </div>
                   </div>
@@ -392,10 +395,10 @@
                   <mat-card-footer *ngIf="isDeveloper">
                     <div class="flex-row-between-nowrap">
                       <button mat-icon-button type="button" (click)="moveItemBack(i, 'files', l)" matTooltip="Move item back" matTooltipShowDelay="500">
-                        <mat-icon>chevron_left</mat-icon>
+                        <app-fa-icon icon="fas chevron-left" size="15px"></app-fa-icon>
                       </button>
                       <button mat-icon-button type="button" (click)="moveItemForward(i, 'files', l)" matTooltip="Move item forward" matTooltipShowDelay="500">
-                        <mat-icon>chevron_right</mat-icon>
+                        <app-fa-icon icon="fas chevron-right" size="15px"></app-fa-icon>
                       </button>
                     </div>
                   </mat-card-footer>

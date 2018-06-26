@@ -1,42 +1,51 @@
 <div class="primary-background-gradient top-background"></div>
 <section>
   <div class="container">
-    <div class="flex-column-around-left primary-text header-text">
-      <div>
-        <div class="flex-row-left-center nowrap">
-          <mat-icon class="header-icon">chevron_left</mat-icon>
-          <h1 id="title"> {{ page.info.title }} </h1>
-          <mat-icon class="header-icon">chevron_right</mat-icon>
-        </div>
+    <br>
+    <div class="flex-row-center nowrap">
+      <div class="primary-text header-text">
+
+        <h1> {{ page.info.title }} </h1>
         <h3> {{ page.info.subtitle }} </h3>
+
       </div>
     </div>
 
-    <div class="spacer"></div>
+    <div class="flex-column-around-center">
+      <app-impossible-triangle-css class="scale"></app-impossible-triangle-css>
+    </div>
 
-    <div id="showcase-container">
-      <div *ngFor="let text of page.texts; let i = index" appAnimateInview="fadeIn">
-        <div class="flex-row-around-center" [class.row-reverse]="isEven(i + 1)">
-          <div class="flex-column-around-center">
-            <h3 [id]="text.header" class="showcase-text">{{ text.header }}</h3>
-            <img [appViewImage]="getImageId(text.ref)" class="showcase-image">
-          </div>
-          <div class="flex-column-around-center">
-            <h4 class="showcase-text">{{ text.text }}</h4>
-            <div *ngFor="let list of page.lists">
-              <ul *ngIf="list.ref === text.ref">
-                <li *ngFor="let item of list.list">
-                  <h4 class="showcase-text"> {{ item }} </h4>
-                </li>
-              </ul>
-            </div>
-          </div>
+    <div *ngFor="let text of page.texts; let i = index" appAnimateInview="fadeIn">
+
+      <div class="flex-row-around-center showcase-container" [class.row-reverse]="isEven(i + 1)">
+        <div class="flex-column-around-center">
+
+          <h3 [id]="text.header" class="showcase-text">{{ text.header }}</h3>
+          <img [appViewImage]="getImageId(text.ref)" class="showcase-image">
+
         </div>
-        <br>
-        <br>
-        <mat-divider></mat-divider>
-        <br>
+        <div class="flex-column-around-center">
+
+          <h4 *ngIf="text.text[0] !== ''; else list" class="showcase-text"> {{ text.text[0] }} </h4>
+
+          <ng-template #list>
+            <ul>
+              <li *ngFor="let item of text.text; let j = index" [class.display-none]="j === 0">
+                <h4 class="showcase-text"> {{ item }} </h4>
+              </li>
+            </ul>
+          </ng-template>
+
+          <mat-chip-list>
+            <mat-chip color="accent" selected="true" [routerLink]="['/features']" [fragment]="text.header" class="cursor-pointer"> More info </mat-chip>
+          </mat-chip-list>
+
+        </div>
       </div>
+      <br>
+      <br>
+      <mat-divider></mat-divider>
+      <br>
     </div>
   </div>
 </section>

@@ -20,26 +20,27 @@
         </div>
 
         <div class="flex-row-around margin-hz-all">
-          <div *ngFor="let text of page.texts; let j = index" [class.display-none]="text.ref !== (i + 1).toLocaleString()" class="showcase-container">
+          <div *ngFor="let text of page.texts | filterArray:{ objectPath: 'ref', filterValue: (i + 1).toLocaleString() }; let j = index" class="showcase-container">
 
-            <h3 class="showcase-header">{{ text.header }}</h3>
+              <h3 class="showcase-header">{{ text.header }}</h3>
 
-            <h4 [innerHTML]="text.text[0]" class="showcase-text"></h4>
+              <h4 [innerHTML]="text.text[0]" class="showcase-text"></h4>
 
-            <div *ngIf="text.text[1]" >
-              <a #clickLink [href]="text.text[1]" target="_blank"></a>
-              <mat-chip-list>
-                <mat-chip color="accent" selected="true" (click)="clickLink.click()" class="cursor-pointer"> Learn more </mat-chip>
-              </mat-chip-list>
-            </div>
+              <div *ngIf="text.text[1]">
+                <a #clickLink [href]="text.text[1]" target="_blank"></a>
+                <mat-chip-list>
+                  <mat-chip color="accent" selected="true" (click)="clickLink.click()" class="cursor-pointer"> Learn more </mat-chip>
+                </mat-chip-list>
+              </div>
 
           </div>
         </div>
-        <br>
-        <br>
-        <mat-divider></mat-divider>
-        <br>
       </div>
+      <br>
+      <br>
+      <mat-divider></mat-divider>
+      <br>
+      <br>
     </div>
   </div>
 </section>

@@ -35,7 +35,7 @@ export class FaIconComponent implements OnInit {
 
   @Input() icon: string;
   @Input() size?: string;
-  @Input() animation: 'ring';
+  @Input() animation?: 'ring';
 
   private showIcon() {
     if (!this.icon) { return; }
