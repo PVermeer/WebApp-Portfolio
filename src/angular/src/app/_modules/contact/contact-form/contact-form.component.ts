@@ -9,7 +9,13 @@ import { MailService } from '../../_shared/services/mail.service';
 @Component({
   selector: 'app-contact-form',
   templateUrl: './contact-form.component.html',
-  styles: [''],
+  styles: [`
+
+  #contact-form {
+    min-width: 300px;
+  }
+
+  `],
 })
 export class ContactFormComponent {
 

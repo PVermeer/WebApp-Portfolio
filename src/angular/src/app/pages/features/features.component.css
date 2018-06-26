@@ -1,0 +1,42 @@
+.spacer {
+  height: 10vh;
+}
+
+.header-text {
+  height: 20vh;
+}
+
+.header-icon {
+  font-size: 35px;
+  width: 35px;
+  height: 35px;
+}
+
+.margin>* {
+  margin: 0 5px;
+}
+
+.showcase-image-container {
+  height: 160px;
+  overflow: hidden;
+  margin: 20px 0 40px 0;
+}
+.showcase-image {
+  margin:-21.875% 0;
+}
+
+.showcase-text {
+  max-width: 300px;
+}
+
+.showcase-header {
+  padding: 0 !important;
+}
+
+.showcase-container {
+  margin-bottom: 50px;
+}
+
+.icon-container {
+  margin-bottom: 80px;
+}

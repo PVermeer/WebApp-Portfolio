@@ -42,7 +42,7 @@ export interface ContentImageExt extends ContentImage, Reference {
   placeholderTitle: string;
   typeTitle: string;
   alertTitle: string;
-  alertFile: string;
+  alertImage: string;
 }
 export interface ContentFileExt extends ContentFile, Reference {
   placeholderTitle: string;

@@ -1,6 +1,6 @@
 {
-  "name": "web-app-mean-template",
-  "version": "1.2.0",
+  "name": "portfolio-pimvermeer",
+  "version": "1.0.0",
   "main": "./dist/server/server.js",
   "license": "MIT",
   "private": true,

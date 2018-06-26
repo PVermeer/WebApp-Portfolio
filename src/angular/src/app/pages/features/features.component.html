@@ -1,0 +1,47 @@
+<section>
+  <div class="flex-row-center">
+    <h2> {{ page.info.title }} </h2>
+  </div>
+  <div class="container">
+
+    <div class="spacer"></div>
+
+    <div #titles appContentList [page]="page" ref="list_titles"></div>
+
+    <div *ngFor="let title of titles.list.list; let i = index">
+
+      <div [id]="title[0]" appAnimateInview="fadeIn" class="flex-column-around-center">
+
+        <h1 class="text-center"> {{ title[0] }} </h1>
+        <div class="primary-color flex-row-around icon-container margin-hz-all">
+
+          <app-fa-icon *ngFor="let icon of title[1] | commaToArray" [icon]="icon" size="60px"></app-fa-icon>
+
+        </div>
+
+        <div class="flex-row-around margin-hz-all">
+          <div *ngFor="let text of page.texts | filterArray:{ objectPath: 'ref', filterValue: (i + 1).toLocaleString() }; let j = index" class="showcase-container">
+
+              <h3 class="showcase-header">{{ text.header }}</h3>
+
+              <h4 [innerHTML]="text.text[0]" class="showcase-text"></h4>
+
+              <div *ngIf="text.text[1]">
+                <a #clickLink [href]="text.text[1]" target="_blank"></a>
+                <mat-chip-list>
+                  <mat-chip color="accent" selected="true" (click)="clickLink.click()" class="cursor-pointer"> Learn more </mat-chip>
+                </mat-chip-list>
+              </div>
+
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <mat-divider></mat-divider>
+      <br>
+      <br>
+    </div>
+  </div>
+</section>
+<app-footer></app-footer>

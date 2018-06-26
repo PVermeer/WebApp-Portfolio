@@ -1,38 +1,55 @@
 @import '~@angular/material/theming';
+@import '~@fortawesome/fontawesome-free-webfonts/css/fontawesome.css';
+@import '~@fortawesome/fontawesome-free-webfonts/css/fa-brands.css';
+@import '~@fortawesome/fontawesome-free-webfonts/css/fa-regular.css';
+@import '~@fortawesome/fontawesome-free-webfonts/css/fa-solid.css';
 
 // Import general stylesheets
 @import 'text.css';
 @import 'layout.css';
 @import '~animate.css/animate.css';
 @import 'elevation.scss';
+@import 'styles.scss';
 
 // Import custom component theme files
 @import '../app/sidenav/sidenav.theme';
 @import '../app/_modules/_shared/components/snackbar/snackbar.theme';
-@import '../app/_modules/users/user-management/user-management.theme.scss';
+@import '../app/_modules/users/user-management/user-management.theme';
+@import '../app/_modules/_visual/progress-bar/progress-bar.theme';
+@import '../app/_modules/_visual/timeline/timeline.theme';
+@import '../app/_modules/_visual/wave/wave.theme';
+@import '../app/_modules/_visual/impossible-triangle-css/impossible-triangle-css.theme';
+@import '../app/_modules/footer/footer.theme';
 
 // Include mat-core (only once)
 @include mat-core();
 
 // Primary theme
-$primary-theme-primary: mat-palette($mat-indigo);
-$primary-theme-accent:  mat-palette($mat-deep-orange, A200, A100, A400);
-$primary-theme-warn:    mat-palette($mat-red, 900);
+// Color: default, lighter, and darker
+$primary-theme-primary: mat-palette($mat-light-blue, 900, 700);
+$primary-theme-accent: mat-palette($mat-deep-orange, 800, 600, 900);
+$primary-theme-warn: mat-palette($mat-red, 900);
 
 $primary-theme: mat-light-theme($primary-theme-primary, $primary-theme-accent, $primary-theme-warn);
 
 // Secondary theme
-$secondary-theme-primary: mat-palette($mat-blue);
-$secondary-theme-accent:  mat-palette($mat-amber, A200, A100, A400);
-$secondary-theme-warn:    mat-palette($mat-deep-orange);
+$secondary-theme-primary: mat-palette($mat-cyan, 800, 600, 900);
+$secondary-theme-accent: mat-palette($mat-amber, A200, A100, A400);
+$secondary-theme-warn: mat-palette($mat-deep-orange);
 
-$secondary-theme:   mat-dark-theme($secondary-theme-primary, $secondary-theme-accent, $secondary-theme-warn);
+$secondary-theme: mat-dark-theme($secondary-theme-primary, $secondary-theme-accent, $secondary-theme-warn);
 
 // Include custom component theme files
 @mixin custom-theme($theme) {
+  @include styles($theme);
   @include sidenav($theme);
   @include snackbar($theme);
   @include userManagement($theme);
+  @include progressBar($theme);
+  @include timeline($theme);
+  @include wave-top($theme);
+  @include footer($theme);
+  @include impossibleTriangle($theme);
 }
 
 // Default theme (no class applied)
@@ -43,4 +60,5 @@ $secondary-theme:   mat-dark-theme($secondary-theme-primary, $secondary-theme-ac
 .secondary-theme {
   @include angular-material-theme($secondary-theme);
   @include custom-theme($secondary-theme);
+
 }

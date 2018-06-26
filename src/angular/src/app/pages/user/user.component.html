@@ -1,12 +1,37 @@
 <section>
   <div class="container">
     <div class="flex-row-left-start">
-      <mat-card *ngIf="isAdmin" id="admin-card">
-        <app-admin></app-admin>
-      </mat-card>
-      <mat-card id="user-card">
-        <app-user-details></app-user-details>
-      </mat-card>
+
+      <div *ngIf="isAdmin" id="admin-card">
+        <mat-card>
+          <mat-card-header>
+            <h3>Admin panel</h3>
+          </mat-card-header>
+          <br>
+          <mat-tab-group>
+            <mat-tab label="User management">
+              <br>
+              <app-user-management></app-user-management>
+            </mat-tab>
+
+            <mat-tab label="Content management">
+              <br>
+              <app-content-management></app-content-management>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-card>
+      </div>
+
+      <div id="user-card">
+        <mat-card>
+          <mat-card-header>
+            <h3>User details</h3>
+          </mat-card-header>
+
+          <app-user-details></app-user-details>
+
+        </mat-card>
+      </div>
     </div>
   </div>
 </section>

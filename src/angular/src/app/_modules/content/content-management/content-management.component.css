@@ -4,7 +4,12 @@
   flex-basis: 50%;
 }
 
-.image-card, .file-card {
+.flex-basis-1>* {
+  flex-basis: 100%;
+}
+
+.image-card,
+.file-card {
   max-width: 300px;
 }
 
@@ -27,4 +32,8 @@ img {
   max-width: 300px;
   width: auto;
   height: auto;
+}
+
+.extra-values {
+  padding-left: 10%;
 }

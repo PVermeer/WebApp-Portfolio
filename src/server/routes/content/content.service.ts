@@ -52,6 +52,9 @@ export async function contentPageUpdate(req: Request) {
     return pageUpdateSuccess;
 
   } catch (error) {
+    if (!uploadImageArray) { uploadImageArray = []; }
+    if (!uploadFileArray) { uploadFileArray = []; }
+
     await updateContentErrorHandler(uploadImageArray.concat(uploadFileArray));
     throw error;
   }
@@ -86,5 +89,4 @@ export function getPage(req: Request) {
   const { page } = req.query;
 
   return findContentPageLean({ page });
-
 }

@@ -20,8 +20,8 @@ export class PagePathHighlightDirective implements OnInit, OnDestroy {
     const targetElement = document.getElementById(this.appPagePathHighlight);
     if (!targetElement) { return; }
 
-    const targetElementRec = targetElement.getBoundingClientRect();
-    const contentDivRec = this.contentDiv.getBoundingClientRect();
+    const targetElementRec: ClientRect = targetElement.getBoundingClientRect();
+    const contentDivRec: ClientRect = this.contentDiv.getBoundingClientRect();
 
     const elementTop = targetElementRec.top - contentDivRec.top;
     const elementHeight = targetElementRec.height;

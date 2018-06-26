@@ -1,0 +1,23 @@
+
+#footer-container {
+  margin: 40px 0 0 0;
+  padding: 0 10px;
+  align-self: center;
+}
+
+#footer {
+  height: 64px;
+  width: 95%;
+  overflow: hidden;
+  border-radius: 10px 10px 0 0;
+}
+
+.footer-header {
+  margin: 10px 0 5px 0;
+  opacity: 0.9;
+}
+
+.footer-text {
+  margin: 0;
+  opacity: 0.9;
+}

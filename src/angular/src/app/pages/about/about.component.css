@@ -1,0 +1,53 @@
+.container {
+  max-width: 1080px;
+}
+
+#experience-container {
+  max-width: 1450px;
+}
+.experience-background {
+  background-size: cover;
+  background-position: center bottom;
+}
+
+#timeline-container {
+  max-width: 890px;
+}
+
+#profile-pic {
+  margin: 20px auto 0 auto;
+  height: 150px;
+  filter: contrast(90%);
+}
+
+#fname-profile-pic {
+  font-size: 26px;
+  border: none;
+  margin: 0 0 -5px 0;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+#lname-profile-pic {
+  margin: 0 0 20px 0;
+  font-weight: 400;
+  line-height: 1;
+  text-transform: lowercase;
+  font-size: 20px;
+  text-align: center;
+}
+
+.progress-bar-wrapper {
+  height: 45px;
+  margin: 10px auto;
+  width: 50%;
+  min-width: 300px;
+}
+
+.white {
+  color: white;
+}
+

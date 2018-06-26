@@ -1,13 +1,22 @@
-<mat-card-content>
-  <div class="flex-column-between-center">
-    <div class="flex-row-around">
-      <h3>Something</h3>
-    </div>
-    <div class="flex-row-around">
-      <h3>Something else</h3>
-    </div>
-    <div class="flex-row-around">
-      <button mat-raised-button color="primary">Something</button>
-    </div>
+<mat-card id="contact-details" class="mat-elevation-z1">
+
+  <img mat-card-image [appViewImage]="getImageId('profile_pic')" class="mat-elevation-z3 image">
+  <h3 #cardInfo appContentText [page]="infoPage" ref="profile_card" class="title text-center">
+    <b> {{ cardInfo.text.header }} </b>
+  </h3>
+  <h4 class="text-center primary-color">
+    <b> {{ cardInfo.text.text[1] }} </b>
+  </h4>
+
+  <mat-card-content>
+    <p [innerHTML]="cardInfo.text.text[0] | convertLinebreaks" class="text-center text"></p>
+  </mat-card-content>
+
+  <br>
+  <div #cardIcons appContentList [page]="infoPage" ref="social_buttons" class="flex-row-around-center">
+    <a *ngFor="let icon of cardIcons.list.list" [href]="icon[1]" target="_blank">
+      <app-fa-icon [icon]="icon[0]" size="35px" animation="ring"></app-fa-icon>
+    </a>
   </div>
-</mat-card-content>
+
+</mat-card>

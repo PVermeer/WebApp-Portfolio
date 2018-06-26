@@ -6,7 +6,6 @@ import { GridFSBucket } from 'mongodb';
 
 import { config, appRoot } from '../services/server.service';
 import { ErrorMessage } from '../types/types';
-import { app } from '../server';
 
 // ---------------- Mongoose connection ---------------
 
@@ -41,8 +40,6 @@ connection.on('open', () => {
     .then(result => {
       if (result.authInfo.authenticatedUserRoles[0].role === 'read') { readOnlyFlag = true; }
     });
-
-  app.emit('ready');
 });
 
 connection.on('error', err => {
@@ -52,6 +49,7 @@ connection.on('error', err => {
 
 connection.on('disconnected', () => {
   connectionFlag = false;
+  connectWithRetry();
   console.log('Mongoose default connection disconnected');
 });
 
