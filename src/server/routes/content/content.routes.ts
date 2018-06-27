@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { dbConnectionError, upload } from '../../database/connection';
+import { dbConnectionError, dbReadOnlyError, upload } from '../../database/connection';
 import { userTypes } from '../../database/models/users/user.schema';
 import { cacheJson, clearCache } from '../../services/cache-control.service';
 import { requiresUserAuth } from '../users/users.authentication';
@@ -19,6 +19,9 @@ router.get('/file', getFile);
 
 // Admin authentication
 router.get('/getpages', requiresUserAuth(401, userTypes.admin), contentPageGetAll);
+
+router.use(dbReadOnlyError);
+
 router.post('/updatepage',
   requiresUserAuth(401, userTypes.admin),
   clearCache,
