@@ -52,7 +52,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     document.getElementById('sidenav-content').scrollTo({ top: 0, behavior: 'instant' });
   }
 
-  public scrollTo(element: string) { this.sidenavService.scrollIntoView(element); }
+  public scrollTo(element: string) {
+    if (this.isHandset$) { this.drawer.close(); }
+    this.sidenavService.scrollIntoView(element);
+  }
 
   public toggleTheme(event: MatSlideToggle) { this.sidenavService.passThemeToggle(event.checked); }
 
@@ -73,20 +76,25 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   private toggleSidenav() {
     const subscription = this.sidenavService.sidenavToggle$.subscribe(sidenavToggle => {
-      setTimeout(() => {
-        switch (sidenavToggle) {
-          case 'open': this.drawer.open(); break;
-          case 'close': this.drawer.close(); break;
-          case 'toggle': this.drawer.toggle(); break;
-          default: this.drawer.open();
-        }
-      });
+
+      if (!this.isHandset$) {
+        setTimeout(() => {
+          switch (sidenavToggle) {
+            case 'open': this.drawer.open(); break;
+            case 'close': this.drawer.close(); break;
+            case 'toggle': this.drawer.toggle(); break;
+            default: this.drawer.open();
+          }
+        });
+      } else { this.drawer.close(); }
     });
+
     this.subscriptions.add(subscription);
   }
 
   private toggleExpansions() {
     const subscription = this.sidenavService.expansionToggle$.subscribe(expansionToggle => {
+
       setTimeout(() => {
         if (expansionToggle === 'open') {
           this.expRoutedNav.forEach((child) => { child.open(); return; });
@@ -97,7 +105,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         if (expansionToggle === 'toggle') {
           this.expRoutedNav.forEach((child) => { child.toggle(); return; });
         }
-        if (expansionToggle === 'home') {
+        if (expansionToggle === 'home' || this.isHandset$) {
           this.expPageNav.open();
           return;
         }

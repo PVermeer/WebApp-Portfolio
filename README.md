@@ -1,4 +1,4 @@
-# WebApp Mean Template
+# WebApp Portfolio
 
 Personal Portfolio as a WebApp.
 
@@ -8,3 +8,6 @@ Personal Portfolio as a WebApp.
 - MongoDB 3
 - Angular v6
 - ReactiveX/rxjs
+
+# ToDo
+- Boost performance *ngFor
