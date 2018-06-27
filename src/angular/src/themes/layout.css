@@ -172,7 +172,6 @@ section {
 
 .flex-row-center {
   display: flex;
-  height: 100%;
   flex-flow: row wrap;
   justify-content: center;
   align-items: stretch;
