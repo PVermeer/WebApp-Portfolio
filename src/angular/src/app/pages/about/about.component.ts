@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ContentPageDocumentLean } from '../../../../../server/database/models/content/content.types';
@@ -10,6 +10,7 @@ import { ContentService } from '../../_modules/content/content.service';
   selector: 'app-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AboutComponent implements OnInit, OnDestroy {
 
@@ -49,7 +50,10 @@ export class AboutComponent implements OnInit, OnDestroy {
     const experienceBackgroundId = this.getImageId('timeline_background');
     this.contentService.getImage(experienceBackgroundId).subscribe(response => {
       const reader = new FileReader();
-      reader.onload = () => this.experienceBackground = { 'background-image': 'URL(' + reader.result + ')' };
+      reader.onload = () => {
+        this.experienceBackground = { 'background-image': 'URL(' + reader.result + ')' };
+        this.changeDetectorRef.detectChanges();
+      };
       reader.readAsDataURL(response);
       // On errors
     }, () => { });
@@ -60,6 +64,7 @@ export class AboutComponent implements OnInit, OnDestroy {
     private sidenavService: SidenavService,
     private contentService: ContentService,
     private route: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
   }
 

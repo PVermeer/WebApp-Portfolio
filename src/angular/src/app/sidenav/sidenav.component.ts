@@ -1,9 +1,9 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatExpansionPanel, MatSidenav, MatSlideToggle } from '@angular/material';
-import { Router, RouterEvent, RouterOutlet } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { map, throttleTime } from 'rxjs/operators';
+import { NavigationEnd, Router, RouterEvent, RouterOutlet } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { ContentPageDocumentLean } from '../../../../server/database/models/content/content.types';
 import { ContentService } from '../_modules/content/content.service';
 import { UserService } from '../_modules/users/user.service';
@@ -15,7 +15,8 @@ import { SidenavContent } from './sidenav.types';
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.css'],
-  animations: [fadeAnimation()]
+  animations: [fadeAnimation()],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavComponent implements OnInit, OnDestroy {
 
@@ -41,11 +42,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   // Variables
   public sidenavContent: SidenavContent;
   public isLoggedIn = false;
-  public isHome: boolean;
+  public isHome = true;
   public routerIsAnimating = true;
-
-  public isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-    .pipe(map(result => result.matches));
+  public isHandset: boolean;
 
   // Methods
   public onRouterActivate() {
@@ -53,7 +52,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   public scrollTo(element: string) {
-    if (this.isHandset$) { this.drawer.close(); }
+    if (this.isHandset) { this.drawer.close(); }
     this.sidenavService.scrollIntoView(element);
   }
 
@@ -64,6 +63,34 @@ export class SidenavComponent implements OnInit, OnDestroy {
   public login() { this.userService.login(); }
 
   public logout() { this.userService.logout(); }
+
+  private checkIfHome() {
+    const routerEvents = this.router.events
+      .pipe(filter(x => x instanceof NavigationEnd))
+      .subscribe((event: RouterEvent) => {
+        if (event.url === '/' || event.url === '/home') {
+          this.isHome = true;
+        } else {
+          this.isHome = false;
+        }
+      });
+    this.subscriptions.add(routerEvents);
+  }
+
+  private getInfoPage() {
+    this.contentService.getContentPage('App info').subscribe(response => {
+      this.sidenavService.passInfoPage(response);
+      this.appInfo = response;
+    });
+  }
+
+  private observeBreakpoints() {
+    const breakpointObserver = this.breakpointObserver.observe(Breakpoints.Handset)
+      .pipe(map(result => result.matches)).subscribe((matches) => {
+        this.isHandset = matches;
+      });
+    this.subscriptions.add(breakpointObserver);
+  }
 
   // Sidenav options
   private sideNavContentChange() {
@@ -77,39 +104,34 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private toggleSidenav() {
     const subscription = this.sidenavService.sidenavToggle$.subscribe(sidenavToggle => {
 
-      if (!this.isHandset$) {
-        setTimeout(() => {
-          switch (sidenavToggle) {
-            case 'open': this.drawer.open(); break;
-            case 'close': this.drawer.close(); break;
-            case 'toggle': this.drawer.toggle(); break;
-            default: this.drawer.open();
-          }
-        });
+      if (!this.isHandset) {
+        switch (sidenavToggle) {
+          case 'open': this.drawer.open(); break;
+          case 'close': this.drawer.close(); break;
+          case 'toggle': this.drawer.toggle(); break;
+          default: this.drawer.open();
+        }
       } else { this.drawer.close(); }
     });
-
     this.subscriptions.add(subscription);
   }
 
   private toggleExpansions() {
     const subscription = this.sidenavService.expansionToggle$.subscribe(expansionToggle => {
 
-      setTimeout(() => {
-        if (expansionToggle === 'open') {
-          this.expRoutedNav.forEach((child) => { child.open(); return; });
-        }
-        if (expansionToggle === 'close') {
-          this.expRoutedNav.forEach((child) => { child.close(); return; });
-        }
-        if (expansionToggle === 'toggle') {
-          this.expRoutedNav.forEach((child) => { child.toggle(); return; });
-        }
-        if (expansionToggle === 'home' || this.isHandset$) {
-          this.expPageNav.open();
-          return;
-        }
-      });
+      if (expansionToggle === 'open') {
+        this.expRoutedNav.forEach((child) => { child.open(); return; });
+      }
+      if (expansionToggle === 'close') {
+        this.expRoutedNav.forEach((child) => { child.close(); return; });
+      }
+      if (expansionToggle === 'toggle') {
+        this.expRoutedNav.forEach((child) => { child.toggle(); return; });
+      }
+      if (expansionToggle === 'home' || this.isHandset) {
+        this.expPageNav.open();
+      }
+      this.changeDetectorRef.detectChanges();
     });
     this.subscriptions.add(subscription);
   }
@@ -117,6 +139,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private toggleIsLoggedIn() {
     const subscription = this.userService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
+      this.changeDetectorRef.detectChanges();
     });
     this.subscriptions.add(subscription);
   }
@@ -130,26 +153,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private contentService: ContentService,
     private router: Router,
   ) {
-    this.sideNavContentChange();
-    this.toggleSidenav();
-    this.toggleExpansions();
-    this.toggleIsLoggedIn();
   }
 
   ngOnInit() {
     this.userService.checkLogin();
-
-    const routerEvents = this.router.events.pipe(throttleTime(0)).subscribe((event: RouterEvent) => {
-      if (event.url === '/' || event.url === '/home') {
-        this.isHome = true;
-      } else { this.isHome = false; }
-    });
-    this.subscriptions.add(routerEvents);
-
-    this.contentService.getContentPage('App info').subscribe(response => {
-      this.sidenavService.passInfoPage(response);
-      this.appInfo = response;
-    });
+    this.checkIfHome();
+    this.getInfoPage();
+    this.observeBreakpoints();
+    this.sideNavContentChange();
+    this.toggleSidenav();
+    this.toggleExpansions();
+    this.toggleIsLoggedIn();
   }
 
   ngOnDestroy() {
