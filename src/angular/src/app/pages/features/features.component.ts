@@ -46,7 +46,6 @@ export class FeaturesComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.add(getPage);
   }
 
-
   // Life cycle
   constructor(
     private sidenavService: SidenavService,

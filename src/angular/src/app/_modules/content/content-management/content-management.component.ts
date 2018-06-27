@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Observable, of, Subscription } from 'rxjs';
@@ -97,8 +97,10 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       this.pagesResponse = newArray;
       this.initFlag = false;
 
+      this.changeDetectorRef.detectChanges();
       // On server errors
     }, () => {
+      this.changeDetectorRef.detectChanges();
       this.progressSpinner = false;
     } // Avoid loop
     );
@@ -708,6 +710,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     private snackbarComponent: SnackbarComponent,
     private userService: UserService,
     private sharedService: SharedService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     this.getForm();
   }
