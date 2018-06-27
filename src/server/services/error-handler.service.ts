@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { createTransport } from 'nodemailer';
-import { dbReadOnlyError } from '../database/connection';
 import { ErrorMessage } from '../types/types';
 import { config } from './server.service';
 
@@ -11,8 +10,6 @@ export function errorHandler(err: ErrorMessage | Error, _req?: Request, res?: Re
   } else {
     console.error(err);
   }
-
-  if (dbReadOnlyError()) { res.status(503).send({ message: 'Database is set to read only' }); return; }
 
   if (res) {
     if (err instanceof Error) {
