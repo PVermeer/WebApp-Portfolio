@@ -63,6 +63,7 @@ process.on('SIGINT', () => {
 
 // Connection middleware
 const connectionError: ErrorMessage = { status: 503, message: 'Database is not up' };
+const readOnlyError: ErrorMessage = { status: 503, message: 'Database is set to read only' };
 
 export function dbConnectionError(_req: Request, res: Response, next: NextFunction) {
 
@@ -70,8 +71,11 @@ export function dbConnectionError(_req: Request, res: Response, next: NextFuncti
 
   return next();
 }
-export function dbReadOnlyError() {
-  return readOnlyFlag;
+export function dbReadOnlyError(_req: Request, res: Response, next: NextFunction) {
+
+  if (readOnlyFlag) { return res.status(connectionError.status).send(readOnlyError); }
+
+  return next();
 }
 
 
