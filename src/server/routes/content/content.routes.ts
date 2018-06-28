@@ -9,6 +9,7 @@ const router = Router();
 
 // Middleware
 router.use(dbConnectionError);
+router.use(dbReadOnlyError);
 
 // -----------Routes-------------------
 
@@ -19,9 +20,6 @@ router.get('/file', getFile);
 
 // Admin authentication
 router.get('/getpages', requiresUserAuth(401, userTypes.admin), contentPageGetAll);
-
-router.use(dbReadOnlyError);
-
 router.post('/updatepage',
   requiresUserAuth(401, userTypes.admin),
   clearCache,
