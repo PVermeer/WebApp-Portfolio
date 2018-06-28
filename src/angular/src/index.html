@@ -13,16 +13,27 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1976d2">
-
 </head>
 
 <body>
+
   <app-root></app-root>
 
   <noscript>
     <h2>JavaScript seems to be disabled</h2>
     <h2>I cannot run like this :(</h2>
   </noscript>
+
+  <!-- IE not supported -->
+  <script type="text/javascript">
+    var isIE = /*@cc_on!@*/false || !!this.document.documentMode;
+    if (isIE) {
+      var div = document.createElement('div');
+      div.innerHTML = '<h2>Portfolio Pim Vermeer</h2><h2>Internet Explorer will not be supported</h2><h2>Please use a modern browser</h2>';
+      document.body.appendChild(div);
+    }
+  </script>
+
 </body>
 
 </html>
