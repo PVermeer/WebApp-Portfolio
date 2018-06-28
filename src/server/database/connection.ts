@@ -71,9 +71,11 @@ export function dbConnectionError(_req: Request, res: Response, next: NextFuncti
 
   return next();
 }
-export function dbReadOnlyError(_req: Request, res: Response, next: NextFunction) {
+export function dbReadOnlyError(req: Request, res: Response, next: NextFunction) {
 
-  if (readOnlyFlag) { return res.status(connectionError.status).send(readOnlyError); }
+  if (readOnlyFlag && req.method !== 'GET' && req.path !== '/login') {
+    return res.status(connectionError.status).send(readOnlyError);
+  }
 
   return next();
 }
