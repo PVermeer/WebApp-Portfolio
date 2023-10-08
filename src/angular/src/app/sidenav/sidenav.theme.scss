@@ -1,8 +1,0 @@
-@mixin sidenav($theme) {
-  $primary: mat-color(map-get($theme, primary));
-
-  .active-link {
-    color: $primary !important;
-  }
-
-}
