@@ -26,6 +26,7 @@ $portfolio-theme: mat.define-light-theme(
       accent: $portfolio-accent,
       warn: $portfolio-warn,
     ),
+    typography: mat.define-typography-config(),
   )
 );
 
@@ -33,6 +34,7 @@ $portfolio-theme: mat.define-light-theme(
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($portfolio-theme);
+@include mat.typography-hierarchy($portfolio-theme);
 
 /* You can add global styles to this file, and also import other style files */
 
@@ -42,5 +44,4 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
