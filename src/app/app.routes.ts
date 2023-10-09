@@ -1,7 +1,11 @@
-import { Routes } from '@angular/router';
+import { Route } from '@angular/router';
 import { AppService } from './app.service';
 
-export const routes: Routes = [
+interface PageRoute extends Route {
+  data: { navTitle: string | undefined };
+}
+
+export const routes: PageRoute[] = [
   {
     path: 'home',
     loadComponent: () =>
@@ -12,9 +16,9 @@ export const routes: Routes = [
   {
     path: 'second',
     loadComponent: () =>
-      import('./pages/home/home.component').then((mod) => mod.HomeComponent),
+      import('./layout/layout.component').then((mod) => mod.LayoutComponent),
     title: `${AppService.Title} Second`,
     data: { navTitle: 'Second' },
   },
-  { path: '**', redirectTo: 'home' },
+  { path: '**', redirectTo: 'home', data: { navTitle: undefined } },
 ];

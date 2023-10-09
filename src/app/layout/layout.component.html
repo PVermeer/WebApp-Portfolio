@@ -20,7 +20,7 @@
         [active]="rla.isActive"
         disableRipple
       >
-        {{ link.data["navTitle"] }}
+        {{ link.data.navTitle }}
       </a>
     </nav>
     <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
@@ -34,10 +34,12 @@
   >
     <mat-sidenav-content>
       <div class="content-container">
-        <div class="outlet-container">
-          <router-outlet></router-outlet>
-        </div>
-        <app-footer class="footer"></app-footer>
+        <main class="outlet-container" [@routerTransition]="getRouterState(o)">
+          <router-outlet #o="outlet"></router-outlet>
+        </main>
+        <footer>
+          <app-footer class="footer"></app-footer>
+        </footer>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>

@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+section {
+  margin-top: 20px;
+}
+
+#profile {
+  margin-top: 2vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+
+  #profile-pic {
+    clip-path: circle();
+    height: 200px;
+  }
+}
