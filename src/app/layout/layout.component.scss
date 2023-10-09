@@ -8,6 +8,10 @@
   right: 0;
 }
 
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
 .is-mobile .toolbar {
   position: fixed;
   /* Make sure the toolbar will stay on top of the content as it scrolls past. */
@@ -16,6 +20,11 @@
 
 h1.app-name {
   margin-left: 8px;
+
+  > .app-name-link {
+    color: inherit;
+    text-decoration: inherit;
+  }
 }
 
 .sidenav-container {

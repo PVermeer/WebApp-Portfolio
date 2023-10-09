@@ -4,7 +4,28 @@
   [class.is-mobile]="mobileQuery.matches"
 >
   <mat-toolbar color="primary" class="toolbar">
-    <h1 class="app-name">{{ appName }}</h1>
+    <h1 class="app-name">
+      <a class="app-name-link" [routerLink]="routerLinks[0].path">{{
+        appName
+      }}</a>
+    </h1>
+    <span class="toolbar-spacer"></span>
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" backgroundColor="primary">
+      <a
+        *ngFor="let link of routerLinks"
+        mat-tab-link
+        [routerLink]="link.path"
+        routerLinkActive
+        #rla="routerLinkActive"
+        [active]="rla.isActive"
+        disableRipple
+      >
+        {{ link.data["navTitle"] }}
+      </a>
+    </nav>
+    <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+
+    <span class="toolbar-spacer"></span>
   </mat-toolbar>
 
   <mat-sidenav-container

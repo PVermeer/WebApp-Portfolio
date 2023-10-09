@@ -4,5 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AppService {
-  public title = 'Portfolio';
+  public static Title = 'Portfolio';
+
+  public title = AppService.Title;
 }
