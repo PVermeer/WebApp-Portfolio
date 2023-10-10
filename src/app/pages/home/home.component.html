@@ -5,8 +5,50 @@
     <div>
       <h1>Pim Vermeer</h1>
       <h3>Software engineer</h3>
+      <p>WebApps</p>
     </div>
   </section>
 
-  <section></section>
+  <section id="projects">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Tweede Kamer stemming app</mat-card-title>
+        <mat-card-subtitle>Tool voor de Tweede Kamer Api</mat-card-subtitle>
+      </mat-card-header>
+      <img
+        mat-card-image
+        src="assets/profile-pic.jpg"
+        alt="Capture image of project"
+      />
+      <mat-card-content>
+        <p>
+          Applicatie ontwikkeld om te kunnen zoeken naar stemmingen van de
+          Tweede Kamer. Deze applicatie maakt gebruik van de overheids api te
+          vinden via
+          <a
+            href="https://developer.overheid.nl/apis/tweede-kamer-odata"
+            target="_blank"
+            >developer.overheid.nl</a
+          >.
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <a
+          mat-button
+          mat-button
+          href="https://stemmingapp-staging.pvermeer.eu/"
+          target="_blank"
+          >App</a
+        >
+        <a
+          mat-button
+          href="https://github.com/PVermeer/tweede-kamer-stemmingsgedrag-app"
+          target="_blank"
+        >
+          <mat-icon svgIcon="github"></mat-icon>
+          Source
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  </section>
 </div>
