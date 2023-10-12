@@ -2,43 +2,49 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  gap: 20px;
 }
 
 section {
   margin-top: 20px;
-
-  > * {
-    margin: 3px;
-  }
-}
-
-#profile {
-  margin-top: 2vh;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+  gap: 20px;
 
-  #profile-pic {
-    clip-path: circle();
-    height: 200px;
+  &:first-child {
+    margin-top: 2vh;
   }
-}
 
-#projects {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+  &#profile {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 
-  mat-card {
-    max-width: 400px;
+    #profile-pic {
+      clip-path: circle();
+      height: 200px;
+    }
+  }
 
-    > mat-card-header,
-    > img {
-      margin-bottom: 16px;
+  &#projects {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: center;
+    gap: 5vw;
+
+    mat-card {
+      max-width: 400px;
+
+      > mat-card-header,
+      > img {
+        margin-bottom: 16px;
+      }
+
+      > mat-card-content {
+        height: 100%;
+      }
     }
   }
 }
