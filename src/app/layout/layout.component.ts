@@ -5,7 +5,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { AppService } from '../app.service';
-import { FooterComponent } from './footer/footer.component';
+import { FooterComponent } from '../footer/footer.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { routes } from '../app.routes';
 import {

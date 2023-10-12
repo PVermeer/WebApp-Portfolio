@@ -1,0 +1,11 @@
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-wrap {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
